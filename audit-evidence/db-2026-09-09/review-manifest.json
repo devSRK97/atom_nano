@@ -1,0 +1,2000 @@
+{
+  "date": "2026-09-09",
+  "project": "E:\\Mac\\AtomNano",
+  "scope": "Database management module and related integration boundaries",
+  "productionModified": false,
+  "remoteDatabasesContacted": false,
+  "realCredentialsRead": false,
+  "reviewedSources": [
+    {
+      "path": "src/main/db.js",
+      "lines": 1037,
+      "bytes": 71888,
+      "sha256": "5c4c916e4f23e2e8afc25faa4684e45c0a3f32b25a240eb0983e3b47abfa950b"
+    },
+    {
+      "path": "src/main/db-worker.js",
+      "lines": 31,
+      "bytes": 1167,
+      "sha256": "192a34705efd7ee68dc6a6710f593b76f42e5f2812a2b8cee8d48b5ad5229206"
+    },
+    {
+      "path": "src/main/db-io.js",
+      "lines": 299,
+      "bytes": 24204,
+      "sha256": "879f90c2d92842bd85bd475fe560acbf63847fb7bd4aca691a2ccdf52ef06351"
+    },
+    {
+      "path": "src/renderer/dbm.js",
+      "lines": 1550,
+      "bytes": 132898,
+      "sha256": "bb9289f5f6f527098da6864716f1bb206facaeae69e16cfe569f761b13b1f1d7"
+    },
+    {
+      "path": "src/main/main.js",
+      "lines": 1502,
+      "bytes": 100022,
+      "sha256": "0f9fe37725586e64a7fecc43c1a739006dd0e3b3d9559dc236caa2fbc2b35c23"
+    },
+    {
+      "path": "src/main/preload.js",
+      "lines": 411,
+      "bytes": 25605,
+      "sha256": "29a7470ef59f37acd8be861230a33c8512f855c0a7bda88a94b477602ea69174"
+    },
+    {
+      "path": "src/renderer/app.js",
+      "lines": 10468,
+      "bytes": 612639,
+      "sha256": "a75a43c7b6285d1de07cda71500647eae5da24a977cb9ad4a95c2d2a6e82cfc0"
+    },
+    {
+      "path": "src/renderer/styles.css",
+      "lines": 3303,
+      "bytes": 294101,
+      "sha256": "3b9326bf333e9a6f9f7a2819eaceec41cbd57c067508a6f35b218c5620172944"
+    },
+    {
+      "path": "src/renderer/index.html",
+      "lines": 85,
+      "bytes": 3384,
+      "sha256": "adf93dbe4ab7f59209f2ee9461ad036951d51ed661b3cca502c876ae2d2c7a76"
+    },
+    {
+      "path": "package.json",
+      "lines": 86,
+      "bytes": 3442,
+      "sha256": "ab4561f3d5fcccb71c454a74b68522801730f407a76097c111f9112a3ef458c5"
+    },
+    {
+      "path": "package-lock.json",
+      "lines": 7883,
+      "bytes": 281135,
+      "sha256": "08e6d0dafb5375c76acf3c87b73c777217b848d00353915ef0c7db592c542960"
+    },
+    {
+      "path": "electron-builder.yml",
+      "sha256": "858d3d21e65e680b85a3605c9cfadf02b18d4c4e4b4a30a4b4f0169ffdd6f3d6",
+      "lines": 52
+    }
+  ],
+  "installedDrivers": {
+    "better-sqlite3": {
+      "version": "13.0.3",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\better-sqlite3\\lib\\index.js",
+      "loadable": true
+    },
+    "pg": {
+      "version": "8.23.0",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\pg\\lib\\index.js"
+    },
+    "mysql2": {
+      "version": "3.24.3",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\mysql2\\index.js"
+    },
+    "oracledb": {
+      "version": "7.0.1",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\oracledb\\index.js"
+    },
+    "mongodb": {
+      "version": "7.6.0",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\mongodb\\lib\\index.js"
+    },
+    "mssql": {
+      "version": "12.7.0",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\mssql\\index.js"
+    },
+    "redis": {
+      "version": "6.2.1",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\redis\\dist\\index.js"
+    },
+    "sql.js": {
+      "version": "1.10.3",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\sql.js\\dist\\sql-wasm.js"
+    },
+    "electron": {
+      "version": "42.3.0",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\electron\\index.js"
+    },
+    "playwright": {
+      "version": "1.60.0",
+      "entry": "E:\\Mac\\AtomNano\\node_modules\\playwright\\index.js"
+    }
+  },
+  "exports": {
+    "src/main/db.js": [
+      "kinds",
+      "list",
+      "save",
+      "remove",
+      "test",
+      "schema",
+      "columns",
+      "query",
+      "parallelQuery",
+      "addColumn",
+      "installDriver",
+      "driverInstalled",
+      "closeAll",
+      "disconnect",
+      "tableInfo",
+      "count",
+      "browse",
+      "insertRow",
+      "updateRows",
+      "deleteRows",
+      "explain",
+      "dropColumn",
+      "renameColumn",
+      "addIndex",
+      "dropIndex",
+      "reorderColumns",
+      "ping",
+      "quoteIdent",
+      "qualify",
+      "literal",
+      "capSelect",
+      "buildColumnType"
+    ],
+    "src/main/db-io.js": [
+      "exportFile",
+      "importPick",
+      "importRun",
+      "importDiscard",
+      "xlsxWrite",
+      "xlsxRead",
+      "csvParse",
+      "splitStatements",
+      "zipSync",
+      "unzipSync"
+    ]
+  },
+  "ipcChannels": [
+    "db:kinds",
+    "db:list",
+    "db:save",
+    "db:remove",
+    "db:test",
+    "db:schema",
+    "db:columns",
+    "db:query",
+    "db:parallel-query",
+    "db:add-column",
+    "db:drop-column",
+    "db:rename-column",
+    "db:add-index",
+    "db:drop-index",
+    "db:ping",
+    "db:export-file",
+    "db:import-pick",
+    "db:import-run",
+    "db:import-discard",
+    "db:reorder-columns",
+    "db:table-info",
+    "db:count",
+    "db:browse",
+    "db:insert-row",
+    "db:update-rows",
+    "db:delete-rows",
+    "db:explain",
+    "db:install-driver",
+    "db:disconnect",
+    "db:open-window"
+  ],
+  "findings": [
+    {
+      "id": "DB-001",
+      "priority": "P1",
+      "title": "A busy tab can send later statements to a different connection",
+      "engines": "All",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          296
+        ],
+        [
+          "src/renderer/dbm.js",
+          800
+        ],
+        [
+          "src/renderer/dbm.js",
+          815
+        ]
+      ],
+      "checks": [
+        "DB-U07"
+      ]
+    },
+    {
+      "id": "DB-002",
+      "priority": "P1",
+      "title": "Query tabs do not own database sessions or transactions",
+      "engines": "MySQL, PostgreSQL, Oracle, SQL Server; shared SQLite/Redis state also needs ownership",
+      "source": [
+        [
+          "src/main/db.js",
+          132
+        ],
+        [
+          "src/main/db.js",
+          527
+        ],
+        [
+          "src/main/db.js",
+          532
+        ],
+        [
+          "src/main/db.js",
+          544
+        ],
+        [
+          "src/main/db.js",
+          586
+        ],
+        [
+          "src/main/db.js",
+          611
+        ]
+      ],
+      "checks": [
+        "DB-B14",
+        "DB-B49"
+      ]
+    },
+    {
+      "id": "DB-003",
+      "priority": "P1",
+      "title": "Automatic reconnect replays writes with unknown commit outcomes",
+      "engines": "All query adapters",
+      "source": [
+        [
+          "src/main/db.js",
+          493
+        ],
+        [
+          "src/main/db.js",
+          603
+        ]
+      ],
+      "checks": [
+        "DB-B13"
+      ]
+    },
+    {
+      "id": "DB-004",
+      "priority": "P1",
+      "title": "Row mutation accepts ambiguous or incomplete primary keys",
+      "engines": "SQL row editing; Mongo filters also need strict identity validation",
+      "source": [
+        [
+          "src/main/db.js",
+          962
+        ],
+        [
+          "src/main/db.js",
+          979
+        ],
+        [
+          "src/main/db.js",
+          995
+        ],
+        [
+          "src/renderer/dbm.js",
+          1057
+        ]
+      ],
+      "checks": [
+        "DB-B19",
+        "DB-B20"
+      ]
+    },
+    {
+      "id": "DB-005",
+      "priority": "P1",
+      "title": "Large integer keys round to a different row identity",
+      "engines": "Confirmed SQLite; MySQL numeric defaults require equivalent validation",
+      "source": [
+        [
+          "src/main/db.js",
+          143
+        ],
+        [
+          "src/main/db.js",
+          176
+        ],
+        [
+          "src/main/db.js",
+          460
+        ],
+        [
+          "src/main/db.js",
+          991
+        ]
+      ],
+      "checks": [
+        "DB-B21"
+      ]
+    },
+    {
+      "id": "DB-006",
+      "priority": "P1",
+      "title": "SQL protection policies are bypassed by valid statement forms",
+      "engines": "SQL engines",
+      "source": [
+        [
+          "src/main/db.js",
+          495
+        ],
+        [
+          "src/main/db.js",
+          518
+        ],
+        [
+          "src/main/db.js",
+          702
+        ]
+      ],
+      "checks": [
+        "DB-B15"
+      ]
+    },
+    {
+      "id": "DB-007",
+      "priority": "P1",
+      "title": "MongoDB and Redis protections are inconsistent or ineffective",
+      "engines": "MongoDB, Redis",
+      "source": [
+        [
+          "src/main/db.js",
+          551
+        ],
+        [
+          "src/main/db.js",
+          593
+        ],
+        [
+          "src/main/db.js",
+          654
+        ],
+        [
+          "src/main/db.js",
+          688
+        ],
+        [
+          "src/main/db.js",
+          707
+        ],
+        [
+          "src/main/db.js",
+          968
+        ]
+      ],
+      "checks": [
+        "DB-B16",
+        "DB-B17",
+        "DB-B18"
+      ]
+    },
+    {
+      "id": "DB-008",
+      "priority": "P1",
+      "title": "Empty-first import can erase existing data before validation fails",
+      "engines": "All importable engines",
+      "source": [
+        [
+          "src/main/db-io.js",
+          251
+        ],
+        [
+          "src/main/db-io.js",
+          273
+        ],
+        [
+          "src/main/db-io.js",
+          280
+        ],
+        [
+          "src/renderer/dbm.js",
+          1182
+        ]
+      ],
+      "checks": [
+        "DB-B34"
+      ]
+    },
+    {
+      "id": "DB-009",
+      "priority": "P1",
+      "title": "Cancel or closing an import dialog does not stop writes",
+      "engines": "All imports",
+      "source": [
+        [
+          "src/main/db-io.js",
+          252
+        ],
+        [
+          "src/main/db-io.js",
+          258
+        ],
+        [
+          "src/main/db-io.js",
+          280
+        ],
+        [
+          "src/main/db-io.js",
+          296
+        ],
+        [
+          "src/renderer/dbm.js",
+          1134
+        ],
+        [
+          "src/renderer/dbm.js",
+          1205
+        ]
+      ],
+      "checks": [
+        "DB-B35"
+      ]
+    },
+    {
+      "id": "DB-010",
+      "priority": "P1",
+      "title": "MongoDB export can lose or mislabel every earlier page",
+      "engines": "MongoDB",
+      "source": [
+        [
+          "src/main/db.js",
+          435
+        ],
+        [
+          "src/main/db.js",
+          923
+        ],
+        [
+          "src/main/db-io.js",
+          191
+        ],
+        [
+          "src/main/db-io.js",
+          214
+        ]
+      ],
+      "checks": [
+        "DB-B40",
+        "DB-B41"
+      ]
+    },
+    {
+      "id": "DB-011",
+      "priority": "P1",
+      "title": "Format SQL changes string literals and comments",
+      "engines": "SQL editor",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          55
+        ],
+        [
+          "src/renderer/dbm.js",
+          776
+        ]
+      ],
+      "checks": [
+        "DB-U01"
+      ]
+    },
+    {
+      "id": "DB-012",
+      "priority": "P1",
+      "title": "SQL splitting corrupts scripts and stored-program bodies",
+      "engines": "SQL editor and SQL import",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          61
+        ],
+        [
+          "src/renderer/dbm.js",
+          810
+        ],
+        [
+          "src/main/db-io.js",
+          164
+        ],
+        [
+          "src/main/db-io.js",
+          235
+        ]
+      ],
+      "checks": [
+        "DB-U02",
+        "DB-B47",
+        "DB-B48"
+      ]
+    },
+    {
+      "id": "DB-013",
+      "priority": "P1",
+      "title": "Idle PostgreSQL connection errors can escape as unhandled events",
+      "engines": "PostgreSQL; verify other pool event contracts too",
+      "source": [
+        [
+          "src/main/db.js",
+          153
+        ],
+        [
+          "src/main/db.js",
+          161
+        ]
+      ],
+      "checks": [
+        "DB-B11"
+      ]
+    },
+    {
+      "id": "DB-014",
+      "priority": "P1",
+      "title": "Connection saves can falsely succeed or erase a damaged store",
+      "engines": "All saved profiles",
+      "source": [
+        [
+          "src/main/db.js",
+          70
+        ],
+        [
+          "src/main/db.js",
+          76
+        ],
+        [
+          "src/main/db.js",
+          81
+        ],
+        [
+          "src/renderer/dbm.js",
+          722
+        ]
+      ],
+      "checks": [
+        "DB-B01",
+        "DB-B02"
+      ]
+    },
+    {
+      "id": "DB-015",
+      "priority": "P1",
+      "title": "Credential encryption silently degrades and can destroy secrets",
+      "engines": "All saved passwords/URIs",
+      "source": [
+        [
+          "src/main/db.js",
+          60
+        ],
+        [
+          "src/main/db.js",
+          62
+        ],
+        [
+          "src/main/db.js",
+          66
+        ],
+        [
+          "src/renderer/dbm.js",
+          708
+        ]
+      ],
+      "checks": [
+        "DB-B03",
+        "DB-B04",
+        "DB-B05"
+      ]
+    },
+    {
+      "id": "DB-016",
+      "priority": "P1",
+      "title": "TLS settings encrypt without authenticating the database server",
+      "engines": "MySQL, PostgreSQL, SQL Server",
+      "source": [
+        [
+          "src/main/db.js",
+          147
+        ],
+        [
+          "src/main/db.js",
+          158
+        ],
+        [
+          "src/main/db.js",
+          189
+        ],
+        [
+          "src/renderer/dbm.js",
+          649
+        ],
+        [
+          "src/renderer/dbm.js",
+          680
+        ]
+      ],
+      "checks": [
+        "DB-B07"
+      ]
+    },
+    {
+      "id": "DB-017",
+      "priority": "P1",
+      "title": "Display strings replace canonical binary and BSON values",
+      "engines": "SQL binary/date/JSON columns; MongoDB BSON",
+      "source": [
+        [
+          "src/main/db.js",
+          460
+        ],
+        [
+          "src/main/db.js",
+          946
+        ],
+        [
+          "src/main/db.js",
+          954
+        ],
+        [
+          "src/main/db-io.js",
+          213
+        ],
+        [
+          "src/renderer/dbm.js",
+          943
+        ]
+      ],
+      "checks": [
+        "DB-B23",
+        "DB-B28",
+        "DB-B29",
+        "DB-B43"
+      ]
+    },
+    {
+      "id": "DB-018",
+      "priority": "P1",
+      "title": "Export ALL silently ends at two million rows",
+      "engines": "All table exports",
+      "source": [
+        [
+          "src/main/db-io.js",
+          191
+        ],
+        [
+          "src/main/db-io.js",
+          199
+        ],
+        [
+          "src/main/db-io.js",
+          219
+        ],
+        [
+          "src/renderer/dbm.js",
+          848
+        ]
+      ],
+      "checks": [
+        "DB-B42"
+      ]
+    },
+    {
+      "id": "DB-019",
+      "priority": "P2",
+      "title": "Row edits and deletes update the UI without verifying the persisted result",
+      "engines": "Browse editing",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          1073
+        ],
+        [
+          "src/renderer/dbm.js",
+          1085
+        ],
+        [
+          "src/main/db.js",
+          979
+        ]
+      ],
+      "checks": [
+        "DB-U05"
+      ]
+    },
+    {
+      "id": "DB-020",
+      "priority": "P1",
+      "title": "Several mutation buttons can submit duplicate writes",
+      "engines": "Insert dialog and pending structure operations",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          1219
+        ],
+        [
+          "src/renderer/dbm.js",
+          1231
+        ],
+        [
+          "src/renderer/dbm.js",
+          1310
+        ]
+      ],
+      "checks": [
+        "DB-U06"
+      ]
+    },
+    {
+      "id": "DB-021",
+      "priority": "P2",
+      "title": "Connection creation and disposal have races and resource leaks",
+      "engines": "All connection adapters",
+      "source": [
+        [
+          "src/main/db.js",
+          133
+        ],
+        [
+          "src/main/db.js",
+          136
+        ],
+        [
+          "src/main/db.js",
+          149
+        ],
+        [
+          "src/main/db.js",
+          205
+        ],
+        [
+          "src/main/db.js",
+          261
+        ]
+      ],
+      "checks": [
+        "DB-B08",
+        "DB-B09",
+        "DB-B10"
+      ]
+    },
+    {
+      "id": "DB-022",
+      "priority": "P2",
+      "title": "Health checks can undo disconnects and misclassify ordinary errors",
+      "engines": "DBM connection status",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          391
+        ],
+        [
+          "src/renderer/dbm.js",
+          428
+        ],
+        [
+          "src/renderer/dbm.js",
+          436
+        ],
+        [
+          "src/renderer/dbm.js",
+          749
+        ],
+        [
+          "src/renderer/dbm.js",
+          1262
+        ]
+      ],
+      "checks": [
+        "DB-U11"
+      ]
+    },
+    {
+      "id": "DB-023",
+      "priority": "P2",
+      "title": "Cancelling profile edits does not restore the original renderer policy",
+      "engines": "Connection form",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          649
+        ],
+        [
+          "src/renderer/dbm.js",
+          686
+        ],
+        [
+          "src/renderer/dbm.js",
+          710
+        ],
+        [
+          "src/renderer/dbm.js",
+          727
+        ]
+      ],
+      "checks": [
+        "DB-U09"
+      ]
+    },
+    {
+      "id": "DB-024",
+      "priority": "P1",
+      "title": "A later query failure hides earlier successful writes and results",
+      "engines": "Multi-statement query UI",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          814
+        ],
+        [
+          "src/renderer/dbm.js",
+          819
+        ],
+        [
+          "src/renderer/dbm.js",
+          830
+        ]
+      ],
+      "checks": [
+        "DB-U08"
+      ]
+    },
+    {
+      "id": "DB-025",
+      "priority": "P2",
+      "title": "Oracle Test connection uses a method that the installed pool does not provide",
+      "engines": "Oracle",
+      "source": [
+        [
+          "src/main/db.js",
+          165
+        ],
+        [
+          "src/main/db.js",
+          271
+        ],
+        [
+          "src/main/db.js",
+          778
+        ]
+      ],
+      "checks": [
+        "DB-B12"
+      ]
+    },
+    {
+      "id": "DB-026",
+      "priority": "P2",
+      "title": "SQLite dispatch assumes the first keyword determines whether rows are returned",
+      "engines": "SQLite",
+      "source": [
+        [
+          "src/main/db.js",
+          574
+        ]
+      ],
+      "checks": [
+        "DB-B25"
+      ]
+    },
+    {
+      "id": "DB-027",
+      "priority": "P2",
+      "title": "Regex SELECT caps alter valid SQL and conceal incomplete results",
+      "engines": "All SQL query adapters",
+      "source": [
+        [
+          "src/main/db.js",
+          473
+        ],
+        [
+          "src/main/db.js",
+          521
+        ],
+        [
+          "src/renderer/dbm.js",
+          772
+        ],
+        [
+          "src/renderer/dbm.js",
+          883
+        ]
+      ],
+      "checks": [
+        "DB-B26",
+        "DB-B27"
+      ]
+    },
+    {
+      "id": "DB-028",
+      "priority": "P2",
+      "title": "Result normalization collapses duplicate columns and additional result sets",
+      "engines": "SQL drivers, query export/copy",
+      "source": [
+        [
+          "src/main/db.js",
+          435
+        ],
+        [
+          "src/main/db.js",
+          532
+        ],
+        [
+          "src/main/db.js",
+          586
+        ],
+        [
+          "src/renderer/dbm.js",
+          86
+        ],
+        [
+          "src/main/db-io.js",
+          214
+        ]
+      ],
+      "checks": [
+        "DB-B22"
+      ]
+    },
+    {
+      "id": "DB-029",
+      "priority": "P2",
+      "title": "Worker normalization changes binary values when results cross 2000 rows",
+      "engines": "MySQL, PostgreSQL, SQL Server shapeAsync",
+      "source": [
+        [
+          "src/main/db.js",
+          443
+        ],
+        [
+          "src/main/db-worker.js",
+          5
+        ]
+      ],
+      "checks": [
+        "DB-B24"
+      ]
+    },
+    {
+      "id": "DB-030",
+      "priority": "P1",
+      "title": "Generated mutations interpolate untyped SQL literals",
+      "engines": "SQL row editing, DDL defaults and SQL imports",
+      "source": [
+        [
+          "src/main/db.js",
+          242
+        ],
+        [
+          "src/main/db.js",
+          962
+        ],
+        [
+          "src/main/db.js",
+          974
+        ],
+        [
+          "src/main/db-io.js",
+          284
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "DB-031",
+      "priority": "P2",
+      "title": "Oracle LOB query values are never fetched as their actual content",
+      "engines": "Oracle",
+      "source": [
+        [
+          "src/main/db.js",
+          460
+        ],
+        [
+          "src/main/db.js",
+          546
+        ],
+        [
+          "src/main/db.js",
+          549
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "DB-032",
+      "priority": "P2",
+      "title": "Paging uses unstable order and treats estimates as navigation bounds",
+      "engines": "Browse and ALL export",
+      "source": [
+        [
+          "src/main/db.js",
+          927
+        ],
+        [
+          "src/main/db.js",
+          933
+        ],
+        [
+          "src/main/db-io.js",
+          191
+        ],
+        [
+          "src/renderer/dbm.js",
+          1007
+        ],
+        [
+          "src/renderer/dbm.js",
+          1013
+        ]
+      ],
+      "checks": [
+        "DB-U04"
+      ]
+    },
+    {
+      "id": "DB-033",
+      "priority": "P2",
+      "title": "Import row counts hide partial commits and cap error details",
+      "engines": "Oracle, MongoDB; all imports for error reporting",
+      "source": [
+        [
+          "src/main/db-io.js",
+          259
+        ],
+        [
+          "src/main/db-io.js",
+          283
+        ],
+        [
+          "src/main/db-io.js",
+          286
+        ],
+        [
+          "src/main/db-io.js",
+          294
+        ],
+        [
+          "src/renderer/dbm.js",
+          1114
+        ]
+      ],
+      "checks": [
+        "DB-B38"
+      ]
+    },
+    {
+      "id": "DB-034",
+      "priority": "P2",
+      "title": "Import tokens lack expiry enforcement, ownership and a consumed/running state",
+      "engines": "Import IPC",
+      "source": [
+        [
+          "src/main/db-io.js",
+          223
+        ],
+        [
+          "src/main/db-io.js",
+          237
+        ],
+        [
+          "src/main/db-io.js",
+          248
+        ],
+        [
+          "src/main/db-io.js",
+          251
+        ],
+        [
+          "src/main/main.js",
+          772
+        ]
+      ],
+      "checks": [
+        "DB-B36",
+        "DB-B37"
+      ]
+    },
+    {
+      "id": "DB-035",
+      "priority": "P2",
+      "title": "Import batch size ignores engine-specific statement limits",
+      "engines": "SQL Server; MySQL/SQLite/Oracle need capability-aware batching",
+      "source": [
+        [
+          "src/main/db-io.js",
+          278
+        ],
+        [
+          "src/main/db-io.js",
+          285
+        ],
+        [
+          "src/renderer/dbm.js",
+          1143
+        ]
+      ],
+      "checks": [
+        "DB-B39"
+      ]
+    },
+    {
+      "id": "DB-036",
+      "priority": "P2",
+      "title": "CSV parsing silently drops valid empty rows and accepts malformed input",
+      "engines": "CSV/TSV/text import and CSV export",
+      "source": [
+        [
+          "src/main/db-io.js",
+          145
+        ],
+        [
+          "src/main/db-io.js",
+          159
+        ],
+        [
+          "src/main/db-io.js",
+          161
+        ],
+        [
+          "src/main/db-io.js",
+          242
+        ]
+      ],
+      "checks": [
+        "DB-B46",
+        "DB-B53"
+      ]
+    },
+    {
+      "id": "DB-037",
+      "priority": "P2",
+      "title": "The XLSX codec silently changes dates and truncates long text",
+      "engines": "Excel import/export",
+      "source": [
+        [
+          "src/main/db-io.js",
+          79
+        ],
+        [
+          "src/main/db-io.js",
+          85
+        ],
+        [
+          "src/main/db-io.js",
+          103
+        ],
+        [
+          "src/main/db-io.js",
+          109
+        ],
+        [
+          "src/main/db-io.js",
+          135
+        ]
+      ],
+      "checks": [
+        "DB-B44",
+        "DB-B45",
+        "DB-B53"
+      ]
+    },
+    {
+      "id": "DB-038",
+      "priority": "P2",
+      "title": "Import/export processing blocks main and has unbounded expansion/allocation paths",
+      "engines": "All I/O formats, especially XLSX",
+      "source": [
+        [
+          "src/main/db-io.js",
+          31
+        ],
+        [
+          "src/main/db-io.js",
+          55
+        ],
+        [
+          "src/main/db-io.js",
+          191
+        ],
+        [
+          "src/main/db-io.js",
+          212
+        ],
+        [
+          "src/main/db-io.js",
+          232
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "DB-039",
+      "priority": "P2",
+      "title": "Queries have no cancellation or incremental result protocol",
+      "engines": "All; main-thread blocking is direct for SQLite",
+      "source": [
+        [
+          "src/main/db.js",
+          443
+        ],
+        [
+          "src/main/db.js",
+          563
+        ],
+        [
+          "src/main/db.js",
+          574
+        ],
+        [
+          "src/main/db.js",
+          611
+        ],
+        [
+          "src/main/main.js",
+          762
+        ],
+        [
+          "src/renderer/dbm.js",
+          800
+        ]
+      ],
+      "checks": [
+        "DB-U19"
+      ]
+    },
+    {
+      "id": "DB-040",
+      "priority": "P2",
+      "title": "Pending schema changes have inconsistent plans and lose failed work",
+      "engines": "Structure editor",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          1268
+        ],
+        [
+          "src/renderer/dbm.js",
+          1291
+        ],
+        [
+          "src/renderer/dbm.js",
+          1300
+        ],
+        [
+          "src/renderer/dbm.js",
+          1310
+        ],
+        [
+          "src/main/db.js",
+          665
+        ]
+      ],
+      "checks": [
+        "DB-U14",
+        "DB-U15"
+      ]
+    },
+    {
+      "id": "DB-041",
+      "priority": "P2",
+      "title": "MySQL column reorder rebuilds incomplete column definitions",
+      "engines": "MySQL/MariaDB",
+      "source": [
+        [
+          "src/main/db.js",
+          732
+        ],
+        [
+          "src/main/db.js",
+          746
+        ]
+      ],
+      "checks": [
+        "DB-B32"
+      ]
+    },
+    {
+      "id": "DB-042",
+      "priority": "P2",
+      "title": "Add-column type changes keep hidden parameters and misinterpret defaults",
+      "engines": "Add-column form/builders",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          1429
+        ],
+        [
+          "src/renderer/dbm.js",
+          1460
+        ],
+        [
+          "src/renderer/dbm.js",
+          1468
+        ],
+        [
+          "src/main/db.js",
+          623
+        ],
+        [
+          "src/main/db.js",
+          624
+        ]
+      ],
+      "checks": [
+        "DB-U16",
+        "DB-B33"
+      ]
+    },
+    {
+      "id": "DB-043",
+      "priority": "P2",
+      "title": "Object identity and catalog metadata are lossy across schemas",
+      "engines": "SQL schemas, foreign-key links, generated DDL",
+      "source": [
+        [
+          "src/main/db.js",
+          215
+        ],
+        [
+          "src/main/db.js",
+          226
+        ],
+        [
+          "src/main/db.js",
+          320
+        ],
+        [
+          "src/main/db.js",
+          384
+        ],
+        [
+          "src/main/db.js",
+          805
+        ],
+        [
+          "src/main/db.js",
+          828
+        ],
+        [
+          "src/renderer/dbm.js",
+          1398
+        ]
+      ],
+      "checks": [
+        "DB-B31"
+      ]
+    },
+    {
+      "id": "DB-044",
+      "priority": "P2",
+      "title": "SQL export is offered without a valid target or engine dialect",
+      "engines": "Query results, MongoDB, Redis",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          900
+        ],
+        [
+          "src/renderer/dbm.js",
+          906
+        ],
+        [
+          "src/main/db-io.js",
+          183
+        ],
+        [
+          "src/main/db-io.js",
+          215
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "DB-045",
+      "priority": "P2",
+      "title": "Database-controlled names enter HTML and IPC has no DB-specific boundary validation",
+      "engines": "DBM renderer and preload/main boundary",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          1023
+        ],
+        [
+          "src/renderer/app.js",
+          192
+        ],
+        [
+          "src/renderer/index.html",
+          5
+        ],
+        [
+          "src/main/main.js",
+          517
+        ],
+        [
+          "src/main/main.js",
+          753
+        ],
+        [
+          "src/main/main.js",
+          789
+        ]
+      ],
+      "checks": [
+        "DB-U17"
+      ]
+    },
+    {
+      "id": "DB-046",
+      "priority": "P2",
+      "title": "All credentials are exposed to renderer lists and query history has no retention controls",
+      "engines": "Saved profiles and query history",
+      "source": [
+        [
+          "src/main/db.js",
+          80
+        ],
+        [
+          "src/main/preload.js",
+          83
+        ],
+        [
+          "src/renderer/dbm.js",
+          221
+        ],
+        [
+          "src/renderer/dbm.js",
+          234
+        ],
+        [
+          "src/renderer/dbm.js",
+          523
+        ],
+        [
+          "src/renderer/dbm.js",
+          677
+        ]
+      ],
+      "checks": [
+        "DB-B06"
+      ]
+    },
+    {
+      "id": "DB-047",
+      "priority": "P2",
+      "title": "Driver installation mutates the application tree without a verified lifecycle",
+      "engines": "On-demand driver installation",
+      "source": [
+        [
+          "src/main/db.js",
+          94
+        ],
+        [
+          "src/main/db.js",
+          112
+        ],
+        [
+          "src/main/db.js",
+          123
+        ],
+        [
+          "src/renderer/dbm.js",
+          249
+        ],
+        [
+          "package.json",
+          35
+        ],
+        [
+          "electron-builder.yml",
+          12
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "DB-048",
+      "priority": "P2",
+      "title": "The virtual grid is mouse-dependent and some text has low contrast",
+      "engines": "DBM UI",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          145
+        ],
+        [
+          "src/renderer/dbm.js",
+          152
+        ],
+        [
+          "src/renderer/dbm.js",
+          174
+        ],
+        [
+          "src/renderer/styles.css",
+          19
+        ],
+        [
+          "src/renderer/styles.css",
+          2381
+        ],
+        [
+          "src/renderer/styles.css",
+          2402
+        ],
+        [
+          "src/renderer/styles.css",
+          2491
+        ]
+      ],
+      "checks": [
+        "DB-U18"
+      ]
+    },
+    {
+      "id": "DB-049",
+      "priority": "P2",
+      "title": "Tab/window lifecycle does not protect drafts or release module resources",
+      "engines": "DBM workspace",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          296
+        ],
+        [
+          "src/renderer/dbm.js",
+          304
+        ],
+        [
+          "src/renderer/dbm.js",
+          415
+        ],
+        [
+          "src/renderer/dbm.js",
+          841
+        ],
+        [
+          "src/renderer/dbm.js",
+          1548
+        ],
+        [
+          "src/renderer/app.js",
+          441
+        ],
+        [
+          "src/main/main.js",
+          785
+        ]
+      ],
+      "checks": [
+        "DB-U10"
+      ]
+    },
+    {
+      "id": "DB-050",
+      "priority": "P2",
+      "title": "Dismissed shared confirmation dialogs never resolve",
+      "engines": "Delete/truncate confirmations, inline-edit blur decisions, import confirmation",
+      "source": [
+        [
+          "src/renderer/app.js",
+          407
+        ],
+        [
+          "src/renderer/app.js",
+          416
+        ],
+        [
+          "src/renderer/app.js",
+          3920
+        ],
+        [
+          "src/renderer/dbm.js",
+          264
+        ],
+        [
+          "src/renderer/dbm.js",
+          954
+        ]
+      ],
+      "checks": [
+        "DB-U12",
+        "DB-U13"
+      ]
+    },
+    {
+      "id": "DB-051",
+      "priority": "P1",
+      "title": "Redis quoted keys can become multiple unintended mutation targets",
+      "engines": "Redis query/templates and key context menu",
+      "source": [
+        [
+          "src/main/db.js",
+          487
+        ],
+        [
+          "src/main/db.js",
+          593
+        ],
+        [
+          "src/renderer/dbm.js",
+          43
+        ],
+        [
+          "src/renderer/dbm.js",
+          601
+        ]
+      ],
+      "checks": [
+        "DB-B30"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G01",
+      "title": "Explicit connection modes and target identity",
+      "priority": "After DB-001/002/006/007/016",
+      "source": [
+        [
+          "src/main/db.js",
+          30
+        ],
+        [
+          "src/renderer/dbm.js",
+          649
+        ]
+      ]
+    },
+    {
+      "id": "G02",
+      "title": "Advanced connection configuration and portable profiles",
+      "priority": "After credential/TLS fixes",
+      "source": [
+        [
+          "src/main/db.js",
+          30
+        ],
+        [
+          "src/main/db.js",
+          136
+        ]
+      ]
+    },
+    {
+      "id": "G03",
+      "title": "Native backup/restore and schema migration plans",
+      "priority": "After data fidelity and atomic operation work",
+      "source": [
+        [
+          "src/main/db-io.js",
+          183
+        ],
+        [
+          "src/main/db.js",
+          805
+        ]
+      ]
+    },
+    {
+      "id": "G04",
+      "title": "First-class schema object management",
+      "priority": "After DB-040/041/043",
+      "source": [
+        [
+          "src/main/db.js",
+          648
+        ],
+        [
+          "src/renderer/dbm.js",
+          1240
+        ]
+      ]
+    },
+    {
+      "id": "G05",
+      "title": "SQL editor capabilities",
+      "priority": "After DB-011/012/024/026/027",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          771
+        ],
+        [
+          "src/renderer/dbm.js",
+          49
+        ]
+      ]
+    },
+    {
+      "id": "G06",
+      "title": "Complete MongoDB document workflows",
+      "priority": "After DB-007/010/017/031/033",
+      "source": [
+        [
+          "src/main/db.js",
+          401
+        ],
+        [
+          "src/main/db.js",
+          551
+        ],
+        [
+          "src/renderer/dbm.js",
+          1163
+        ]
+      ]
+    },
+    {
+      "id": "G07",
+      "title": "Complete Redis key discovery and editing",
+      "priority": "After command parsing and policy/session fixes",
+      "source": [
+        [
+          "src/main/db.js",
+          345
+        ],
+        [
+          "src/main/db.js",
+          487
+        ],
+        [
+          "src/renderer/dbm.js",
+          20
+        ]
+      ]
+    },
+    {
+      "id": "G08",
+      "title": "Durable operation history and diagnostics",
+      "priority": "After DB-001/002/003/009/024/033",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          325
+        ],
+        [
+          "src/main/main.js",
+          517
+        ]
+      ]
+    },
+    {
+      "id": "G09",
+      "title": "Browse and result usability beyond the current grid",
+      "priority": "After row identity/data fidelity/paging fixes",
+      "source": [
+        [
+          "src/renderer/dbm.js",
+          136
+        ],
+        [
+          "src/renderer/dbm.js",
+          963
+        ],
+        [
+          "src/renderer/dbm.js",
+          990
+        ]
+      ]
+    },
+    {
+      "id": "G10",
+      "title": "A repeatable seven-engine release matrix",
+      "priority": "Start with the first remediation wave",
+      "source": [
+        [
+          "package.json",
+          14
+        ],
+        [
+          "src/main/db.js",
+          30
+        ]
+      ]
+    }
+  ],
+  "testSummary": {
+    "total": 74,
+    "passed": 74,
+    "reproductions": 65,
+    "positiveControls": 8,
+    "measurements": 1
+  },
+  "evidenceFiles": [
+    "backend-characterization.cjs",
+    "backend-results.json",
+    "ui-characterization.cjs",
+    "ui-results.json",
+    "electron-sqlite-result.json"
+  ],
+  "focusedProbes": {
+    "electronSQLite": {
+      "node": "v24.15.0",
+      "electron": "42.3.0",
+      "abi": "146",
+      "sqlite": {
+        "version": "3.53.4"
+      },
+      "ok": true
+    },
+    "returning": {
+      "driverReader": true,
+      "runResult": {
+        "changes": 1,
+        "lastInsertRowid": 1
+      },
+      "persisted": [
+        {
+          "id": 1,
+          "v": "probe"
+        }
+      ]
+    },
+    "foreignKeys": [
+      {
+        "foreign_keys": 1
+      }
+    ],
+    "contrast": {
+      "foreground": "#857769",
+      "background": "#312d2c",
+      "ratio": 3.138149288931667,
+      "element": ".dbm-log-meta",
+      "font": "11.5px"
+    }
+  },
+  "officialDocs": [
+    "https://node-postgres.com/features/transactions",
+    "https://www.sqlite.org/lang_createtable.html",
+    "https://www.postgresql.org/docs/current/queries-with.html",
+    "https://node-postgres.com/apis/pool",
+    "https://www.electronjs.org/docs/latest/api/safe-storage",
+    "https://node-oracledb.readthedocs.io/en/latest/api_manual/pool.html",
+    "https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md",
+    "https://learn.microsoft.com/en-us/sql/t-sql/data-types/constants-transact-sql?view=sql-server-ver17",
+    "https://node-oracledb.readthedocs.io/en/latest/user_guide/lob_data.html",
+    "https://www.postgresql.org/docs/current/queries-limit.html",
+    "https://learn.microsoft.com/en-us/sql/t-sql/queries/table-value-constructor-transact-sql?view=sql-server-ver17",
+    "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+  ],
+  "report": {
+    "file": "ATOMNANO_DB_MANAGEMENT_AUDIT_2026-09-09.md",
+    "characters": 110409
+  },
+  "severityTotals": {
+    "P1": 22,
+    "P2": 29
+  },
+  "initialSourceFingerprints": [
+    {
+      "path": "src/main/db.js",
+      "lines": 1037,
+      "bytes": 71888,
+      "sha256": "5c4c916e4f23e2e8afc25faa4684e45c0a3f32b25a240eb0983e3b47abfa950b"
+    },
+    {
+      "path": "src/main/db-worker.js",
+      "lines": 31,
+      "bytes": 1167,
+      "sha256": "192a34705efd7ee68dc6a6710f593b76f42e5f2812a2b8cee8d48b5ad5229206"
+    },
+    {
+      "path": "src/main/db-io.js",
+      "lines": 299,
+      "bytes": 24204,
+      "sha256": "879f90c2d92842bd85bd475fe560acbf63847fb7bd4aca691a2ccdf52ef06351"
+    },
+    {
+      "path": "src/renderer/dbm.js",
+      "lines": 1550,
+      "bytes": 132898,
+      "sha256": "bb9289f5f6f527098da6864716f1bb206facaeae69e16cfe569f761b13b1f1d7"
+    },
+    {
+      "path": "src/main/main.js",
+      "lines": 1464,
+      "bytes": 96488,
+      "sha256": "279dd21ce41e082e2855effcb578b93b2b39c355a9fffc5695da2857704f5842"
+    },
+    {
+      "path": "src/main/preload.js",
+      "lines": 386,
+      "bytes": 22780,
+      "sha256": "07ceb60b968e23de9083f37df3cdfeb34e04decb0637d2c2844fa0a5bf5d5e65"
+    },
+    {
+      "path": "src/renderer/app.js",
+      "lines": 10468,
+      "bytes": 612639,
+      "sha256": "a75a43c7b6285d1de07cda71500647eae5da24a977cb9ad4a95c2d2a6e82cfc0"
+    },
+    {
+      "path": "src/renderer/styles.css",
+      "lines": 3258,
+      "bytes": 289797,
+      "sha256": "1048c4b5a68adcba21d8f35633972bc944c8d578aedc6e052bd94e099b0327ec"
+    },
+    {
+      "path": "src/renderer/index.html",
+      "lines": 85,
+      "bytes": 3384,
+      "sha256": "adf93dbe4ab7f59209f2ee9461ad036951d51ed661b3cca502c876ae2d2c7a76"
+    },
+    {
+      "path": "package.json",
+      "lines": 84,
+      "bytes": 3297,
+      "sha256": "efd673f474b6b412ec42c4044d82391e3cc557018a0eb047e3c65cf3a9447daa"
+    },
+    {
+      "path": "package-lock.json",
+      "lines": 7883,
+      "bytes": 281135,
+      "sha256": "08e6d0dafb5375c76acf3c87b73c777217b848d00353915ef0c7db592c542960"
+    },
+    {
+      "path": "electron-builder.yml",
+      "sha256": "858d3d21e65e680b85a3605c9cfadf02b18d4c4e4b4a30a4b4f0169ffdd6f3d6",
+      "lines": 52
+    }
+  ],
+  "concurrentChanges": [
+    {
+      "path": "src/main/main.js",
+      "oldSha": "279dd21ce41e082e2855effcb578b93b2b39c355a9fffc5695da2857704f5842",
+      "sha256": "0f9fe37725586e64a7fecc43c1a739006dd0e3b3d9559dc236caa2fbc2b35c23",
+      "lines": 1502,
+      "bytes": 100022,
+      "modified": "2026-09-09T17:34:15.155Z"
+    },
+    {
+      "path": "src/main/preload.js",
+      "oldSha": "07ceb60b968e23de9083f37df3cdfeb34e04decb0637d2c2844fa0a5bf5d5e65",
+      "sha256": "29a7470ef59f37acd8be861230a33c8512f855c0a7bda88a94b477602ea69174",
+      "lines": 411,
+      "bytes": 25605,
+      "modified": "2026-09-09T17:37:28.318Z"
+    },
+    {
+      "path": "src/renderer/styles.css",
+      "oldSha": "1048c4b5a68adcba21d8f35633972bc944c8d578aedc6e052bd94e099b0327ec",
+      "sha256": "3b9326bf333e9a6f9f7a2819eaceec41cbd57c067508a6f35b218c5620172944",
+      "lines": 3303,
+      "bytes": 294101,
+      "modified": "2026-09-09T17:37:49.728Z"
+    },
+    {
+      "path": "package.json",
+      "oldSha": "efd673f474b6b412ec42c4044d82391e3cc557018a0eb047e3c65cf3a9447daa",
+      "sha256": "ab4561f3d5fcccb71c454a74b68522801730f407a76097c111f9112a3ef458c5",
+      "lines": 86,
+      "bytes": 3442,
+      "modified": "2026-09-09T17:37:29.877Z"
+    }
+  ],
+  "finalRecheck": "DB handlers remain the same; generic IPC now preserves type/details/code. Preload DB wrappers shift five lines. Existing stylesheet prefix exactly matches the initial SHA256; appended rules target Git only. Added package scripts target audit/Git and do not add DB coverage. Four DB module files and app helper source retain their initial fingerprints."
+}

@@ -1,0 +1,52 @@
+{
+  "project": "E:\\Mac\\AtomNano",
+  "fixtureRoot": "C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-V6UvjK",
+  "checks": [
+    {
+      "id": "G34",
+      "title": "Large selected file list exceeds Windows process argument limit",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "selected": 440,
+        "argumentCharacters": 39929,
+        "result": {
+          "error": "spawn ENAMETOOLONG"
+        },
+        "stageAllSucceeded": true
+      }
+    },
+    {
+      "id": "G35",
+      "title": "Discard deletes staged-new file after reset fails with index lock",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "ok": true
+        },
+        "fileExists": false,
+        "index": "added.txt\nbase.txt",
+        "status": "AD added.txt"
+      }
+    },
+    {
+      "id": "G36",
+      "title": "Remote tag deletion uses an ambiguous unqualified ref",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "error": "error: dst refspec v1 matches more than one error: failed to push some refs to 'C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-V6UvjK\\tag-remote.git'"
+        },
+        "remoteRefs": "6b237cad8b9670f1a518d4d5ffb6aa0a8a8e71d7 refs/heads/v1\n6b237cad8b9670f1a518d4d5ffb6aa0a8a8e71d7 refs/tags/v1",
+        "localTagExists": false
+      }
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "matched": 3,
+    "unexpected": []
+  }
+}

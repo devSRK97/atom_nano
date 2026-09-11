@@ -1,0 +1,443 @@
+{
+  "date": "2026-09-10",
+  "project": "E:\\Mac\\AtomNano",
+  "liveProvidersContacted": false,
+  "savedProfilesRead": false,
+  "productionChanged": false,
+  "total": 40,
+  "passed": 40,
+  "failed": 0,
+  "counts": {
+    "control": 8,
+    "reproduction": 31,
+    "source-contract": 1
+  },
+  "results": [
+    {
+      "id": "C01",
+      "kind": "control",
+      "name": "Claude normal continuation submits only the new prompt with native resume",
+      "pass": true,
+      "evidence": {
+        "newPrompt": "MIDDLE FOLLOWUP",
+        "resume": "native-claude"
+      }
+    },
+    {
+      "id": "C02",
+      "kind": "control",
+      "name": "Codex normal continuation uses native resume without history reinjection",
+      "pass": true,
+      "evidence": {
+        "calls": [
+          {
+            "prompt": "FIRST",
+            "resume": null,
+            "id": "native-openai-1"
+          },
+          {
+            "prompt": "MIDDLE FOLLOWUP",
+            "resume": "native-openai-1",
+            "id": "native-openai-1"
+          }
+        ],
+        "injections": 0
+      }
+    },
+    {
+      "id": "C03",
+      "kind": "control",
+      "name": "A provider sync span includes only its missing earlier entries",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C04",
+      "kind": "control",
+      "name": "Canonical UI pagination does not determine the next prompt history",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C05",
+      "kind": "reproduction",
+      "name": "Synthesize copies the entire record as one user message",
+      "pass": true,
+      "evidence": {
+        "sourceChars": 1200000,
+        "carriedChars": 1200199,
+        "summaryCalls": 0
+      }
+    },
+    {
+      "id": "C06",
+      "kind": "reproduction",
+      "name": "Synthesize drops 1M, permission mode, selected skills and summary provenance",
+      "pass": true,
+      "evidence": {
+        "oneM": false,
+        "permissionMode": "default",
+        "selectedSkills": [],
+        "summaryCount": 0
+      }
+    },
+    {
+      "id": "C07",
+      "kind": "reproduction",
+      "name": "One oversized synthesized entry bypasses the summarizer chunk budget",
+      "pass": true,
+      "evidence": {
+        "transferBudgetChars": 399980,
+        "summaryRequestChars": 1200251,
+        "summaryCalls": 1,
+        "tailEntries": 0
+      }
+    },
+    {
+      "id": "C08",
+      "kind": "reproduction",
+      "name": "Final summary transfer is not checked against its budget",
+      "pass": true,
+      "evidence": {
+        "budget": 40000,
+        "finalChars": 106558
+      }
+    },
+    {
+      "id": "C09",
+      "kind": "reproduction",
+      "name": "An already oversized current prompt still receives a positive history allowance",
+      "pass": true,
+      "evidence": {
+        "promptChars": 3000000,
+        "contextTokens": 200000,
+        "historyBudgetChars": 20000
+      }
+    },
+    {
+      "id": "C10",
+      "kind": "reproduction",
+      "name": "A large current user message is submitted with no preflight",
+      "pass": true,
+      "evidence": {
+        "sentChars": 1200000
+      }
+    },
+    {
+      "id": "C11",
+      "kind": "reproduction",
+      "name": "Transfer allowance ignores occupancy of a resumed thread",
+      "pass": true,
+      "evidence": {
+        "budgetBefore": 399900,
+        "budgetWithNearlyFullThread": 399900
+      }
+    },
+    {
+      "id": "C12",
+      "kind": "reproduction",
+      "name": "anthropic derives prompt boundary after reviewer cards and sends current prompt twice",
+      "pass": true,
+      "evidence": {
+        "occurrencesIncludingCurrentInput": 2
+      }
+    },
+    {
+      "id": "C13",
+      "kind": "reproduction",
+      "name": "openai derives prompt boundary after reviewer cards and sends current prompt twice",
+      "pass": true,
+      "evidence": {
+        "occurrencesIncludingCurrentInput": 2
+      }
+    },
+    {
+      "id": "C14",
+      "kind": "reproduction",
+      "name": "Retry replays its original user prompt and partial output into the resumed thread",
+      "pass": true,
+      "evidence": {
+        "occurrences": 2,
+        "resumed": "native-claude"
+      }
+    },
+    {
+      "id": "C15",
+      "kind": "reproduction",
+      "name": "Next prompt after a stopped turn reinjects accepted history into Codex",
+      "pass": true,
+      "evidence": {
+        "injectedItems": 2
+      }
+    },
+    {
+      "id": "C16",
+      "kind": "reproduction",
+      "name": "Successful Codex history injection is repeated after failure before completion",
+      "pass": true,
+      "evidence": {
+        "injections": 2,
+        "ids": [
+          "native-openai-1",
+          "native-openai-1"
+        ]
+      }
+    },
+    {
+      "id": "C17",
+      "kind": "control",
+      "name": "Unchanged summary span is reused without a model call",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C18",
+      "kind": "reproduction",
+      "name": "Summary cache has no content revision and survives a source edit",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C19",
+      "kind": "reproduction",
+      "name": "A summary cache hit still reads and serializes the raw history from index zero",
+      "pass": true,
+      "evidence": {
+        "ranges": [
+          {
+            "id": "s-21",
+            "start": 0,
+            "end": 20,
+            "count": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "C20",
+      "kind": "reproduction",
+      "name": "A partially overlapping transfer cannot reuse the earlier checkpoint",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C21",
+      "kind": "reproduction",
+      "name": "A large newest entry leaves no exact recent tail",
+      "pass": true,
+      "evidence": {
+        "headCount": 2,
+        "count": 2,
+        "exactTail": 0
+      }
+    },
+    {
+      "id": "C22",
+      "kind": "reproduction",
+      "name": "Tool head clipping removes the outcome and supplies no immutable archive locator",
+      "pass": true,
+      "evidence": {
+        "originalChars": 2423,
+        "shortenedChars": 1639
+      }
+    },
+    {
+      "id": "C23",
+      "kind": "reproduction",
+      "name": "Deleting a message shifts absolute cursors and can skip a newer unsent entry",
+      "pass": true,
+      "evidence": {
+        "syncedIndex": 2,
+        "beforePromptIndex": 2
+      }
+    },
+    {
+      "id": "C24",
+      "kind": "reproduction",
+      "name": "Deleting a message does not invalidate stored summary coverage",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C25",
+      "kind": "reproduction",
+      "name": "Codex accounting adds cache categories on top of total input",
+      "pass": true,
+      "evidence": {
+        "providerInput": 1000,
+        "cachedInput": 800,
+        "cacheWrite": 100,
+        "storedInput": 1900,
+        "contract": "OpenAI input includes cached/write subsets; confirm pinned transport against live runtime."
+      }
+    },
+    {
+      "id": "C26",
+      "kind": "reproduction",
+      "name": "Codex context usage endpoint returns null even with a live runner",
+      "pass": true,
+      "evidence": {
+        "idle": null
+      }
+    },
+    {
+      "id": "C27",
+      "kind": "control",
+      "name": "Claude control-response camelCase fields match renderer expectations",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C28",
+      "kind": "reproduction",
+      "name": "Polling context usage selects SDK full-count default rather than summary detail",
+      "pass": true,
+      "evidence": {
+        "argumentOmitted": true,
+        "sdkDefault": "full",
+        "uiIntervalMs": 3000
+      }
+    },
+    {
+      "id": "C29",
+      "kind": "reproduction",
+      "name": "Claude compaction boundary is discarded instead of recorded",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C30",
+      "kind": "source-contract",
+      "name": "No native Codex compact request or history lookup tool is registered",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C31",
+      "kind": "reproduction",
+      "name": "Selected skill body is appended again on an already synced native thread",
+      "pass": true,
+      "evidence": {
+        "appendixCharsPerTurn": 18071
+      }
+    },
+    {
+      "id": "C32",
+      "kind": "reproduction",
+      "name": "Claude lost-thread recovery does not handle a too-long error on its second attempt",
+      "pass": true,
+      "evidence": {
+        "attempts": 2,
+        "status": "error",
+        "summaries": 0
+      }
+    },
+    {
+      "id": "C33",
+      "kind": "reproduction",
+      "name": "Claude transfer failure occurs before cleanup and leaves a running slot",
+      "pass": true,
+      "evidence": {
+        "error": "prompt is too long in summarizer",
+        "runningSlot": true,
+        "status": "running"
+      }
+    },
+    {
+      "id": "C34",
+      "kind": "reproduction",
+      "name": "Too-long recovery omits already emitted current-turn actions from the new context",
+      "pass": true,
+      "evidence": {
+        "retryPromptChars": 446,
+        "currentAttemptOutputCarried": false
+      }
+    },
+    {
+      "id": "C35",
+      "kind": "reproduction",
+      "name": "Global FIFO summary retention can evict the only root checkpoint",
+      "pass": true,
+      "evidence": {
+        "summariesRetained": 60
+      }
+    },
+    {
+      "id": "C36",
+      "kind": "reproduction",
+      "name": "An already-aborted parent still starts Claude headless summarization",
+      "pass": true,
+      "evidence": {
+        "calls": 1,
+        "childAborted": false
+      }
+    },
+    {
+      "id": "C37",
+      "kind": "control",
+      "name": "Successful A-B-A provider switching resumes A and transfers only B's missed span",
+      "pass": true,
+      "evidence": {}
+    },
+    {
+      "id": "C38",
+      "kind": "control",
+      "name": "An advancing summary with the same start uses cached state plus new entries",
+      "pass": true,
+      "evidence": {
+        "newSummaryRequests": 4
+      }
+    },
+    {
+      "id": "C39",
+      "kind": "reproduction",
+      "name": "Codex too-long recovery drops completed work from the failed current turn",
+      "pass": true,
+      "evidence": {
+        "attempts": 2,
+        "priorAttemptOutputCarried": false
+      }
+    },
+    {
+      "id": "C40",
+      "kind": "reproduction",
+      "name": "One old-history page reads and parses the entire archive",
+      "pass": true,
+      "evidence": {
+        "requestedEntries": 1,
+        "parsedEntries": 5000,
+        "fullArchiveChars": 1293890
+      }
+    }
+  ],
+  "sourceFingerprints": [
+    {
+      "path": "src/main/history.js",
+      "sha256": "d72a605cd4e2bb2d0b39a1d72b578fb67965aedc6baa538fe60dea66b8628ed8"
+    },
+    {
+      "path": "src/main/claude.js",
+      "sha256": "628bd135cadfd32cd307f6bff5c01aa701fdb3eb1947e5f76d3b3c7122849744"
+    },
+    {
+      "path": "src/main/store.js",
+      "sha256": "cf3dd18e593c27d0861f79a19e1830e86cc328ed224c126ed0516c1495dc93ad"
+    },
+    {
+      "path": "src/main/main.js",
+      "sha256": "973b45ff63363495d72e8208749a7b77155c7527ac117e3af718362421793810"
+    },
+    {
+      "path": "src/main/codex.js",
+      "sha256": "13cdfaef1f50cf747c588d4de3bd15adf0c58c17c194eddb44e516eef9744fb4"
+    },
+    {
+      "path": "src/main/codex-appserver.js",
+      "sha256": "8758b2b332454814f31178f5753ac82c9cd70560baa696785de96765f0d796cb"
+    },
+    {
+      "path": "src/renderer/app.js",
+      "sha256": "49adafc9c18e61f6c6fa3b6656ceaae78f7b843d69f8f90517d688344ca99ed1"
+    }
+  ]
+}

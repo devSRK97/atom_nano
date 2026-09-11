@@ -1,0 +1,307 @@
+{
+  "project": "E:\\Mac\\AtomNano",
+  "fixtureRoot": "C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-BJxoDA",
+  "git": "git version 2.52.0.windows.1",
+  "node": "v24.14.1",
+  "checks": [
+    {
+      "id": "G01",
+      "title": "Porcelain paths are quoted and unusable for staging",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at probe (E:\\Mac\\AtomNano\\src\\main\\git.js:278:19)\n    at Object.status (E:\\Mac\\AtomNano\\src\\main\\git.js:319:19)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:49:22\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:47:8)\n    at Object.<anonymous> (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:229:1)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)"
+    },
+    {
+      "id": "G02",
+      "title": "Unborn status reports branch No",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at probe (E:\\Mac\\AtomNano\\src\\main\\git.js:278:19)\n    at Object.status (E:\\Mac\\AtomNano\\src\\main\\git.js:319:19)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:54:77\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:53:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G03",
+      "title": "Unstage-all fails before first commit; per-file unstage works",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:58:66\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G04",
+      "title": "Discard on unborn added file unstages and deletes it",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:63:66\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G05",
+      "title": "Clean tracked file becomes all-added diff",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at fileState (E:\\Mac\\AtomNano\\src\\main\\git.js:620:5)\n    at Object.fileDiff (E:\\Mac\\AtomNano\\src\\main\\git.js:651:20)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:69:48\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:68:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G06",
+      "title": "Empty staged diff shows entire unstaged file",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at fileState (E:\\Mac\\AtomNano\\src\\main\\git.js:620:5)\n    at Object.diff (E:\\Mac\\AtomNano\\src\\main\\git.js:636:20)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:73:82\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:72:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G07",
+      "title": "Selected commit preserves unrelated staged change",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:77:82\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G08",
+      "title": "Amend sequence includes unselected staged file",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:83:81\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G09",
+      "title": "Working-tree preview omits staged content that selected commit includes",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:88:86\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G10",
+      "title": "Unversion followed by selected-file commit tracks file again",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:1004:54\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:94:29\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G11",
+      "title": "Committing rename destination leaves old path in HEAD",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at probe (E:\\Mac\\AtomNano\\src\\main\\git.js:278:19)\n    at Object.status (E:\\Mac\\AtomNano\\src\\main\\git.js:319:19)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:99:89\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:98:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G12",
+      "title": "Discard of renamed path fails to restore original path",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "error": "setTimeout is not defined"
+        },
+        "originalExists": false,
+        "destinationExists": true,
+        "status": "R  base.txt -> renamed.txt"
+      }
+    },
+    {
+      "id": "G13",
+      "title": "Pathspec brackets stage another file as well",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:109:91\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G14",
+      "title": "Create-branch input -D deletes the start-point branch",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "result": {
+          "error": "“-D” is not a valid branch name (it looks like a command option)."
+        },
+        "remaining": "main\nvictim"
+      }
+    },
+    {
+      "id": "G15",
+      "title": "Soft reset with ref --hard discards working changes",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "result": {
+          "error": "“--hard” is not a valid revision (it looks like a command option)."
+        },
+        "file": "unsaved\n"
+      }
+    },
+    {
+      "id": "G16",
+      "title": "Tag creation input -d deletes existing tag",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "result": {
+          "error": "“-d” is not a valid tag name (it looks like a command option)."
+        },
+        "tags": "victim"
+      }
+    },
+    {
+      "id": "G17",
+      "title": "Push defaults origin despite configured upstream name",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at assertRefName (E:\\Mac\\AtomNano\\src\\main\\git.js:220:19)\n    at pushPlan (E:\\Mac\\AtomNano\\src\\main\\git.js:552:9)\n    at Object.pushBranch (E:\\Mac\\AtomNano\\src\\main\\git.js:576:24)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:129:13\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:125:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G18",
+      "title": "Merge into a remote ref leaves merge commit detached",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at refKind (E:\\Mac\\AtomNano\\src\\main\\git.js:239:21)\n    at Object.mergeBranches (E:\\Mac\\AtomNano\\src\\main\\git.js:811:20)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:136:85\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:133:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G19",
+      "title": "Merge commit info and file diff omit first-parent change",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at resolveRev (E:\\Mac\\AtomNano\\src\\main\\git.js:230:19)\n    at Object.commitInfo (E:\\Mac\\AtomNano\\src\\main\\git.js:1154:21)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:143:24\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:140:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G20",
+      "title": "Commit ZIP duplicates COMMIT.txt metadata name",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at resolveRev (E:\\Mac\\AtomNano\\src\\main\\git.js:230:19)\n    at commitInfo (E:\\Mac\\AtomNano\\src\\main\\git.js:1154:21)\n    at Object.commitZip (E:\\Mac\\AtomNano\\src\\main\\git.js:1398:22)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:149:13\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:147:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G21",
+      "title": "Space-containing filesystem remote is missing from list",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at Object.remotes (E:\\Mac\\AtomNano\\src\\main\\git.js:1350:19)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:154:26\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:152:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G22",
+      "title": "Remote checkout silently uses unrelated same-named local branch",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at assertRefName (E:\\Mac\\AtomNano\\src\\main\\git.js:220:19)\n    at Object.checkoutRemote (E:\\Mac\\AtomNano\\src\\main\\git.js:770:9)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:159:119\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:157:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G23",
+      "title": "Accept deleted side of modify/delete conflict fails",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at refKind (E:\\Mac\\AtomNano\\src\\main\\git.js:239:21)\n    at Object.merge (E:\\Mac\\AtomNano\\src\\main\\git.js:794:19)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:165:25\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:162:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G24",
+      "title": "Continue without operation is rejected by native empty-message check",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at runPaths (E:\\Mac\\AtomNano\\src\\main\\git.js:270:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:390:21\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:169:64\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G25",
+      "title": "Abort bisect routes to merge abort",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "op": "",
+        "error": "No merge, rebase, cherry-pick, revert or bisect is in progress."
+      }
+    },
+    {
+      "id": "G26",
+      "title": "Stale stash index drops a different stash after new stash",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:1247:82\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:179:62\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:178:2)"
+    },
+    {
+      "id": "G27",
+      "title": "Full archive preserves binary bytes",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at resolveRev (E:\\Mac\\AtomNano\\src\\main\\git.js:230:19)\n    at Object.archiveZip (E:\\Mac\\AtomNano\\src\\main\\git.js:1384:21)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:186:13\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:184:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G28",
+      "title": "Native checkout protects conflicting uncommitted changes",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at Object.currentBranch (E:\\Mac\\AtomNano\\src\\main\\git.js:378:19)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:192:146\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:189:2)"
+    },
+    {
+      "id": "G29",
+      "title": "Pull conflict is a resolved result with ok false",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at currentBranch (E:\\Mac\\AtomNano\\src\\main\\git.js:378:19)\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:514:26\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)\n    at withLock (E:\\Mac\\AtomNano\\src\\main\\git.js:206:32)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:199:76\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:14)"
+    },
+    {
+      "id": "G30",
+      "title": "Tag remote failure leaves local tag already deleted",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "result": {
+          "error": "setTimeout is not defined"
+        },
+        "localTagStillExists": true
+      }
+    },
+    {
+      "id": "G31",
+      "title": "Commit ZIP silently skips quoted Unicode path",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at resolveRev (E:\\Mac\\AtomNano\\src\\main\\git.js:230:19)\n    at commitInfo (E:\\Mac\\AtomNano\\src\\main\\git.js:1154:21)\n    at Object.commitZip (E:\\Mac\\AtomNano\\src\\main\\git.js:1398:22)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:208:26\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:206:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G32",
+      "title": "Historical binary file decodes into replacement characters",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at resolveRev (E:\\Mac\\AtomNano\\src\\main\\git.js:230:19)\n    at Object.fileAt (E:\\Mac\\AtomNano\\src\\main\\git.js:1194:21)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:212:99\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:211:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    {
+      "id": "G33",
+      "title": "Rebase continue can return another conflict",
+      "kind": "positive",
+      "matched": false,
+      "harnessError": "ReferenceError: setTimeout is not defined\n    at E:\\Mac\\AtomNano\\src\\main\\git.js:157:19\n    at new Promise (<anonymous>)\n    at run (E:\\Mac\\AtomNano\\src\\main\\git.js:135:10)\n    at refKind (E:\\Mac\\AtomNano\\src\\main\\git.js:239:21)\n    at Object.rebase (E:\\Mac\\AtomNano\\src\\main\\git.js:829:20)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:218:25\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:42:20)\n    at main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\backend-characterization.cjs:215:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    }
+  ],
+  "summary": {
+    "total": 33,
+    "matched": 1,
+    "unexpected": [
+      "G01",
+      "G02",
+      "G03",
+      "G04",
+      "G05",
+      "G06",
+      "G07",
+      "G08",
+      "G09",
+      "G10",
+      "G11",
+      "G13",
+      "G14",
+      "G15",
+      "G16",
+      "G17",
+      "G18",
+      "G19",
+      "G20",
+      "G21",
+      "G22",
+      "G23",
+      "G24",
+      "G25",
+      "G26",
+      "G27",
+      "G28",
+      "G29",
+      "G30",
+      "G31",
+      "G32",
+      "G33"
+    ]
+  }
+}

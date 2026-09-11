@@ -1,0 +1,661 @@
+{
+  "at": "2026-09-09T17:16:58.380Z",
+  "scope": "Original modules, fake connection store and dialogs; actual in-memory better-sqlite3; other driver fault injection; no remote connections.",
+  "total": 53,
+  "passed": 53,
+  "failed": 0,
+  "results": [
+    {
+      "id": "DB-B01",
+      "title": "Save reports success after disk failure",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "reportedId": "audit",
+        "persisted": 0
+      }
+    },
+    {
+      "id": "DB-B02",
+      "title": "Corrupt store is replaced by a one-entry store",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "before": "invalid JSON",
+        "afterEntries": 1
+      }
+    },
+    {
+      "id": "DB-B03",
+      "title": "Unavailable OS encryption falls back to plaintext",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "plaintextWritten": true
+      }
+    },
+    {
+      "id": "DB-B04",
+      "title": "A real password beginning enc: is lost",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "savedNonempty": true,
+        "loadedEmpty": true
+      }
+    },
+    {
+      "id": "DB-B05",
+      "title": "Decrypt failure followed by unrelated save destroys stored secret",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "unrelatedSaveErasedCiphertext": true
+      }
+    },
+    {
+      "id": "DB-B06",
+      "title": "Connection list returns decrypted synthetic credentials",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "passwordReturned": true,
+        "uriReturned": true
+      }
+    },
+    {
+      "id": "DB-B07",
+      "title": "Enabled TLS disables certificate validation",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "mysqlSSL": {
+          "rejectUnauthorized": false
+        }
+      }
+    },
+    {
+      "id": "DB-B08",
+      "title": "Concurrent cold calls create orphan pools",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "created": 2,
+        "closed": 1
+      }
+    },
+    {
+      "id": "DB-B09",
+      "title": "Disconnect during open allows late reconnection",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "cachedAfterDisconnect": true
+      }
+    },
+    {
+      "id": "DB-B10",
+      "title": "Failed pool verification does not close the pool",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "failedPoolClosed": false
+      }
+    },
+    {
+      "id": "DB-B11",
+      "title": "PostgreSQL idle error has no application listener",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "errorListeners": 0,
+        "unhandledEventThrows": true
+      }
+    },
+    {
+      "id": "DB-B12",
+      "title": "Oracle Test calls nonexistent Pool.execute",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "installedPoolExecute": "undefined",
+        "result": {
+          "ok": false,
+          "detail": "e.handle.execute is not a function"
+        }
+      }
+    },
+    {
+      "id": "DB-B13",
+      "title": "A transport error replays a possibly committed write",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "mutations": 2,
+        "reportedAffected": 1
+      }
+    },
+    {
+      "id": "DB-B14",
+      "title": "PostgreSQL statements are independently sent through pool.query",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "connectCalls": 1,
+        "poolQueries": [
+          "BEGIN",
+          "INSERT INTO t VALUES (1)",
+          "ROLLBACK"
+        ],
+        "scope": "Recording driver verifies routing; official pg contract defines transaction risk."
+      }
+    },
+    {
+      "id": "DB-B15",
+      "title": "Policies allow leading comments, writable CTEs and EXEC DDL",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "bypassed": [
+          "/* note */ DELETE FROM t",
+          "WITH removed AS (DELETE FROM t RETURNING *) SELECT * FROM removed LIMIT 1",
+          "EXEC sp_rename 't.a', 'b', 'COLUMN'"
+        ],
+        "directDeleteBlocked": true,
+        "protectedTableWritableCTEAllowed": true
+      }
+    },
+    {
+      "id": "DB-B16",
+      "title": "Mongo query writes bypass enabled policies",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "deleteManyCalled": true
+      }
+    },
+    {
+      "id": "DB-B17",
+      "title": "Mongo field changes bypass write and DDL policy",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "directMutations": 2
+      }
+    },
+    {
+      "id": "DB-B18",
+      "title": "Mongo row update ignores protected collection name",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "protectedCollectionWritten": true
+      }
+    },
+    {
+      "id": "DB-B19",
+      "title": "Nullable SQLite primary key edits multiple rows",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "displayedKey": null,
+        "affected": 2
+      }
+    },
+    {
+      "id": "DB-B20",
+      "title": "Partial composite key is accepted as a safe row identity",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "affected": 2
+      }
+    },
+    {
+      "id": "DB-B21",
+      "title": "Unsafe SQLite integer round-trip edits the wrong row",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "displayedIds": [
+          9007199254740992,
+          9007199254740992
+        ],
+        "affected": 1,
+        "persisted": [
+          {
+            "id": "9007199254740992",
+            "v": "edited-second"
+          },
+          {
+            "id": "9007199254740993",
+            "v": "b"
+          }
+        ]
+      }
+    },
+    {
+      "id": "DB-B22",
+      "title": "Duplicate result names discard data",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "columns": [
+          "x"
+        ],
+        "rows": [
+          [
+            2
+          ]
+        ],
+        "rowCount": 1,
+        "truncated": false,
+        "ms": 0
+      }
+    },
+    {
+      "id": "DB-B23",
+      "title": "Binary data becomes a lossy display marker",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "cell": "<binary 65 bytes>",
+        "exportInputIsDisplayString": true
+      }
+    },
+    {
+      "id": "DB-B24",
+      "title": "Worker changes Buffer representation across the 2000-row threshold",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "small": "0x0102",
+        "worker": "{\"0\":1,\"1\":2}"
+      }
+    },
+    {
+      "id": "DB-B25",
+      "title": "SQLite CTE writes and non-row PRAGMAs are misclassified",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "errors": [
+          "This statement does not return data. Use run() instead",
+          "This statement does not return data. Use run() instead"
+        ]
+      }
+    },
+    {
+      "id": "DB-B26",
+      "title": "An implicit SELECT cap is presented as a complete result",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "columns": [
+          "v"
+        ],
+        "rows": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "rowCount": 2,
+        "truncated": false,
+        "ms": 0
+      }
+    },
+    {
+      "id": "DB-B27",
+      "title": "Regex cap appends LIMIT to a PostgreSQL UPDATE CTE",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "input": "WITH x AS (SELECT 1) UPDATE t SET v=1",
+        "output": "WITH x AS (SELECT 1) UPDATE t SET v=1 LIMIT 200"
+      }
+    },
+    {
+      "id": "DB-B28",
+      "title": "ObjectId-looking Mongo string key is coerced to another BSON type",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "originalType": "string",
+        "sentType": "ObjectId"
+      }
+    },
+    {
+      "id": "DB-B29",
+      "title": "Mongo text coercion changes string and numeric precision",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "stringTrueBecomes": "boolean",
+        "bigInteger": 9007199254740992
+      }
+    },
+    {
+      "id": "DB-B30",
+      "title": "Redis JSON-quoted keys are parsed into the wrong arguments",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "command": "DEL \"a\\\" b\"",
+        "args": [
+          "DEL",
+          "a\\",
+          "b\""
+        ]
+      }
+    },
+    {
+      "id": "DB-B31",
+      "title": "Qualified/trimmed identifiers change real names",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "singleTableWithDot": "\"invoice\".\"2026\"",
+        "paddedIdentifier": "\"padded\""
+      }
+    },
+    {
+      "id": "DB-B32",
+      "title": "MySQL column reorder cannot reproduce generated expression",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "definition": "`computed` int NULL DEFAULT NULL VIRTUAL GENERATED"
+      }
+    },
+    {
+      "id": "DB-B33",
+      "title": "Suggested quoted-empty default stores quote characters",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "expected": "",
+        "actual": "''"
+      }
+    },
+    {
+      "id": "DB-B34",
+      "title": "Empty-first import destroys old rows when new rows fail",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "import": {
+          "ok": false,
+          "inserted": 0,
+          "total": 1,
+          "errors": [
+            {
+              "at": 1,
+              "rows": 1,
+              "error": "CHECK constraint failed: id>0"
+            }
+          ],
+          "ms": 0
+        },
+        "remainingRows": 0
+      }
+    },
+    {
+      "id": "DB-B35",
+      "title": "Import discard does not cancel the running import",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "executedBatches": 2,
+        "insertedAfterDiscard": 2
+      }
+    },
+    {
+      "id": "DB-B36",
+      "title": "An import token can run twice concurrently",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "executions": 2,
+        "bothReportedSuccess": true
+      }
+    },
+    {
+      "id": "DB-B37",
+      "title": "An expired token is accepted by importRun",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "expiredAccepted": true
+      }
+    },
+    {
+      "id": "DB-B38",
+      "title": "Oracle partial batch commits are absent from imported count",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "committedRows": 1,
+        "reportedInserted": 0,
+        "errors": [
+          {
+            "at": 1,
+            "rows": 2,
+            "error": "synthetic constraint"
+          }
+        ]
+      }
+    },
+    {
+      "id": "DB-B39",
+      "title": "SQL Server importer generates unsupported 2000-row VALUES",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "tuples": 2000,
+        "sqlServerDocumentedMaximum": 1000
+      }
+    },
+    {
+      "id": "DB-B40",
+      "title": "Mongo export loses all headers on an empty final page",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "exportedRows": 5000,
+        "firstRecord": {},
+        "pageCalls": 2
+      }
+    },
+    {
+      "id": "DB-B41",
+      "title": "Mongo export labels earlier rows with the last page schema",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "expectedFirst": {
+          "a": "A",
+          "b": "B"
+        },
+        "actualFirst": {
+          "b": "A",
+          "c": "B"
+        }
+      }
+    },
+    {
+      "id": "DB-B42",
+      "title": "Export ALL silently stops at two million rows",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "pages": 400,
+        "reported": {
+          "ok": true,
+          "path": "C:\\AUDIT_ONLY\\export.dat",
+          "rows": 2000000,
+          "format": "csv"
+        },
+        "hasTruncationFlag": false
+      }
+    },
+    {
+      "id": "DB-B43",
+      "title": "SQL export serializes binary display marker as text",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "sql": "-- 1 row(s) from t\nINSERT INTO \"t\" (\"blob\") VALUES\n  ('<binary 65 bytes>');\n"
+      }
+    },
+    {
+      "id": "DB-B44",
+      "title": "XLSX export silently truncates long cell text",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "inputLength": 40000,
+        "readBackLength": 32767
+      }
+    },
+    {
+      "id": "DB-B45",
+      "title": "XLSX 1904 date system is ignored",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "expected": "1904-01-02",
+        "actual": "1899-12-31"
+      }
+    },
+    {
+      "id": "DB-B46",
+      "title": "CSV parser drops a quoted empty single-column row",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "rows": [
+          [
+            "v"
+          ]
+        ],
+        "delim": ","
+      }
+    },
+    {
+      "id": "DB-B47",
+      "title": "SQL import splitting breaks procedural and comment-separated SQL",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "comment": [
+          "SELECT1"
+        ],
+        "postgresBlock": [
+          "DO $$ BEGIN PERFORM 1",
+          "PERFORM 2",
+          "END $$"
+        ]
+      }
+    },
+    {
+      "id": "DB-B48",
+      "title": "SQL import drops executable MySQL version comments",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "parsedStatements": [
+          "SELECT 1"
+        ]
+      }
+    },
+    {
+      "id": "DB-B49",
+      "title": "Oracle query applies an unsolicited parallel hint and autocommit",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "sql": "SELECT /*+ PARALLEL(AUTO) */ 1 FROM dual FETCH FIRST 200 ROWS ONLY",
+        "opts": {
+          "outFormat": 4002,
+          "autoCommit": true
+        }
+      }
+    },
+    {
+      "id": "DB-B50",
+      "title": "Positive: identifier quotes prevent delimiter breakout",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": {
+        "quoted": "\"a\"\"b\""
+      }
+    },
+    {
+      "id": "DB-B51",
+      "title": "Positive: SQLite primary-key edit updates the intended single row",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": {
+        "rows": [
+          [
+            1,
+            "a"
+          ],
+          [
+            2,
+            "ok"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "DB-B52",
+      "title": "Positive: empty SQL result preserves its column headers",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": {
+        "columns": [
+          "value"
+        ],
+        "rows": [],
+        "rowCount": 0,
+        "truncated": false,
+        "ms": 0
+      }
+    },
+    {
+      "id": "DB-B53",
+      "title": "Positive: simple CSV/XLSX round trips preserve typed basic values",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": {
+        "xlsx": [
+          [
+            "n",
+            "b",
+            "s",
+            "nil"
+          ],
+          [
+            42,
+            true,
+            "hello"
+          ]
+        ],
+        "csv": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "quoted, comma",
+            "double \"quote\""
+          ]
+        ]
+      }
+    }
+  ]
+}

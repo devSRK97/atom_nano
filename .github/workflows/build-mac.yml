@@ -1,0 +1,61 @@
+# Build the macOS app (unsigned dev build) on GitHub's macOS runner.
+# Triggered from Windows by mac/build-mac.ps1 (gh workflow run) or by hand from the Actions tab.
+# Artifacts: AtomNano-<version>-mac-<arch>.dmg + .zip
+name: build-mac
+
+on:
+  workflow_dispatch:
+    inputs:
+      arch:
+        description: "Mac architecture (arm64 = Apple Silicon; x64 needs an Intel runner)"
+        type: choice
+        default: arm64
+        options: [arm64, x64]
+
+jobs:
+  build:
+    # Apple Silicon runners are the free default. For x64 an Intel runner label is chosen; if your
+    # plan has none, build --x64 on an arm64 runner instead (mac/README.md explains the trade-off).
+    runs-on: ${{ inputs.arch == 'x64' && 'macos-15-intel' || 'macos-latest' }}
+    timeout-minutes: 40
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"   # unsigned: never look for a certificate
+      ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Cache Electron downloads
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: electron-${{ runner.os }}-${{ inputs.arch }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies (rebuilds node-pty + better-sqlite3 for Electron)
+        run: npm ci
+
+      - name: Generate icons and bundles
+        run: |
+          npm run icon
+          npm run build:cm
+          npm run build:term
+
+      - name: Build DMG + zip
+        run: npx electron-builder --mac dmg zip --${{ inputs.arch }} --publish never
+
+      - name: List artifacts
+        run: ls -la dist/*.dmg dist/*.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AtomNano-mac-${{ inputs.arch }}
+          path: |
+            dist/*.dmg
+            dist/*.zip
+          if-no-files-found: error
+          retention-days: 14

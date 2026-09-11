@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="amber">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AtomNano</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Terminal emulator (built by `npm run build:term`). Both files are optional:
+       if absent, the integrated terminal falls back to its legacy line pane. -->
+  <link rel="stylesheet" href="./vendor/xterm.bundle.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Title bar -->
+    <header id="titlebar">
+      <div class="tb-left">
+        <span id="brandMark" class="brand-mark"></span>
+        <span class="brand-name">Atom<span class="brand-accent">Nano</span></span>
+        <div id="tbActions" class="tb-actions"></div>
+      </div>
+      <div class="tb-drag"></div>
+      <div class="tb-right">
+        <button class="win-btn" id="winMin" title="Minimize"></button>
+        <button class="win-btn" id="winMax" title="Maximize"></button>
+        <button class="win-btn win-close" id="winClose" title="Close"></button>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div id="body">
+      <aside id="sidebar">
+        <div id="folderBar"></div>
+        <div id="fileTree" class="file-tree"></div>
+        <div id="sidebarFooter"></div>
+      </aside>
+
+      <div id="sidebarResizer" class="resizer"></div>
+
+      <section id="editorPane" class="hidden">
+        <div id="editorTabs" class="editor-tabs"></div>
+        <div id="editorBreadcrumbs" class="editor-breadcrumbs hidden"></div>
+        <div id="editorBody" class="editor-body"></div>
+        <div id="editorStatus" class="editor-status"></div>
+      </section>
+
+      <div id="editorResizer" class="resizer hidden"></div>
+
+      <main id="main">
+        <div id="chatHeader" class="chat-header">
+          <div id="tabs" class="cht-tabs"></div>
+          <button id="tabOverflow" class="cht-overflow hidden" title="Hidden sessions"></button>
+          <div class="cht-actions">
+            <div id="headerProvider" class="cht-provider"></div>
+            <button id="chatSearchBtn" class="cht-act" title="Find in conversation (Ctrl+F)"></button>
+            <button id="newTab" class="cht-act" title="New session (Ctrl+T)"></button>
+            <button id="chatMore" class="cht-act" title="More"></button>
+          </div>
+        </div>
+        <div id="chatWrap">
+          <div id="chat" class="chat"></div>
+        </div>
+        <div id="composer"></div>
+      </main>
+
+      <div id="changesResizer" class="resizer hidden"></div>
+
+      <aside id="changesPanel" class="changes-panel hidden"></aside>
+      <aside id="fleetPanel" class="side-dock hidden"></aside>
+      <aside id="skillsPanel" class="side-dock hidden"></aside>
+      <aside id="testsPanel" class="side-dock hidden"></aside>
+    </div>
+  </div>
+
+  <div id="ctxMenu" class="ctx-menu hidden"></div>
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Classic script, so it runs and sets window.Terminal before the deferred
+       app.js module. A 404 here is harmless — app.js checks for window.Terminal. -->
+  <script src="./vendor/xterm.bundle.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

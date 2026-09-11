@@ -1,0 +1,1428 @@
+{
+  "date": "2026-09-09",
+  "project": "E:/Mac/AtomNano",
+  "scope": "Git module and integration paths",
+  "sourceFiles": [
+    {
+      "file": "src/main/git.js",
+      "lines": 853,
+      "sha256": "c063eb51acfa56079387e3cbf71739e29e4eedd5e9add8555f9f0c3b441728a8"
+    },
+    {
+      "file": "src/main/main.js",
+      "lines": 1464,
+      "sha256": "279dd21ce41e082e2855effcb578b93b2b39c355a9fffc5695da2857704f5842"
+    },
+    {
+      "file": "src/main/preload.js",
+      "lines": 386,
+      "sha256": "07ceb60b968e23de9083f37df3cdfeb34e04decb0637d2c2844fa0a5bf5d5e65"
+    },
+    {
+      "file": "src/main/files.js",
+      "lines": 288,
+      "sha256": "bd161190d99c53ffca2072fc87aa6e1cc73245d20e6375b47e568817050c080c"
+    },
+    {
+      "file": "src/main/zipper.js",
+      "lines": 115,
+      "sha256": "f101d0d78962995833a72c71ea7705f05bac60ddca61866adf61c919e5724c99"
+    },
+    {
+      "file": "src/renderer/gitcenter.js",
+      "lines": 1266,
+      "sha256": "65d3b404fb178e59bf4607637d9a29426f0d92b3429c8f2427746be4dfa5f6b5"
+    },
+    {
+      "file": "src/renderer/app.js",
+      "lines": 10468,
+      "sha256": "a75a43c7b6285d1de07cda71500647eae5da24a977cb9ad4a95c2d2a6e82cfc0"
+    },
+    {
+      "file": "src/renderer/diff.js",
+      "lines": 85,
+      "sha256": "8e4f9b504d5f531b4a588af63400c4e96531624c96f67216a9d7c4829297091a"
+    },
+    {
+      "file": "src/renderer/conflicts.js",
+      "lines": 77,
+      "sha256": "848e6b32706882d9b1c2bd8c21646f65aecddd27f9780fe935e4b1a9b3c235f5"
+    },
+    {
+      "file": "src/renderer/styles.css",
+      "lines": 3258,
+      "sha256": "1048c4b5a68adcba21d8f35633972bc944c8d578aedc6e052bd94e099b0327ec"
+    }
+  ],
+  "exports": [
+    "untrack",
+    "pullFrom",
+    "archiveZip",
+    "commitZip",
+    "resolveWith",
+    "isRepo",
+    "isRepoDir",
+    "repoRoot",
+    "repos",
+    "repoForFile",
+    "status",
+    "currentBranch",
+    "stage",
+    "unstage",
+    "stageAll",
+    "stageTracked",
+    "unstageAll",
+    "commit",
+    "commitFiles",
+    "pull",
+    "push",
+    "diff",
+    "fileDiff",
+    "branches",
+    "checkout",
+    "merge",
+    "mergeBranches",
+    "mergeAbort",
+    "mergeContinue",
+    "discard",
+    "changedBetween",
+    "refDiff",
+    "remoteUrl",
+    "commitsBetween",
+    "repoState",
+    "rebaseSkip",
+    "fetch",
+    "pushBranch",
+    "log",
+    "commitInfo",
+    "commitFileDiff",
+    "fileAt",
+    "aheadBehind",
+    "branchesDetailed",
+    "branchCreate",
+    "branchDelete",
+    "branchRename",
+    "setUpstream",
+    "checkoutRemote",
+    "rebase",
+    "cherryPick",
+    "revert",
+    "reset",
+    "stashList",
+    "stashSave",
+    "stashApply",
+    "stashDrop",
+    "stashShow",
+    "stashFileDiff",
+    "tags",
+    "tagCreate",
+    "tagDelete",
+    "remotes",
+    "remoteAdd",
+    "remoteRemove"
+  ],
+  "featureGroups": [
+    {
+      "feature": "Repository discovery",
+      "methods": [
+        "isRepo",
+        "repoRoot",
+        "repos",
+        "repoForFile",
+        "isRepoDir"
+      ],
+      "state": "Existing repository or immediate child repositories; no clone/init UI."
+    },
+    {
+      "feature": "Status and operation state",
+      "methods": [
+        "status",
+        "currentBranch",
+        "repoState"
+      ],
+      "state": "Changes, current branch, ahead/behind and operation banners; parsing/failure gaps."
+    },
+    {
+      "feature": "Staging",
+      "methods": [
+        "stage",
+        "unstage",
+        "stageAll",
+        "stageTracked",
+        "unstageAll"
+      ],
+      "state": "File/all/tracked-only staging; selection is separate; unborn and path transport bugs."
+    },
+    {
+      "feature": "Commit and amend",
+      "methods": [
+        "commit",
+        "commitFiles"
+      ],
+      "state": "Selection-driven commits and amend; reviewed content/selection integrity needs repair."
+    },
+    {
+      "feature": "Discard and unversion",
+      "methods": [
+        "discard",
+        "untrack"
+      ],
+      "state": "Restore/remove changes and stop tracking; rename and failure handling need repair."
+    },
+    {
+      "feature": "Working diffs and gutter",
+      "methods": [
+        "diff",
+        "fileDiff"
+      ],
+      "state": "Staged/working/HEAD and untracked diffs; baseline fallback is incorrect."
+    },
+    {
+      "feature": "Branches and upstreams",
+      "methods": [
+        "branches",
+        "branchesDetailed",
+        "checkout",
+        "checkoutRemote",
+        "branchCreate",
+        "branchDelete",
+        "branchRename",
+        "setUpstream"
+      ],
+      "state": "Local/remote branch lists, create/checkout/delete/rename/track; ref identity gaps."
+    },
+    {
+      "feature": "Compare",
+      "methods": [
+        "changedBetween",
+        "refDiff",
+        "commitsBetween",
+        "aheadBehind"
+      ],
+      "state": "Three-dot file comparison, source-only commits and counts; failure gating/cap gaps."
+    },
+    {
+      "feature": "History mutations",
+      "methods": [
+        "merge",
+        "mergeBranches",
+        "rebase",
+        "cherryPick",
+        "revert",
+        "reset"
+      ],
+      "state": "Merge/rebase/cherry-pick/revert and reset modes; operation contracts need work."
+    },
+    {
+      "feature": "Recovery and resolution",
+      "methods": [
+        "mergeAbort",
+        "mergeContinue",
+        "rebaseSkip",
+        "resolveWith"
+      ],
+      "state": "Continue/abort/skip and whole-file side resolution; incomplete operation/type coverage."
+    },
+    {
+      "feature": "Fetch, pull and push",
+      "methods": [
+        "fetch",
+        "pull",
+        "pullFrom",
+        "push",
+        "pushBranch"
+      ],
+      "state": "Single/batch remote operations and force-with-lease; destination inconsistency and progress gaps."
+    },
+    {
+      "feature": "History inspection",
+      "methods": [
+        "log",
+        "commitInfo",
+        "commitFileDiff",
+        "fileAt"
+      ],
+      "state": "Paged log, search, details, file diff and historical content; parent/read fidelity gaps."
+    },
+    {
+      "feature": "Stashes",
+      "methods": [
+        "stashList",
+        "stashSave",
+        "stashApply",
+        "stashDrop",
+        "stashShow",
+        "stashFileDiff"
+      ],
+      "state": "Save/apply/pop/drop and file previews; unstable index identity."
+    },
+    {
+      "feature": "Tags",
+      "methods": [
+        "tags",
+        "tagCreate",
+        "tagDelete"
+      ],
+      "state": "Lightweight/annotated create, list, checkout/export/push/delete through UI; namespace/partial-result gaps."
+    },
+    {
+      "feature": "Remotes",
+      "methods": [
+        "remotes",
+        "remoteUrl",
+        "remoteAdd",
+        "remoteRemove"
+      ],
+      "state": "List/add/remove/reveal and fetch; limited URL editing and parsing."
+    },
+    {
+      "feature": "Snapshots",
+      "methods": [
+        "archiveZip",
+        "commitZip"
+      ],
+      "state": "Whole-tree and changed-files ZIP; whole-tree binary smoke passed, changed-files fidelity fails."
+    }
+  ],
+  "findings": [
+    {
+      "id": "GIT-001",
+      "priority": "P1",
+      "title": "Branch, tag and revision inputs can turn into destructive Git options",
+      "refs": [
+        [
+          "src/main/git.js",
+          580
+        ],
+        [
+          "src/main/git.js",
+          660
+        ],
+        [
+          "src/main/git.js",
+          733
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1078
+        ]
+      ],
+      "checks": [
+        "G14",
+        "G15",
+        "G16"
+      ]
+    },
+    {
+      "id": "GIT-002",
+      "priority": "P1",
+      "title": "A selected filename can match and modify additional files",
+      "refs": [
+        [
+          "src/main/git.js",
+          131
+        ],
+        [
+          "src/main/git.js",
+          181
+        ],
+        [
+          "src/main/git.js",
+          386
+        ],
+        [
+          "src/main/git.js",
+          787
+        ]
+      ],
+      "checks": [
+        "G13"
+      ]
+    },
+    {
+      "id": "GIT-003",
+      "priority": "P1",
+      "title": "Quoted porcelain filenames break status-driven actions",
+      "refs": [
+        [
+          "src/main/git.js",
+          93
+        ],
+        [
+          "src/main/git.js",
+          386
+        ],
+        [
+          "src/main/git.js",
+          406
+        ],
+        [
+          "src/main/git.js",
+          504
+        ],
+        [
+          "src/main/git.js",
+          516
+        ]
+      ],
+      "checks": [
+        "G01",
+        "G31"
+      ]
+    },
+    {
+      "id": "GIT-004",
+      "priority": "P1",
+      "title": "Operations can change repository after the user starts them",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          310
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          932
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          414
+        ],
+        [
+          "src/renderer/styles.css",
+          1682
+        ],
+        [
+          "src/main/git.js",
+          16
+        ]
+      ],
+      "checks": [
+        "U04",
+        "U05",
+        "U11"
+      ]
+    },
+    {
+      "id": "GIT-005",
+      "priority": "P1",
+      "title": "Pending push and commit state leak between repositories",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          19
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          258
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          299
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          436
+        ]
+      ],
+      "checks": [
+        "U02",
+        "U03"
+      ]
+    },
+    {
+      "id": "GIT-006",
+      "priority": "P1",
+      "title": "The conflict resolver can write one file's contents into another",
+      "refs": [
+        [
+          "src/renderer/app.js",
+          2901
+        ],
+        [
+          "src/renderer/app.js",
+          2912
+        ],
+        [
+          "src/renderer/app.js",
+          3075
+        ],
+        [
+          "src/renderer/app.js",
+          3122
+        ]
+      ],
+      "checks": [
+        "U12"
+      ]
+    },
+    {
+      "id": "GIT-007",
+      "priority": "P1",
+      "title": "Line-by-line rebase resolution reverses the meaning of Keep mine",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          866
+        ],
+        [
+          "src/renderer/app.js",
+          2949
+        ],
+        [
+          "src/renderer/app.js",
+          2991
+        ],
+        [
+          "src/renderer/app.js",
+          3037
+        ]
+      ],
+      "checks": [
+        "U13"
+      ]
+    },
+    {
+      "id": "GIT-008",
+      "priority": "P1",
+      "title": "Amend includes staged changes outside the selected files",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          932
+        ],
+        [
+          "src/main/git.js",
+          166
+        ]
+      ],
+      "checks": [
+        "G08"
+      ]
+    },
+    {
+      "id": "GIT-009",
+      "priority": "P1",
+      "title": "The diff preview can omit changes that Commit will include",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          790
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          803
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          932
+        ],
+        [
+          "src/main/git.js",
+          181
+        ]
+      ],
+      "checks": [
+        "G09",
+        "G07"
+      ]
+    },
+    {
+      "id": "GIT-010",
+      "priority": "P1",
+      "title": "Unversion is undone by the next selection-driven commit",
+      "refs": [
+        [
+          "src/main/git.js",
+          787
+        ],
+        [
+          "src/main/git.js",
+          181
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          782
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          815
+        ]
+      ],
+      "checks": [
+        "G10"
+      ]
+    },
+    {
+      "id": "GIT-011",
+      "priority": "P1",
+      "title": "Rename selection commits only half the change and discard fails to restore it",
+      "refs": [
+        [
+          "src/main/git.js",
+          109
+        ],
+        [
+          "src/main/git.js",
+          181
+        ],
+        [
+          "src/main/git.js",
+          386
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          790
+        ]
+      ],
+      "checks": [
+        "G11",
+        "G12"
+      ]
+    },
+    {
+      "id": "GIT-012",
+      "priority": "P1",
+      "title": "Discard can delete content after its prerequisite command fails",
+      "refs": [
+        [
+          "src/main/git.js",
+          386
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          810
+        ],
+        [
+          "src/renderer/app.js",
+          2178
+        ]
+      ],
+      "checks": [
+        "G35"
+      ]
+    },
+    {
+      "id": "GIT-013",
+      "priority": "P1",
+      "title": "Push can publish to a different remote or branch than the UI describes",
+      "refs": [
+        [
+          "src/main/git.js",
+          464
+        ],
+        [
+          "src/main/git.js",
+          202
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          414
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1140
+        ],
+        [
+          "src/main/git.js",
+          796
+        ]
+      ],
+      "checks": [
+        "G17"
+      ]
+    },
+    {
+      "id": "GIT-014",
+      "priority": "P1",
+      "title": "Merge targets can be remote-tracking refs or tags, leaving detached work",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          524
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          360
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1120
+        ],
+        [
+          "src/main/git.js",
+          286
+        ]
+      ],
+      "checks": [
+        "G18"
+      ]
+    },
+    {
+      "id": "GIT-015",
+      "priority": "P1",
+      "title": "Stash actions can affect a different stash than the selected one",
+      "refs": [
+        [
+          "src/main/git.js",
+          669
+        ],
+        [
+          "src/main/git.js",
+          693
+        ],
+        [
+          "src/main/git.js",
+          697
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1174
+        ]
+      ],
+      "checks": [
+        "G26"
+      ]
+    },
+    {
+      "id": "GIT-016",
+      "priority": "P2",
+      "title": "Tag deletion can partially succeed and short tag names are ambiguous",
+      "refs": [
+        [
+          "src/main/git.js",
+          741
+        ],
+        [
+          "src/main/git.js",
+          464
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1225
+        ]
+      ],
+      "checks": [
+        "G30",
+        "G36"
+      ]
+    },
+    {
+      "id": "GIT-017",
+      "priority": "P1",
+      "title": "Changed-files exports can silently omit files and overwrite their metadata name",
+      "refs": [
+        [
+          "src/main/git.js",
+          813
+        ],
+        [
+          "src/main/git.js",
+          778
+        ],
+        [
+          "src/main/zipper.js",
+          27
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          489
+        ]
+      ],
+      "checks": [
+        "G20",
+        "G31",
+        "G27"
+      ]
+    },
+    {
+      "id": "GIT-018",
+      "priority": "P2",
+      "title": "Clean tracked files are displayed as entirely added",
+      "refs": [
+        [
+          "src/main/git.js",
+          216
+        ],
+        [
+          "src/main/git.js",
+          232
+        ],
+        [
+          "src/renderer/app.js",
+          9733
+        ]
+      ],
+      "checks": [
+        "G05",
+        "G06"
+      ]
+    },
+    {
+      "id": "GIT-019",
+      "priority": "P2",
+      "title": "The diff parser drops real content that resembles file headers",
+      "refs": [
+        [
+          "src/renderer/diff.js",
+          6
+        ],
+        [
+          "src/renderer/app.js",
+          2567
+        ]
+      ],
+      "checks": [
+        "U16"
+      ]
+    },
+    {
+      "id": "GIT-020",
+      "priority": "P2",
+      "title": "Merge commits can show no changed files and no diff",
+      "refs": [
+        [
+          "src/main/git.js",
+          526
+        ],
+        [
+          "src/main/git.js",
+          541
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1002
+        ]
+      ],
+      "checks": [
+        "G19"
+      ]
+    },
+    {
+      "id": "GIT-021",
+      "priority": "P1",
+      "title": "Conflict results are reported as successful pull or completed rebase",
+      "refs": [
+        [
+          "src/main/git.js",
+          195
+        ],
+        [
+          "src/main/git.js",
+          364
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          330
+        ],
+        [
+          "src/renderer/app.js",
+          1408
+        ],
+        [
+          "src/renderer/app.js",
+          1420
+        ],
+        [
+          "src/renderer/app.js",
+          3110
+        ],
+        [
+          "src/renderer/app.js",
+          2112
+        ]
+      ],
+      "checks": [
+        "G29",
+        "G33",
+        "U06",
+        "U14"
+      ]
+    },
+    {
+      "id": "GIT-022",
+      "priority": "P2",
+      "title": "Repository and history loads can overwrite newer UI state",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          245
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          258
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          285
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          980
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          187
+        ],
+        [
+          "src/renderer/app.js",
+          1383
+        ]
+      ],
+      "checks": [
+        "U01",
+        "U08",
+        "U10"
+      ]
+    },
+    {
+      "id": "GIT-023",
+      "priority": "P2",
+      "title": "Git failures are presented as a clean repository",
+      "refs": [
+        [
+          "src/main/git.js",
+          37
+        ],
+        [
+          "src/main/git.js",
+          93
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          252
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          782
+        ],
+        [
+          "src/renderer/app.js",
+          1383
+        ]
+      ],
+      "checks": [
+        "U22"
+      ]
+    },
+    {
+      "id": "GIT-024",
+      "priority": "P2",
+      "title": "Compare enables mutation even when its review failed",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          700
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          717
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          542
+        ],
+        [
+          "src/renderer/app.js",
+          2713
+        ]
+      ],
+      "checks": [
+        "U07"
+      ]
+    },
+    {
+      "id": "GIT-025",
+      "priority": "P2",
+      "title": "Operation recovery controls do not match all detected Git states",
+      "refs": [
+        [
+          "src/main/git.js",
+          323
+        ],
+        [
+          "src/main/git.js",
+          352
+        ],
+        [
+          "src/main/git.js",
+          364
+        ],
+        [
+          "src/main/git.js",
+          378
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          578
+        ],
+        [
+          "src/renderer/app.js",
+          2930
+        ]
+      ],
+      "checks": [
+        "G25",
+        "G24"
+      ]
+    },
+    {
+      "id": "GIT-026",
+      "priority": "P2",
+      "title": "The resolver cannot reliably handle deletion, binary or unsupported marker conflicts",
+      "refs": [
+        [
+          "src/main/git.js",
+          832
+        ],
+        [
+          "src/renderer/app.js",
+          2912
+        ],
+        [
+          "src/renderer/app.js",
+          3056
+        ],
+        [
+          "src/renderer/conflicts.js",
+          4
+        ],
+        [
+          "src/renderer/conflicts.js",
+          43
+        ],
+        [
+          "src/main/files.js",
+          109
+        ]
+      ],
+      "checks": [
+        "G23",
+        "U17"
+      ]
+    },
+    {
+      "id": "GIT-027",
+      "priority": "P2",
+      "title": "Conflict save changes line endings and can lose resolution drafts",
+      "refs": [
+        [
+          "src/renderer/app.js",
+          2912
+        ],
+        [
+          "src/renderer/app.js",
+          3020
+        ],
+        [
+          "src/renderer/app.js",
+          3075
+        ],
+        [
+          "src/renderer/app.js",
+          3122
+        ],
+        [
+          "src/main/files.js",
+          146
+        ]
+      ],
+      "checks": [
+        "U15"
+      ]
+    },
+    {
+      "id": "GIT-028",
+      "priority": "P2",
+      "title": "Historical file preview corrupts binary representation and silently truncates text",
+      "refs": [
+        [
+          "src/main/git.js",
+          546
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1057
+        ]
+      ],
+      "checks": [
+        "G32"
+      ]
+    },
+    {
+      "id": "GIT-029",
+      "priority": "P2",
+      "title": "Large file selections fail at the Windows argument-length limit",
+      "refs": [
+        [
+          "src/main/git.js",
+          131
+        ],
+        [
+          "src/main/git.js",
+          181
+        ],
+        [
+          "src/main/git.js",
+          386
+        ],
+        [
+          "src/main/git.js",
+          832
+        ]
+      ],
+      "checks": [
+        "G34"
+      ]
+    },
+    {
+      "id": "GIT-030",
+      "priority": "P2",
+      "title": "Git operations expose no live process output or cancellation",
+      "refs": [
+        [
+          "src/main/git.js",
+          16
+        ],
+        [
+          "src/main/git.js",
+          31
+        ],
+        [
+          "src/main/git.js",
+          778
+        ],
+        [
+          "src/main/main.js",
+          1024
+        ],
+        [
+          "src/main/preload.js",
+          193
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          310
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "GIT-031",
+      "priority": "P2",
+      "title": "Git Center does not automatically receive external repository updates",
+      "refs": [
+        [
+          "src/renderer/app.js",
+          3452
+        ],
+        [
+          "src/renderer/app.js",
+          1383
+        ],
+        [
+          "src/main/files.js",
+          11
+        ],
+        [
+          "src/main/files.js",
+          156
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          245
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          285
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "GIT-032",
+      "priority": "P2",
+      "title": "Refreshing and expanding rebuilds the UI and long lists block the renderer",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          623
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          782
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          830
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          980
+        ],
+        [
+          "src/renderer/app.js",
+          2567
+        ],
+        [
+          "src/renderer/diff.js",
+          33
+        ]
+      ],
+      "checks": [
+        "U09",
+        "U20"
+      ]
+    },
+    {
+      "id": "GIT-033",
+      "priority": "P2",
+      "title": "Unborn repositories show the wrong branch and Unstage all fails",
+      "refs": [
+        [
+          "src/main/git.js",
+          93
+        ],
+        [
+          "src/main/git.js",
+          126
+        ],
+        [
+          "src/main/git.js",
+          160
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          258
+        ]
+      ],
+      "checks": [
+        "G02",
+        "G03",
+        "G04"
+      ]
+    },
+    {
+      "id": "GIT-034",
+      "priority": "P2",
+      "title": "Remote list parsing drops valid local URLs and checkout can select the wrong tracking branch",
+      "refs": [
+        [
+          "src/main/git.js",
+          750
+        ],
+        [
+          "src/main/git.js",
+          620
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1128
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          1238
+        ]
+      ],
+      "checks": [
+        "G21",
+        "G22"
+      ]
+    },
+    {
+      "id": "GIT-035",
+      "priority": "P2",
+      "title": "The legacy Review & commit Merge tab has incompatible API contracts",
+      "refs": [
+        [
+          "src/renderer/app.js",
+          1657
+        ],
+        [
+          "src/main/git.js",
+          243
+        ],
+        [
+          "src/renderer/app.js",
+          1796
+        ],
+        [
+          "src/renderer/app.js",
+          8644
+        ]
+      ],
+      "checks": [
+        "U23",
+        "U24"
+      ]
+    },
+    {
+      "id": "GIT-036",
+      "priority": "P2",
+      "title": "Retry failed can recommit after only the push failed",
+      "refs": [
+        [
+          "src/renderer/app.js",
+          2028
+        ],
+        [
+          "src/renderer/app.js",
+          2052
+        ],
+        [
+          "src/renderer/app.js",
+          2074
+        ]
+      ],
+      "checks": [
+        "U18"
+      ]
+    },
+    {
+      "id": "GIT-037",
+      "priority": "P2",
+      "title": "Canceled dialogs leave unresolved action promises and widget cleanup is incomplete",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          357
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          61
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          117
+        ],
+        [
+          "src/renderer/app.js",
+          3920
+        ],
+        [
+          "src/renderer/app.js",
+          8656
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "GIT-038",
+      "priority": "P2",
+      "title": "Git controls have keyboard, accessibility and reduced-motion gaps",
+      "refs": [
+        [
+          "src/renderer/gitcenter.js",
+          187
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          690
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          752
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          149
+        ],
+        [
+          "src/renderer/styles.css",
+          660
+        ],
+        [
+          "src/renderer/styles.css",
+          1622
+        ]
+      ],
+      "checks": [
+        "U19",
+        "U21"
+      ]
+    },
+    {
+      "id": "GIT-039",
+      "priority": "P2",
+      "title": "History limits and silent partial reads make reviews incomplete",
+      "refs": [
+        [
+          "src/main/git.js",
+          437
+        ],
+        [
+          "src/main/git.js",
+          477
+        ],
+        [
+          "src/main/git.js",
+          526
+        ],
+        [
+          "src/main/git.js",
+          541
+        ],
+        [
+          "src/main/git.js",
+          703
+        ],
+        [
+          "src/renderer/gitcenter.js",
+          700
+        ]
+      ],
+      "checks": []
+    },
+    {
+      "id": "GIT-040",
+      "priority": "P2",
+      "title": "Git smoke tests do not cover the maintained Git Center and lack profile isolation",
+      "refs": [
+        [
+          "smoke-tests/test-git-multi.js",
+          37
+        ],
+        [
+          "smoke-tests/test-git-multi.js",
+          47
+        ],
+        [
+          "smoke-tests/test-git-conflict.js",
+          20
+        ],
+        [
+          "src/main/main.js",
+          25
+        ],
+        [
+          "src/main/main.js",
+          49
+        ],
+        [
+          "package.json",
+          15
+        ]
+      ],
+      "checks": []
+    }
+  ],
+  "totals": {
+    "findings": 40,
+    "P1": 17,
+    "P2": 23,
+    "featureGaps": 10,
+    "checks": 60,
+    "reproductions": 52,
+    "positive": 7,
+    "measurements": 1
+  },
+  "results": [
+    "backend-results.json",
+    "supplemental-results.json",
+    "ui-results.json"
+  ],
+  "fixtureRoots": [
+    "C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-1t1TLR",
+    "C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-V6UvjK"
+  ],
+  "validation": "Native Git isolated fixtures and headless original-component browser checks. Not a full Electron/network/authentication test."
+}

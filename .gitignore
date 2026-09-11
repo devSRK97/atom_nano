@@ -1,0 +1,18 @@
+# dependencies / build output
+node_modules/
+dist/
+.cache/
+test-results/
+
+# local artefacts (scratch scripts, research notes, screenshots)
+_app-snap*.png
+_ask-agy.js
+.firecrawl/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# editor / OS
+.vscode/
+.idea/

@@ -1,0 +1,305 @@
+{
+  "project": "E:\\Mac\\AtomNano",
+  "browser": "Playwright Chromium, headless, no AtomNano startup; original component code with fixture IPC",
+  "checks": [
+    {
+      "id": "U01",
+      "title": "Late repository read overwrites current repository info",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "repo": "B",
+        "infoOwner": "B"
+      }
+    },
+    {
+      "id": "U02",
+      "title": "Commit draft and amend flag carry into another repository",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "repo": "B",
+        "amend": false,
+        "message": ""
+      }
+    },
+    {
+      "id": "U03",
+      "title": "Pending push from A offers push on repository B",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.gitc-pop-msg') to be visible\u001b[22m\n\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:86:11\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:84:2)"
+    },
+    {
+      "id": "U04",
+      "title": "Commit-and-push follows repository switched while commit runs",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.waitForFunction: Timeout 30000ms exceeded.\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:99:11\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:92:2)"
+    },
+    {
+      "id": "U05",
+      "title": "Amend commits repository B after staging repository A",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.waitForFunction: Timeout 30000ms exceeded.\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:113:11\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:106:2)"
+    },
+    {
+      "id": "U06",
+      "title": "Pull-all reports conflict result as success",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": [
+        {
+          "text": "Pull A…",
+          "kind": "spinner"
+        },
+        {
+          "text": "Pull B…",
+          "kind": "spinner"
+        },
+        {
+          "text": "<b>Pull: 0 ok, 2 need attention</b><span class=\"toast-sub\">A: conflicts to resolve<br>B: conflicts to resolve</span>",
+          "kind": "alert"
+        }
+      ]
+    },
+    {
+      "id": "U07",
+      "title": "Failed compare still enables Merge and Rebase",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.waitForFunction: Timeout 30000ms exceeded.\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:130:11\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:124:2)"
+    },
+    {
+      "id": "U08",
+      "title": "History search appends a late obsolete result",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.waitForFunction: Timeout 30000ms exceeded.\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:145:11\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:134:2)"
+    },
+    {
+      "id": "U09",
+      "title": "Refresh replaces focused commit textarea",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "oldConnected": true,
+        "active": "TEXTAREA",
+        "draft": "draft"
+      }
+    },
+    {
+      "id": "U10",
+      "title": "Closing during initial discovery rejects the open operation",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "error": null
+      }
+    },
+    {
+      "id": "U11",
+      "title": "Busy strip permits a keyboard-activated second Git operation",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "calls": 1,
+        "busy": 1,
+        "disabled": true
+      }
+    },
+    {
+      "id": "U12",
+      "title": "Conflict read race can write file A contents to file B",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'resolve')\n    at eval (eval at evaluate (:302:30), <anonymous>:3:25)\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:174:12\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:164:2)"
+    },
+    {
+      "id": "U13",
+      "title": "Line-level Keep mine takes upstream side during rebase",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.evaluate: ReferenceError: mineChoice is not defined\n    at renderConflictCard (eval at <anonymous> (eval at evaluate (:302:30)), <anonymous>:23:81)\n    at eval (eval at <anonymous> (eval at evaluate (:302:30)), <anonymous>:32:13)\n    at eval (eval at evaluate (:302:30), <anonymous>:5:4)\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:183:12\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:21)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:182:2)"
+    },
+    {
+      "id": "U14",
+      "title": "Complete resolver closes and reports success on next rebase conflict",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.evaluate: ReferenceError: mergeOpTitle is not defined\n    at completeMerge (eval at <anonymous> (eval at evaluate (:302:30)), <anonymous>:6:15)\n    at eval (eval at evaluate (:302:30), <anonymous>:4:80)\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:194:12\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:21)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:193:2)"
+    },
+    {
+      "id": "U15",
+      "title": "Conflict save changes CRLF line endings to LF",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'a.txt')\n    at Object.loadConflictFile (eval at <anonymous> (eval at evaluate (:302:30)), <anonymous>:7:31)\n    at eval (eval at evaluate (:302:30), <anonymous>:8:19)\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:202:12\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:21)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:201:2)"
+    },
+    {
+      "id": "U16",
+      "title": "Unified diff parser drops changed lines resembling file headers",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "hunks": [
+          {
+            "header": "@@ -1 +1 @@",
+            "lines": [
+              {
+                "type": "-",
+                "oldNo": 1,
+                "newNo": null,
+                "text": "-- old comment"
+              },
+              {
+                "type": "+",
+                "oldNo": null,
+                "newNo": 1,
+                "text": "++ new comment"
+              }
+            ]
+          }
+        ],
+        "adds": 1,
+        "dels": 1,
+        "binary": false,
+        "files": 1
+      }
+    },
+    {
+      "id": "U17",
+      "title": "Unterminated conflict does not round-trip all input text",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "input": "before\n<<<<<<< ours\none\n||||||| base\nbase text\n=======\nincoming text\n",
+        "output": "before\n<<<<<<< ours\none\n||||||| base\nbase text\n=======\nincoming text\n",
+        "count": 0,
+        "conflictSegments": 0
+      }
+    },
+    {
+      "id": "U18",
+      "title": "Commit-and-push retry repeats commit after push alone failed",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Retry failed' })\u001b[22m\n\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:236:53\n    at async check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:15)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:226:2)"
+    },
+    {
+      "id": "U19",
+      "title": "Git overlay and progress still animate with reduced motion",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "reduced": true,
+        "overlay": "none",
+        "progress": "none"
+      }
+    },
+    {
+      "id": "U20",
+      "title": "Large Changes view mounts all rows and records render cost",
+      "kind": "measurement",
+      "matched": false,
+      "evidence": {
+        "files": 5000,
+        "rows": 26,
+        "domNodes": 407,
+        "elapsedMs": 16
+      }
+    },
+    {
+      "id": "U21",
+      "title": "Git dialog lacks dialog semantics and contains plain div rows",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "panelRole": "dialog",
+        "ariaModal": "true",
+        "rowTabIndex": 0
+      }
+    },
+    {
+      "id": "U22",
+      "title": "Status failure is presented as a clean working tree",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "text": "Showing the last successful status — refresh to update.Versioned11 selectedStageUnstageUnversionDiscarda.txtModifiedUnversioned0—AmendRepository state unavailableCommit & PushCommit (1)a.txtwill commit (HEAD → working tree)+0−0Will commitStagedUnstagedSplitUnifiedNo line changesMetadata-only change, or nothing differs.",
+        "status": {
+          "repo": true,
+          "branch": "A-main",
+          "upstream": "origin/A-main",
+          "ahead": 1,
+          "files": [
+            {
+              "path": "a.txt",
+              "label": "Modified",
+              "x": " ",
+              "y": "M",
+              "unstaged": true,
+              "staged": false
+            }
+          ],
+          "clean": false,
+          "state": "error",
+          "error": "fixture git status timeout",
+          "stale": true
+        }
+      }
+    },
+    {
+      "id": "U23",
+      "title": "Legacy merge picker reads singular branch fields from plural API",
+      "kind": "reproduction",
+      "matched": false,
+      "evidence": {
+        "actualApiFields": [
+          "locals",
+          "remotes"
+        ],
+        "sourceOptions": 3,
+        "targetOptions": 2
+      }
+    },
+    {
+      "id": "U24",
+      "title": "Legacy merge awaits callback-only confirm dialog",
+      "kind": "reproduction",
+      "matched": false,
+      "harnessError": "page.evaluate: Target page, context or browser has been closed\n    at E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:280:12\n    at check (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:64:21)\n    at async main (E:\\Mac\\AtomNano\\audit-evidence\\git-2026-09-09\\ui-characterization.cjs:279:2)"
+    }
+  ],
+  "summary": {
+    "total": 24,
+    "matched": 0,
+    "unexpected": [
+      "U01",
+      "U02",
+      "U03",
+      "U04",
+      "U05",
+      "U06",
+      "U07",
+      "U08",
+      "U09",
+      "U10",
+      "U11",
+      "U12",
+      "U13",
+      "U14",
+      "U15",
+      "U16",
+      "U17",
+      "U18",
+      "U19",
+      "U20",
+      "U21",
+      "U22",
+      "U23",
+      "U24"
+    ]
+  }
+}

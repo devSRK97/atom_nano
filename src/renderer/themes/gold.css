@@ -1,0 +1,170 @@
+/* ============================================================
+   AtomNano — GOLD theme (complete config)
+   ------------------------------------------------------------
+   A warm dark theme built around a single gold hue (~#e8c25a).
+   All surfaces, lines, text, accents, syntax tokens, status
+   colors, card variants, and shadow tints are derived from
+   the same family so the UI reads as one coherent palette.
+
+   Activate by setting <html data-theme="gold">.
+   Drop this file into src/renderer/themes/ and link it from
+   index.html AFTER styles.css so it overrides defaults.
+   ============================================================ */
+
+html[data-theme="gold"] {
+  /* ---------- Surfaces (background ramp) ---------- */
+  --bg:        #1f1c17;   /* app background — deepest, warm near-black */
+  --bg-1:      #26221c;   /* primary panel (sidebar, chat panel) */
+  --bg-2:      #2d2922;   /* cards, tool-result blocks, inputs */
+  --bg-3:      #383225;   /* hover state on cards, dropdowns */
+  --bg-4:      #463e2d;   /* pressed / selected state */
+  --bg-inset:  #16130f;   /* deepest inset (code blocks, editor gutter) */
+
+  /* ---------- Lines / borders ---------- */
+  --line:       #423a2b;  /* default border (cards, dividers) */
+  --line-2:     #5a4f38;  /* emphasized border (focused inputs, active tabs) */
+  --line-soft:  #2f2a21;  /* subtle border (between rows in a list) */
+
+  /* ---------- Text ramp ---------- */
+  --text:    #f7eedd;     /* primary text — warm off-white */
+  --text-2:  #ddcfb1;     /* secondary text — softened gold tint */
+  --text-3:  #b0a081;     /* tertiary (metadata, captions) */
+  --text-4:  #847658;     /* quaternary (placeholders, disabled) */
+
+  /* ---------- Gold accent (the brand color) ---------- */
+  --accent:        #e8c25a;            /* signature gold */
+  --accent-2:      #d6a838;            /* deeper gold (hovers) */
+  --accent-deep:   #a87f20;            /* deepest gold (pressed) */
+  --accent-soft:   rgba(232, 194, 90, 0.14);  /* gold-tinted fill */
+  --accent-softer: rgba(232, 194, 90, 0.07);  /* gentle gold wash */
+  --accent-glow:   rgba(232, 194, 90, 0.30);  /* halo / pulse */
+
+  /* ---------- Status colors (tuned for gold environment) ---------- */
+  --green:      #a8c971;                       /* success, additions */
+  --green-soft: rgba(168, 201, 113, 0.16);
+  --red:        #e8836a;                       /* errors, deletions */
+  --red-soft:   rgba(232, 131, 106, 0.16);
+  --blue:       #c9a76b;                       /* refs, links (warm gold-bronze) */
+  --blue-soft:  rgba(201, 167, 107, 0.14);
+
+  /* ---------- Code surface ---------- */
+  --code-text:  #ece1c8;
+
+  /* ---------- Syntax tokens (CodeMirror) ---------- */
+  --tok-comment: #7d7459;     /* dim gold-gray */
+  --tok-string:  #d8a657;     /* burnished gold */
+  --tok-keyword: #e89a5c;     /* warm amber */
+  --tok-number:  #c98ad0;     /* mauve — only non-warm pop, intentional */
+  --tok-fn:      #b5c97d;     /* sage */
+  --tok-type:    #7fc5b6;     /* teal */
+  --tok-prop:    #d5c39a;     /* parchment */
+  --tok-punct:   #b3a78d;     /* warm gray */
+
+  /* ---------- Shadows (warm tint instead of pure black) ---------- */
+  --sh-1:   0 1px 4px   rgba(60, 40, 10, 0.30);
+  --sh-2:   0 4px 14px  rgba(50, 32, 8, 0.38);
+  --sh-pop: 0 10px 28px rgba(40, 24, 4, 0.50);
+
+  /* ============================================================
+     CARD VARIANTS — semantic surface tokens for richer UI
+     Use these instead of hard-coding bg-2/bg-3 when a card
+     carries meaning (default / raised / outlined / accent / sunken).
+     ============================================================ */
+  --card-bg:           #2d2922;                    /* default card */
+  --card-bg-hover:     #34301f;                    /* hover */
+  --card-bg-active:    #3e3724;                    /* pressed */
+  --card-border:       #423a2b;
+  --card-border-hover: #5a4f38;
+  --card-shadow:       0 1px 4px rgba(60, 40, 10, 0.30);
+
+  --card-raised-bg:        #322d24;                /* slightly lifted */
+  --card-raised-shadow:    0 4px 14px rgba(50, 32, 8, 0.38);
+
+  --card-outlined-bg:      transparent;
+  --card-outlined-border:  #5a4f38;
+
+  --card-accent-bg:        rgba(232, 194, 90, 0.08);
+  --card-accent-border:    rgba(232, 194, 90, 0.32);
+  --card-accent-shadow:    0 0 0 1px rgba(232, 194, 90, 0.18), 0 4px 14px rgba(50, 32, 8, 0.38);
+
+  --card-sunken-bg:        #1a1812;                /* inset (code, terminal) */
+  --card-sunken-border:    #2a2519;
+
+  --card-warning-bg:       rgba(232, 131, 106, 0.10);
+  --card-warning-border:   rgba(232, 131, 106, 0.34);
+  --card-success-bg:       rgba(168, 201, 113, 0.10);
+  --card-success-border:   rgba(168, 201, 113, 0.34);
+
+  /* ---------- Selection / highlight ---------- */
+  --selection-bg:    rgba(232, 194, 90, 0.28);
+  --selection-text:  #1f1c17;
+  --highlight-line:  rgba(232, 194, 90, 0.06);     /* current-line highlight */
+
+  /* ---------- Focus ring ---------- */
+  --focus-ring: 0 0 0 2px rgba(232, 194, 90, 0.45);
+
+  /* ---------- Scrollbar ---------- */
+  --scroll-thumb:        #463e2d;
+  --scroll-thumb-hover:  #5a4f38;
+  --scroll-track:        transparent;
+
+  /* ---------- Gradients (for chat header, hero panels) ---------- */
+  --grad-warm: linear-gradient(180deg, #26221c 0%, #1f1c17 100%);
+  --grad-gold: linear-gradient(135deg, rgba(232,194,90,0.10) 0%, rgba(232,194,90,0) 60%);
+
+  /* ---------- Diff colors (git panels, merge view) ---------- */
+  --diff-add-bg:       rgba(168, 201, 113, 0.14);
+  --diff-add-text:     #c2dd92;
+  --diff-add-gutter:   #6e8f3e;
+  --diff-del-bg:       rgba(232, 131, 106, 0.14);
+  --diff-del-text:     #f0a994;
+  --diff-del-gutter:   #a04d3a;
+  --diff-mod-bg:       rgba(232, 194, 90, 0.12);
+  --diff-hunk-bg:      #2a2519;
+  --diff-hunk-text:    #b0a081;
+
+  /* ---------- Badges (status pills) ---------- */
+  --badge-info-bg:     rgba(201, 167, 107, 0.16);
+  --badge-info-text:   #d6bf91;
+  --badge-warn-bg:     rgba(232, 131, 106, 0.16);
+  --badge-warn-text:   #f0a994;
+  --badge-ok-bg:       rgba(168, 201, 113, 0.16);
+  --badge-ok-text:     #c2dd92;
+  --badge-neutral-bg:  #383225;
+  --badge-neutral-text:#b0a081;
+}
+
+/* ============================================================
+   Gold-theme syntactic flourishes
+   (rules that need to override styles.css for gold specifically)
+   ============================================================ */
+html[data-theme="gold"] ::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+html[data-theme="gold"] *::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+}
+html[data-theme="gold"] *::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+html[data-theme="gold"] .brand-mark,
+html[data-theme="gold"] .brand-accent {
+  color: var(--accent);
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+/* Cards picked up automatically wherever the existing CSS uses
+   --bg-2 / --line. The --card-* variants are available for new
+   components that want explicit semantic surfaces:
+
+   .my-card           { background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); }
+   .my-card:hover     { background: var(--card-bg-hover); border-color: var(--card-border-hover); }
+   .my-card.raised    { background: var(--card-raised-bg); box-shadow: var(--card-raised-shadow); }
+   .my-card.accent    { background: var(--card-accent-bg); border-color: var(--card-accent-border); box-shadow: var(--card-accent-shadow); }
+   .my-card.sunken    { background: var(--card-sunken-bg); border-color: var(--card-sunken-border); }
+   .my-card.warning   { background: var(--card-warning-bg); border-color: var(--card-warning-border); }
+   .my-card.success   { background: var(--card-success-bg); border-color: var(--card-success-border); }
+*/

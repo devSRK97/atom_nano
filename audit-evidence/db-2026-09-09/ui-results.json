@@ -1,0 +1,274 @@
+{
+  "at": "2026-09-09T17:22:20.342Z",
+  "scope": "Original renderer/CSS and app dialog helpers, blank Chromium page, all IPC mocked; no real application profile.",
+  "total": 20,
+  "passed": 20,
+  "failed": 0,
+  "results": [
+    {
+      "id": "DB-U01",
+      "title": "Format changes quoted SQL data",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "input": "INSERT INTO t(v) VALUES ('hello   from,world')",
+        "output": "INSERT INTO t(v)\nVALUES ('hello\nFROM, world')"
+      }
+    },
+    {
+      "id": "DB-U02",
+      "title": "SQL editor split removes required token separators and breaks dollar quoting",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "comment": [
+          "SELECT1"
+        ],
+        "dollar": [
+          "DO $$ BEGIN PERFORM 1",
+          "PERFORM 2",
+          "END $$"
+        ]
+      }
+    },
+    {
+      "id": "DB-U03",
+      "title": "Positive: byte size thresholds render correctly",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": [
+        {
+          "bytes": 1,
+          "display": "1 B"
+        },
+        {
+          "bytes": 1024,
+          "display": "1 KB"
+        },
+        {
+          "bytes": 1048576,
+          "display": "1.0 MB"
+        }
+      ]
+    },
+    {
+      "id": "DB-U04",
+      "title": "Browse clamps Next to an approximate zero-row estimate",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "nextWasDisabled": false,
+        "offset": 0,
+        "requestedOffsets": [
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "DB-U05",
+      "title": "UI replaces a cell even when backend affected zero rows",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "displayedValue": "new",
+        "updates": 1
+      }
+    },
+    {
+      "id": "DB-U06",
+      "title": "Insert button allows duplicate submissions while first write is pending",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "calls": 2
+      }
+    },
+    {
+      "id": "DB-U07",
+      "title": "Closing the final busy tab can send later statements to another connection",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "queries": [
+          [
+            "a",
+            "INSERT INTO t VALUES (1)"
+          ],
+          [
+            "b",
+            "INSERT INTO t VALUES (2)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "DB-U08",
+      "title": "A failed later statement hides successful earlier statements",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "executed": 2,
+        "successfulLogEntries": 0,
+        "resultText": "second statement failed"
+      }
+    },
+    {
+      "id": "DB-U09",
+      "title": "Cancel connection editing retains unsaved policy in renderer state",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "rendererPolicy": true,
+        "savedPolicy": false
+      }
+    },
+    {
+      "id": "DB-U10",
+      "title": "Repeated plain Open creates extra connection tabs",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "before": 1,
+        "after": 3
+      }
+    },
+    {
+      "id": "DB-U11",
+      "title": "An in-flight health response reverses manual disconnect",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "afterDisconnect": "off",
+        "afterPing": "live"
+      }
+    },
+    {
+      "id": "DB-U12",
+      "title": "Closing confirmation with X leaves its promise pending",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "pending": true
+      }
+    },
+    {
+      "id": "DB-U13",
+      "title": "Positive: grid redraw retains the draft through confirmation",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": {
+        "dialogs": 1,
+        "saves": 1,
+        "savedValue": "unsaved"
+      }
+    },
+    {
+      "id": "DB-U14",
+      "title": "Rename-plus-drop queues old column name and forgets failed work",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "operations": [
+          {
+            "method": "renameColumn",
+            "args": [
+              "a",
+              "t",
+              "v",
+              "renamed"
+            ]
+          },
+          {
+            "method": "dropColumn",
+            "args": [
+              "a",
+              "t",
+              "v"
+            ]
+          }
+        ],
+        "remainingRenames": 0,
+        "remainingDrops": 0
+      }
+    },
+    {
+      "id": "DB-U15",
+      "title": "Switching structure objects silently discards pending edits",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "table": "other",
+        "renames": 0
+      }
+    },
+    {
+      "id": "DB-U16",
+      "title": "Add-column keeps hidden precision after changing type",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "spec": {
+          "name": "newcol",
+          "type": "text",
+          "length": "",
+          "precision": "10",
+          "scale": "2",
+          "enumValues": [],
+          "nullable": true,
+          "default": "",
+          "unique": false,
+          "comment": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "id": "DB-U17",
+      "title": "Browse interprets database object name as HTML",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "injectedElement": true,
+        "label": "object",
+        "scope": "Markup insertion only. Production CSP blocks inline scripts; no code-execution claim."
+      }
+    },
+    {
+      "id": "DB-U18",
+      "title": "Virtual grid has no table/grid semantics or keyboard cell controls",
+      "category": "reproduction",
+      "passed": true,
+      "evidence": {
+        "role": null,
+        "cellRoles": 0,
+        "tabbableCells": 0,
+        "headers": 0
+      }
+    },
+    {
+      "id": "DB-U19",
+      "title": "Grid virtualizes rows but builds every visible row column",
+      "category": "measurement",
+      "passed": true,
+      "evidence": {
+        "sourceRows": 5000,
+        "sourceColumns": 100,
+        "renderedRows": 18,
+        "renderedCells": 1818,
+        "headers": 101,
+        "firstFrameMs": 12.4
+      }
+    },
+    {
+      "id": "DB-U20",
+      "title": "Positive: basic query result renders",
+      "category": "positive-control",
+      "passed": true,
+      "evidence": {
+        "text": "1 row · 2 cols · 2 msExport#idv11hello",
+        "status": "1 statement · 1 row · 3 ms"
+      }
+    }
+  ]
+}

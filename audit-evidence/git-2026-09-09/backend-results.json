@@ -1,0 +1,485 @@
+{
+  "project": "E:\\Mac\\AtomNano",
+  "fixtureRoot": "C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-1t1TLR",
+  "git": "git version 2.52.0.windows.1",
+  "node": "v24.14.1",
+  "checks": [
+    {
+      "id": "G01",
+      "title": "Porcelain paths are quoted and unusable for staging",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "paths": [
+          "\"caf\\303\\251.txt\"",
+          "\"space name.txt\""
+        ],
+        "stageError": "fatal: pathspec '\"space name.txt\"' did not match any files"
+      }
+    },
+    {
+      "id": "G02",
+      "title": "Unborn status reports branch No",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "actual": "No",
+        "expected": "main"
+      }
+    },
+    {
+      "id": "G03",
+      "title": "Unstage-all fails before first commit; per-file unstage works",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "all": "fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree. Use '--' to separate paths from revisions, like this: 'git <command> [<revision>...] -- [<file>...]'"
+      }
+    },
+    {
+      "id": "G04",
+      "title": "Discard on unborn added file unstages and deletes it",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "ok": true
+        },
+        "status": "",
+        "index": ""
+      }
+    },
+    {
+      "id": "G05",
+      "title": "Clean tracked file becomes all-added diff",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "fileDiffMode": "untracked",
+        "fileDiff": "diff --git a/base.txt b/base.txt\nnew file mode 100644\nindex 0000000..df967b9\n--- /dev/null\n+++ b/base.txt\n@@ -0,0 +1 @@\n+base\n",
+        "diff": "diff --git a/base.txt b/base.txt\nnew file mode 100644\nindex 0000000..df967b9\n--- /dev/null\n+++ b/base.txt\n@@ -0,0 +1 @@\n+base\n"
+      }
+    },
+    {
+      "id": "G06",
+      "title": "Empty staged diff shows entire unstaged file",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "nativeCached": "",
+        "apiText": "diff --git a/base.txt b/base.txt\nnew file mode 100644\nindex 0000000..5ea2ed4\n--- /dev/null\n+++ b/base.txt\n@@ -0,0 +1 @@\n+changed\n"
+      }
+    },
+    {
+      "id": "G07",
+      "title": "Selected commit preserves unrelated staged change",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "committedB": "b0",
+        "staged": "b.txt"
+      }
+    },
+    {
+      "id": "G08",
+      "title": "Amend sequence includes unselected staged file",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "selected": [
+          "a.txt"
+        ],
+        "unselectedCommitted": "b1"
+      }
+    },
+    {
+      "id": "G09",
+      "title": "Working-tree preview omits staged content that selected commit includes",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "preview": "diff --git a/a.txt b/a.txt\nindex e20a959..b97ac3c 100644\n--- a/a.txt\n+++ b/a.txt\n@@ -1,2 +1,2 @@\n staged\n-zero\n+unstaged\n",
+        "committed": "staged\nunstaged"
+      }
+    },
+    {
+      "id": "G10",
+      "title": "Unversion followed by selected-file commit tracks file again",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "statusBefore": [
+          {
+            "path": "base.txt",
+            "orig": "",
+            "x": "D",
+            "y": " ",
+            "label": "Deleted",
+            "staged": true,
+            "unstaged": false,
+            "conflict": false
+          },
+          {
+            "path": "base.txt",
+            "orig": "",
+            "x": "?",
+            "y": "?",
+            "label": "Untracked",
+            "staged": false,
+            "unstaged": true,
+            "conflict": false
+          }
+        ],
+        "result": {
+          "error": "On branch main nothing to commit, working tree clean"
+        },
+        "statusAfter": "",
+        "tracked": "base.txt"
+      }
+    },
+    {
+      "id": "G11",
+      "title": "Committing rename destination leaves old path in HEAD",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "rows": [
+          {
+            "path": "renamed.txt",
+            "orig": "base.txt",
+            "x": "R",
+            "y": " ",
+            "label": "Renamed",
+            "staged": true,
+            "unstaged": false,
+            "conflict": false
+          }
+        ],
+        "tree": "base.txt\nrenamed.txt",
+        "index": "D  base.txt"
+      }
+    },
+    {
+      "id": "G12",
+      "title": "Discard of renamed path fails to restore original path",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "value": {
+            "ok": true
+          }
+        },
+        "originalExists": false,
+        "destinationExists": false,
+        "status": "D  base.txt"
+      }
+    },
+    {
+      "id": "G13",
+      "title": "Pathspec brackets stage another file as well",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "selected": "a[1].txt",
+        "staged": "a1.txt\na[1].txt"
+      }
+    },
+    {
+      "id": "G14",
+      "title": "Create-branch input -D deletes the start-point branch",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "value": {
+            "ok": true,
+            "branch": "-D",
+            "current": "main"
+          }
+        },
+        "remaining": "main"
+      }
+    },
+    {
+      "id": "G15",
+      "title": "Soft reset with ref --hard discards working changes",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "value": {
+            "ok": true,
+            "output": "HEAD is now at 1aa6968 base"
+          }
+        },
+        "file": "base\n"
+      }
+    },
+    {
+      "id": "G16",
+      "title": "Tag creation input -d deletes existing tag",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "value": {
+            "ok": true,
+            "tag": "-d"
+          }
+        },
+        "tags": ""
+      }
+    },
+    {
+      "id": "G17",
+      "title": "Push defaults origin despite configured upstream name",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "tracking": "upstream/review",
+        "originUpdated": true,
+        "upstreamUpdated": false
+      }
+    },
+    {
+      "id": "G18",
+      "title": "Merge into a remote ref leaves merge commit detached",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "ok": true,
+          "conflict": false,
+          "into": "origin/main",
+          "from": "feature",
+          "output": "Updating d1072d7..c332bb2\nFast-forward\n feature.txt | 1 +\n 1 file changed, 1 insertion(+)\n create mode 100644 feature.txt",
+          "upToDate": false,
+          "fastForward": true
+        },
+        "current": "HEAD",
+        "targetRefUnchanged": true
+      }
+    },
+    {
+      "id": "G19",
+      "title": "Merge commit info and file diff omit first-parent change",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "files": [],
+        "apiDiff": {
+          "text": ""
+        },
+        "firstParentFiles": "feature.txt"
+      }
+    },
+    {
+      "id": "G20",
+      "title": "Commit ZIP duplicates COMMIT.txt metadata name",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "entries": [
+          {
+            "name": "COMMIT.txt",
+            "bytes": 18
+          },
+          {
+            "name": "other.txt",
+            "bytes": 6
+          },
+          {
+            "name": "COMMIT.txt",
+            "bytes": 146
+          }
+        ]
+      }
+    },
+    {
+      "id": "G21",
+      "title": "Space-containing filesystem remote is missing from list",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "native": "origin\tC:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-1t1TLR\\space remote.git (fetch)\norigin\tC:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-1t1TLR\\space remote.git (push)",
+        "parsed": []
+      }
+    },
+    {
+      "id": "G22",
+      "title": "Remote checkout silently uses unrelated same-named local branch",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "current": "feature",
+        "matchesChosenRemote": false,
+        "tracking": ""
+      }
+    },
+    {
+      "id": "G23",
+      "title": "Accept deleted side of modify/delete conflict fails",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "mergeConflict": true,
+        "error": "error: path 'base.txt' does not have their version"
+      }
+    },
+    {
+      "id": "G24",
+      "title": "Continue without operation is rejected by native empty-message check",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "error": "Aborting commit due to empty commit message."
+        },
+        "headChanged": false,
+        "subject": "base"
+      }
+    },
+    {
+      "id": "G25",
+      "title": "Abort bisect routes to merge abort",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "op": "bisect",
+        "error": "fatal: There is no merge to abort (MERGE_HEAD missing)."
+      }
+    },
+    {
+      "id": "G26",
+      "title": "Stale stash index drops a different stash after new stash",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "selected": {
+          "index": 0,
+          "ref": "stash@{0}",
+          "hash": "a55ad2f5fbbc21cd926dd79e8601185bf3634631",
+          "rel": "0 seconds ago",
+          "date": "2026-09-09T21:41:06+05:30",
+          "branch": "main",
+          "message": "wanted",
+          "wip": false
+        },
+        "remaining": [
+          {
+            "index": 0,
+            "ref": "stash@{0}",
+            "hash": "a55ad2f5fbbc21cd926dd79e8601185bf3634631",
+            "rel": "0 seconds ago",
+            "date": "2026-09-09T21:41:06+05:30",
+            "branch": "main",
+            "message": "wanted",
+            "wip": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "G27",
+      "title": "Full archive preserves binary bytes",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "bytes": [
+          0,
+          255,
+          128,
+          1,
+          13,
+          10
+        ]
+      }
+    },
+    {
+      "id": "G28",
+      "title": "Native checkout protects conflicting uncommitted changes",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "blocked": true,
+        "current": "main"
+      }
+    },
+    {
+      "id": "G29",
+      "title": "Pull conflict is a resolved result with ok false",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "ok": false,
+        "conflict": true,
+        "status": "UU base.txt"
+      }
+    },
+    {
+      "id": "G30",
+      "title": "Tag remote failure leaves local tag already deleted",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "error": "fatal: 'missing' does not appear to be a git repository fatal: Could not read from remote repository.  Please make sure you have the correct access rights"
+        },
+        "localTagStillExists": false
+      }
+    },
+    {
+      "id": "G31",
+      "title": "Commit ZIP silently skips quoted Unicode path",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "result": {
+          "ok": true,
+          "path": "C:\\Users\\harsha\\AppData\\Local\\Temp\\atomnano-git-audit-1t1TLR\\omit.zip",
+          "files": 1,
+          "size": 352
+        },
+        "names": [
+          "plain.txt",
+          "COMMIT.txt"
+        ]
+      }
+    },
+    {
+      "id": "G32",
+      "title": "Historical binary file decodes into replacement characters",
+      "kind": "reproduction",
+      "matched": true,
+      "evidence": {
+        "contentCodePoints": [
+          0,
+          65533,
+          65533,
+          1
+        ],
+        "binaryFlag": false
+      }
+    },
+    {
+      "id": "G33",
+      "title": "Rebase continue can return another conflict",
+      "kind": "positive",
+      "matched": true,
+      "evidence": {
+        "firstConflict": true,
+        "secondConflict": true,
+        "op": "rebase",
+        "remaining": [
+          "b.txt"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "total": 33,
+    "matched": 33,
+    "unexpected": []
+  }
+}

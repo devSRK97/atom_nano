@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "allowJs": true,
+    "noEmit": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "src/renderer/editor/cm.bundle.js",
+    "src/renderer/editor/cm-worker.bundle.js",
+    "src/renderer/editor/cmchunk"
+  ]
+}

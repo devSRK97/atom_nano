@@ -1,0 +1,805 @@
+{
+  "date": "2026-09-10",
+  "project": "E:\\Mac\\AtomNano",
+  "scope": "Conversation context, synthesis, bounded transfer, continuity and caching for Claude/Codex; audit and implementation handoff only",
+  "productionModifiedByAudit": false,
+  "liveProvidersContacted": false,
+  "savedConversationsRead": false,
+  "credentialsRead": false,
+  "reviewedSources": [
+    {
+      "path": "src/main/history.js",
+      "lines": 243,
+      "bytes": 15873,
+      "sha256": "d72a605cd4e2bb2d0b39a1d72b578fb67965aedc6baa538fe60dea66b8628ed8"
+    },
+    {
+      "path": "src/main/claude.js",
+      "lines": 1929,
+      "bytes": 127364,
+      "sha256": "628bd135cadfd32cd307f6bff5c01aa701fdb3eb1947e5f76d3b3c7122849744"
+    },
+    {
+      "path": "src/main/convo.js",
+      "lines": 221,
+      "bytes": 10758,
+      "sha256": "47368b2b38f4513c6d476d06a7a9c57d0bc294ae1e4c6f1b6db59cb2ec331e88"
+    },
+    {
+      "path": "src/main/store.js",
+      "lines": 676,
+      "bytes": 36031,
+      "sha256": "cf3dd18e593c27d0861f79a19e1830e86cc328ed224c126ed0516c1495dc93ad"
+    },
+    {
+      "path": "src/main/codex.js",
+      "lines": 187,
+      "bytes": 9134,
+      "sha256": "13cdfaef1f50cf747c588d4de3bd15adf0c58c17c194eddb44e516eef9744fb4"
+    },
+    {
+      "path": "src/main/codex-appserver.js",
+      "lines": 581,
+      "bytes": 39312,
+      "sha256": "8758b2b332454814f31178f5753ac82c9cd70560baa696785de96765f0d796cb"
+    },
+    {
+      "path": "src/main/providers.js",
+      "lines": 420,
+      "bytes": 27246,
+      "sha256": "70afb9bcc0970ec2a4767728807d3a985424ef603082aa1e58711fed273f4610"
+    },
+    {
+      "path": "src/main/main.js",
+      "lines": 1538,
+      "bytes": 104515,
+      "sha256": "973b45ff63363495d72e8208749a7b77155c7527ac117e3af718362421793810"
+    },
+    {
+      "path": "src/main/preload.js",
+      "lines": 427,
+      "bytes": 27380,
+      "sha256": "d5cb6b33d71e31a870954cdb5042a6f0d9fee93b99784235994b305c4520410e"
+    },
+    {
+      "path": "src/renderer/app.js",
+      "lines": 10778,
+      "bytes": 642882,
+      "sha256": "49adafc9c18e61f6c6fa3b6656ceaae78f7b843d69f8f90517d688344ca99ed1"
+    },
+    {
+      "path": "scripts/test-transfer.js",
+      "lines": 132,
+      "bytes": 15219,
+      "sha256": "1125a1200171dc8727b6cb3878f2f2ac17009519ba002f072de3b7eedc7cb6c1"
+    },
+    {
+      "path": "scripts/test-audit.js",
+      "lines": 299,
+      "bytes": 27531,
+      "sha256": "31ae74d75ea5d9f659b84b036fcec5547907e22604d7dee597015b4032127c58"
+    },
+    {
+      "path": "smoke-tests/test-context.js",
+      "lines": 59,
+      "bytes": 3809,
+      "sha256": "7d2833cb356498dafa7393bddb84f51c76eae25d0b670f9a5b7dc7b52022eae7"
+    },
+    {
+      "path": "smoke-tests/test-context-rotation.js",
+      "lines": 152,
+      "bytes": 8909,
+      "sha256": "2f37b2bfb0c3227cb0326c4f394c5a0b78a03dd49534ca516bc297183ffc65af"
+    },
+    {
+      "path": "package.json",
+      "lines": 93,
+      "bytes": 4010,
+      "sha256": "d0ab1e642e41108c74f0c8aacc14aa31c66b8759eaf9b9683d93a2deb163b1c7"
+    },
+    {
+      "path": "package-lock.json",
+      "lines": 7883,
+      "bytes": 281135,
+      "sha256": "08e6d0dafb5375c76acf3c87b73c777217b848d00353915ef0c7db592c542960"
+    },
+    {
+      "path": "node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts",
+      "bytes": 433155,
+      "lines": 8805,
+      "sha256": "59560e31f91e47ed93e7cbcaa846e3fc3c96d8dcc41ea36cda64de96c0c4edf4"
+    },
+    {
+      "path": "node_modules/@openai/codex-sdk/dist/index.d.ts",
+      "bytes": 10369,
+      "lines": 286,
+      "sha256": "954d28bec3db17316c2f6acbbd157210ded9f75143c50827215739110327c7ac"
+    },
+    {
+      "path": "node_modules/@openai/codex-sdk/dist/index.js",
+      "bytes": 17089,
+      "lines": 550,
+      "sha256": "d62ed107033bdba802b283c77d875e4bec3deb2704a910bb7e3f95059473b16f"
+    }
+  ],
+  "installedVersions": [
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.263"
+    },
+    {
+      "package": "@openai/codex-sdk",
+      "version": "0.153.4"
+    }
+  ],
+  "initialSourceFingerprints": [
+    {
+      "path": "src/main/history.js",
+      "lines": 243,
+      "bytes": 15873,
+      "sha256": "d72a605cd4e2bb2d0b39a1d72b578fb67965aedc6baa538fe60dea66b8628ed8"
+    },
+    {
+      "path": "src/main/claude.js",
+      "lines": 1929,
+      "bytes": 127364,
+      "sha256": "628bd135cadfd32cd307f6bff5c01aa701fdb3eb1947e5f76d3b3c7122849744"
+    },
+    {
+      "path": "src/main/convo.js",
+      "lines": 221,
+      "bytes": 10758,
+      "sha256": "47368b2b38f4513c6d476d06a7a9c57d0bc294ae1e4c6f1b6db59cb2ec331e88"
+    },
+    {
+      "path": "src/main/store.js",
+      "lines": 676,
+      "bytes": 36031,
+      "sha256": "cf3dd18e593c27d0861f79a19e1830e86cc328ed224c126ed0516c1495dc93ad"
+    },
+    {
+      "path": "src/main/codex.js",
+      "lines": 187,
+      "bytes": 9134,
+      "sha256": "13cdfaef1f50cf747c588d4de3bd15adf0c58c17c194eddb44e516eef9744fb4"
+    },
+    {
+      "path": "src/main/codex-appserver.js",
+      "lines": 581,
+      "bytes": 39312,
+      "sha256": "8758b2b332454814f31178f5753ac82c9cd70560baa696785de96765f0d796cb"
+    },
+    {
+      "path": "src/main/providers.js",
+      "lines": 420,
+      "bytes": 27246,
+      "sha256": "70afb9bcc0970ec2a4767728807d3a985424ef603082aa1e58711fed273f4610"
+    },
+    {
+      "path": "src/main/main.js",
+      "lines": 1538,
+      "bytes": 104515,
+      "sha256": "973b45ff63363495d72e8208749a7b77155c7527ac117e3af718362421793810"
+    },
+    {
+      "path": "src/main/preload.js",
+      "lines": 427,
+      "bytes": 27380,
+      "sha256": "d5cb6b33d71e31a870954cdb5042a6f0d9fee93b99784235994b305c4520410e"
+    },
+    {
+      "path": "src/renderer/app.js",
+      "lines": 10778,
+      "bytes": 642882,
+      "sha256": "49adafc9c18e61f6c6fa3b6656ceaae78f7b843d69f8f90517d688344ca99ed1"
+    },
+    {
+      "path": "scripts/test-transfer.js",
+      "lines": 132,
+      "bytes": 15219,
+      "sha256": "1125a1200171dc8727b6cb3878f2f2ac17009519ba002f072de3b7eedc7cb6c1"
+    },
+    {
+      "path": "scripts/test-audit.js",
+      "lines": 299,
+      "bytes": 27531,
+      "sha256": "31ae74d75ea5d9f659b84b036fcec5547907e22604d7dee597015b4032127c58"
+    },
+    {
+      "path": "smoke-tests/test-context.js",
+      "lines": 59,
+      "bytes": 3809,
+      "sha256": "7d2833cb356498dafa7393bddb84f51c76eae25d0b670f9a5b7dc7b52022eae7"
+    },
+    {
+      "path": "smoke-tests/test-context-rotation.js",
+      "lines": 152,
+      "bytes": 8909,
+      "sha256": "2f37b2bfb0c3227cb0326c4f394c5a0b78a03dd49534ca516bc297183ffc65af"
+    },
+    {
+      "path": "package.json",
+      "lines": 93,
+      "bytes": 4010,
+      "sha256": "d0ab1e642e41108c74f0c8aacc14aa31c66b8759eaf9b9683d93a2deb163b1c7"
+    },
+    {
+      "path": "package-lock.json",
+      "lines": 7883,
+      "bytes": 281135,
+      "sha256": "08e6d0dafb5375c76acf3c87b73c777217b848d00353915ef0c7db592c542960"
+    }
+  ],
+  "findings": [
+    {
+      "id": "CTX-001",
+      "priority": "P1",
+      "title": "Synthesize creates a full-transcript prompt instead of a bounded continuation",
+      "refs": [
+        {
+          "path": "src/main/main.js",
+          "line": 741
+        },
+        {
+          "path": "src/renderer/app.js",
+          "line": 5526
+        }
+      ],
+      "checks": [
+        "C05"
+      ]
+    },
+    {
+      "id": "CTX-002",
+      "priority": "P1",
+      "title": "One large message bypasses summarization chunk limits",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 731
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 170
+        }
+      ],
+      "checks": [
+        "C07"
+      ]
+    },
+    {
+      "id": "CTX-003",
+      "priority": "P1",
+      "title": "The assembled summary has no enforced size contract",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 709
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 740
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 191
+        }
+      ],
+      "checks": [
+        "C08"
+      ]
+    },
+    {
+      "id": "CTX-004",
+      "priority": "P1",
+      "title": "Budgeting ignores the complete request and occupied native context",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 690
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 505
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1034
+        },
+        {
+          "path": "src/main/codex.js",
+          "line": 38
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 324
+        }
+      ],
+      "checks": [
+        "C09",
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "CTX-005",
+      "priority": "P1",
+      "title": "Failed context preparation can strand Claude in a running state",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 491
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 511
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 578
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1890
+        }
+      ],
+      "checks": [
+        "C33",
+        "C36"
+      ]
+    },
+    {
+      "id": "CTX-006",
+      "priority": "P1",
+      "title": "The current prompt boundary moves when planner/reviewer cards are appended",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 420
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 432
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 457
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 506
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 852
+        }
+      ],
+      "checks": [
+        "C12",
+        "C13"
+      ]
+    },
+    {
+      "id": "CTX-007",
+      "priority": "P1",
+      "title": "Stop, retry and partial failure can replay context already accepted by the provider",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 614
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1036
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1146
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 123
+        }
+      ],
+      "checks": [
+        "C14",
+        "C15",
+        "C16"
+      ]
+    },
+    {
+      "id": "CTX-008",
+      "priority": "P1",
+      "title": "Overflow recovery omits work already completed in the failing turn",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 603
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1032
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1085
+        }
+      ],
+      "checks": [
+        "C34",
+        "C39"
+      ]
+    },
+    {
+      "id": "CTX-009",
+      "priority": "P1",
+      "title": "Message deletion invalidates positional cursors and cached summaries",
+      "refs": [
+        {
+          "path": "src/main/store.js",
+          "line": 584
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 31
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 214
+        },
+        {
+          "path": "src/renderer/app.js",
+          "line": 6050
+        }
+      ],
+      "checks": [
+        "C18",
+        "C23",
+        "C24"
+      ]
+    },
+    {
+      "id": "CTX-010",
+      "priority": "P2",
+      "title": "Summary reuse is limited to matching starts and can discard the only reusable checkpoint",
+      "refs": [
+        {
+          "path": "src/main/history.js",
+          "line": 214
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 220
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 729
+        },
+        {
+          "path": "src/main/store.js",
+          "line": 338
+        }
+      ],
+      "checks": [
+        "C20",
+        "C35"
+      ]
+    },
+    {
+      "id": "CTX-011",
+      "priority": "P2",
+      "title": "A cache hit or a one-entry page can still scan the complete historical record",
+      "refs": [
+        {
+          "path": "src/main/history.js",
+          "line": 170
+        },
+        {
+          "path": "src/main/store.js",
+          "line": 369
+        },
+        {
+          "path": "src/main/store.js",
+          "line": 486
+        },
+        {
+          "path": "src/main/main.js",
+          "line": 742
+        }
+      ],
+      "checks": [
+        "C19",
+        "C40"
+      ]
+    },
+    {
+      "id": "CTX-012",
+      "priority": "P2",
+      "title": "A large recent entry can eliminate the entire exact recent tail",
+      "refs": [
+        {
+          "path": "src/main/history.js",
+          "line": 181
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 159
+        }
+      ],
+      "checks": [
+        "C21"
+      ]
+    },
+    {
+      "id": "CTX-013",
+      "priority": "P2",
+      "title": "Head-only tool shortening loses important outcomes without an exact retrieval path",
+      "refs": [
+        {
+          "path": "src/main/history.js",
+          "line": 142
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 146
+        },
+        {
+          "path": "src/main/history.js",
+          "line": 152
+        },
+        {
+          "path": "src/main/codex-appserver.js",
+          "line": 470
+        }
+      ],
+      "checks": [
+        "C22",
+        "C30"
+      ]
+    },
+    {
+      "id": "CTX-014",
+      "priority": "P2",
+      "title": "Synthesis loses selected session settings as it creates the continuation",
+      "refs": [
+        {
+          "path": "src/main/main.js",
+          "line": 748
+        },
+        {
+          "path": "src/main/store.js",
+          "line": 519
+        },
+        {
+          "path": "src/main/store.js",
+          "line": 335
+        }
+      ],
+      "checks": [
+        "C06"
+      ]
+    },
+    {
+      "id": "CTX-015",
+      "priority": "P2",
+      "title": "Claude recovery does not handle a second overflow after a lost-session retry",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 581
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 587
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 595
+        }
+      ],
+      "checks": [
+        "C32"
+      ]
+    },
+    {
+      "id": "CTX-016",
+      "priority": "P2",
+      "title": "Context telemetry is incomplete and is not used to prevent overflow",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 1749
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1352
+        },
+        {
+          "path": "src/main/codex-appserver.js",
+          "line": 416
+        },
+        {
+          "path": "src/main/codex-appserver.js",
+          "line": 421
+        },
+        {
+          "path": "src/renderer/app.js",
+          "line": 4863
+        },
+        {
+          "path": "node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts",
+          "line": 2769
+        }
+      ],
+      "checks": [
+        "C26",
+        "C28",
+        "C29",
+        "C30"
+      ]
+    },
+    {
+      "id": "CTX-017",
+      "priority": "P2",
+      "title": "Codex usage normalization adds cached tokens to input a second time",
+      "refs": [
+        {
+          "path": "src/main/codex-appserver.js",
+          "line": 423
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1138
+        },
+        {
+          "path": "src/renderer/app.js",
+          "line": 6466
+        },
+        {
+          "path": "node_modules/@openai/codex-sdk/dist/index.d.ts",
+          "line": 120
+        }
+      ],
+      "checks": [
+        "C25"
+      ]
+    },
+    {
+      "id": "CTX-018",
+      "priority": "P2",
+      "title": "Repeated procedures and auxiliary workflows keep adding avoidable context",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 369
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 377
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 777
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1849
+        }
+      ],
+      "checks": [
+        "C31"
+      ]
+    },
+    {
+      "id": "CTX-019",
+      "priority": "P2",
+      "title": "Separate summary calls are missing from the session's usage record",
+      "refs": [
+        {
+          "path": "src/main/claude.js",
+          "line": 752
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 757
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1890
+        },
+        {
+          "path": "src/main/claude.js",
+          "line": 1477
+        }
+      ],
+      "checks": []
+    }
+  ],
+  "severityTotals": {
+    "P1": 9,
+    "P2": 10
+  },
+  "testSummary": {
+    "total": 40,
+    "passed": 40,
+    "failed": 0,
+    "reproductions": 31,
+    "positiveControls": 8,
+    "sourceContractChecks": 1,
+    "note": "Passing reproduction checks confirm observed current behavior; no fix is implied. C25 tests app arithmetic using OpenAI-shaped usage, not live billing or app-server last-event semantics."
+  },
+  "evidenceFiles": [
+    {
+      "path": "audit-evidence/context-2026-09-10/context-characterization.cjs",
+      "bytes": 28878,
+      "lines": 308,
+      "sha256": "d74ba8791d64c44e808ed98b8be6cfa9c8b9b3f4a1a955a1dd404eb3572a56cf"
+    },
+    {
+      "path": "audit-evidence/context-2026-09-10/context-results.json",
+      "bytes": 11582,
+      "lines": 444,
+      "sha256": "2626d30e67c77a3a596e6fffc38e5807c02f3aec7e4daa53f2cbc9099cfc05f9"
+    }
+  ],
+  "testHarnessIsolation": {
+    "originalModulesEvaluated": [
+      "src/main/history.js",
+      "src/main/claude.js",
+      "src/main/store.js"
+    ],
+    "ipcHandler": "sessions:synthesize extracted unchanged from src/main/main.js",
+    "substitutions": [
+      "SDK loader replaced in VM with a recording async generator",
+      "Native providers, credentials/environment resolution, and lifecycle I/O mocked",
+      "Sessions stored in memory; archive parser receives synthetic in-memory JSONL",
+      "No real tool execution, model calls, account auth or Electron startup"
+    ],
+    "unverified": [
+      "Native model context tokens and cache-hit ratios",
+      "Real-provider overflow and compaction integration",
+      "Model summary quality and exact-fact recall",
+      "Packaged Electron UI/performance"
+    ]
+  },
+  "officialDocs": [
+    {
+      "title": "OpenAI Codex app-server",
+      "url": "https://learn.chatgpt.com/docs/app-server"
+    },
+    {
+      "title": "OpenAI prompt caching",
+      "url": "https://developers.openai.com/api/docs/guides/prompt-caching"
+    },
+    {
+      "title": "OpenAI API compaction",
+      "url": "https://developers.openai.com/api/docs/guides/compaction"
+    },
+    {
+      "title": "Claude Agent SDK loop and compaction",
+      "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+    },
+    {
+      "title": "Claude context windows",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows"
+    },
+    {
+      "title": "Claude prompt caching",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    }
+  ],
+  "report": {
+    "path": "ATOMNANO_CONTEXT_CONTINUITY_AUDIT_2026-09-10.md",
+    "preparedCharacters": 61175
+  },
+  "positiveControlIds": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C17",
+    "C27",
+    "C37",
+    "C38"
+  ]
+}

@@ -1,0 +1,86 @@
+appId: com.atomailabs.atomnano
+productName: AtomNano
+copyright: Copyright © 2026 Atom AI Labs
+
+directories:
+  output: dist
+  buildResources: build
+
+# asar disabled: the Claude Agent SDK is ESM and spawns child processes /
+# native binaries — running it from plain files (not an asar archive) avoids
+# ESM-in-asar resolution pitfalls and keeps behaviour identical to dev.
+asar: false
+
+# node-pty is already built for the app's Electron ABI by scripts/rebuild-pty.js
+# (postinstall). Let electron-builder ship that binary as-is instead of triggering
+# its own rebuild, which would re-hit winpty's Spectre/GetCommitHash build snags.
+npmRebuild: false
+
+# Keep the defaults (src, package.json, production node_modules) and only add
+# ignores. The SDK's ~236 MB bundled platform binaries are excluded: AtomNano
+# drives the user's installed claude.exe (see README requirements).
+files:
+  - "!dist${/*}"
+  - "!scripts${/*}"
+  - "!smoke-tests${/*}"
+  - "!mac${/*}"
+  - "!.github${/*}"
+  - "!test-results${/*}"
+  - "!audit-evidence${/*}"
+  - "!**/*.map"
+  - "!**/.editorconfig"
+  - "!node_modules/@anthropic-ai/claude-agent-sdk-win32-x64${/*}"
+  - "!node_modules/@anthropic-ai/claude-agent-sdk-win32-arm64${/*}"
+  - "!node_modules/@anthropic-ai/claude-agent-sdk-linux-*${/*}"
+  - "!node_modules/@anthropic-ai/claude-agent-sdk-darwin-*${/*}"
+
+# ---- macOS (see mac/README.md) ----
+# Built ON macOS only (electron-builder refuses mac targets on a Windows host) — locally with
+# mac/build.sh or, from Windows, through the GitHub Actions workflow (mac/build-mac.ps1).
+# Dev distribution: UNSIGNED. `identity: null` skips code signing entirely, so no Apple account is
+# needed; first launch requires right-click → Open (or removing the quarantine attribute).
+# To sign + notarize later: delete `identity: null`, set hardenedRuntime: true and provide
+# CSC_LINK / CSC_KEY_PASSWORD and APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
+mac:
+  category: public.app-category.developer-tools
+  icon: build/icon.icns
+  target:
+    - target: dmg
+    - target: zip
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
+  darkModeSupport: true
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  entitlements: mac/entitlements.mac.plist
+  entitlementsInherit: mac/entitlements.mac.plist
+  extendInfo:
+    NSAppleEventsUsageDescription: AtomNano asks Terminal to open a shell for CLI sign-in and folder terminals.
+    NSHumanReadableCopyright: Copyright © 2026 Atom AI Labs
+
+dmg:
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
+  contents:
+    - { x: 140, y: 200 }
+    - { x: 400, y: 200, type: link, path: /Applications }
+  window: { width: 540, height: 380 }
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: ${productName}-Setup-${version}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: AtomNano
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  deleteAppDataOnUninstall: false
