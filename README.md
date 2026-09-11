@@ -79,7 +79,7 @@ stores data in `%APPDATA%\AtomNano` as usual.)
 
 ## macOS
 
-AtomNano runs on macOS too (Apple Silicon and Intel). The macOS build is an unsigned
+AtomNano runs on macOS too (Apple Silicon and Intel). The macOS build is an ad-hoc-signed
 dev build — no Apple account needed. Everything macOS-specific is in [`mac/`](mac/README.md):
 
 ```bat

@@ -5,12 +5,20 @@ app, and this guide. The build configuration itself is the `mac:` / `dmg:` secti
 `../electron-builder.yml`; the app code is shared (`src/main/platform.js` holds the few
 places where Windows and macOS differ).
 
-This is a **dev build: unsigned, not notarized, no Apple account needed.** On first launch
-macOS shows "AtomNano can't be opened because Apple cannot check it for malicious software".
-Right-click the app → **Open** (once), or run:
+This is a **dev build: ad-hoc signed, not notarized, no Apple account needed.** (Apple Silicon
+refuses a completely unsigned app with "AtomNano is damaged and can't be opened" — the ad-hoc
+signature avoids that.) On first launch macOS still says the developer cannot be verified:
+right-click the app → **Open** (once). On macOS 15+ use System Settings → Privacy & Security →
+**Open Anyway**. Or from Terminal:
 
 ```sh
 xattr -dr com.apple.quarantine /Applications/AtomNano.app
+```
+
+If you ever see "damaged" with an older build, repair it in Terminal:
+
+```sh
+xattr -cr /Applications/AtomNano.app && codesign --force --deep --sign - /Applications/AtomNano.app
 ```
 
 ## Requirements on the Mac that runs it
@@ -77,7 +85,8 @@ SQLite driver. Build each architecture on its own machine (or runner) for a full
 
 ## Signing later (only if you distribute to others)
 
-Join the Apple Developer Program, then in `electron-builder.yml` remove `identity: null`,
-set `hardenedRuntime: true`, and give the workflow these repository secrets:
+Join the Apple Developer Program, then in `electron-builder.yml` replace `identity: "-"` with
+your Developer ID name (or remove it so CSC_LINK supplies the certificate), set
+`hardenedRuntime: true`, and give the workflow these repository secrets:
 `CSC_LINK` (base64 .p12), `CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`,
 `APPLE_TEAM_ID`. electron-builder signs with the entitlements in this folder and notarizes.

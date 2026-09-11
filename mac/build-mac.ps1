@@ -109,11 +109,22 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --- download ---
+# gh stages the artifact zip (~300 MB) in %TEMP%; use a folder next to the output so a full
+# system drive never breaks the download.
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
-gh run download $runId --repo $repo -D $Out
+$tmp = Join-Path (Get-Location) "dist\tmp"
+New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+$env:TEMP = $tmp; $env:TMP = $tmp
+$dest = Join-Path $Out ("run-" + $runId)     # one folder per build, so re-runs never collide with an earlier download
+gh run download $runId --repo $repo -D $dest
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "[ERROR] download failed. Retry with:  gh run download $runId --repo $repo -D $dest" -ForegroundColor Red
+  exit 1
+}
+Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
 Write-Host ""
-Write-Host "Done. macOS installers in $Out :" -ForegroundColor Green
-Get-ChildItem -Path $Out -Recurse -Include *.dmg, *.zip | ForEach-Object { Write-Host "  $($_.FullName)" }
+Write-Host "Done. macOS installers in $dest :" -ForegroundColor Green
+Get-ChildItem -Path $dest -Recurse -Include *.dmg, *.zip | ForEach-Object { Write-Host "  $($_.FullName)" }
 Write-Host ""
 Write-Host "On the Mac: open the DMG, drag AtomNano to Applications, then right-click > Open the first time"
 Write-Host "(unsigned dev build), or run:  xattr -dr com.apple.quarantine /Applications/AtomNano.app"

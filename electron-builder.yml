@@ -37,10 +37,12 @@ files:
 # ---- macOS (see mac/README.md) ----
 # Built ON macOS only (electron-builder refuses mac targets on a Windows host) — locally with
 # mac/build.sh or, from Windows, through the GitHub Actions workflow (mac/build-mac.ps1).
-# Dev distribution: UNSIGNED. `identity: null` skips code signing entirely, so no Apple account is
-# needed; first launch requires right-click → Open (or removing the quarantine attribute).
-# To sign + notarize later: delete `identity: null`, set hardenedRuntime: true and provide
-# CSC_LINK / CSC_KEY_PASSWORD and APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
+# Dev distribution: AD-HOC signed (`identity: "-"`), no Apple account. Apple Silicon refuses to run
+# a completely unsigned app ("AtomNano is damaged and can't be opened"); an ad-hoc signature makes
+# it a normal "unidentified developer" app that opens via right-click → Open / Open Anyway.
+# To sign + notarize for real later: set identity to your Developer ID (or remove it and let
+# CSC_LINK / CSC_KEY_PASSWORD supply the certificate), hardenedRuntime: true, and provide
+# APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID for notarization.
 mac:
   category: public.app-category.developer-tools
   icon: build/icon.icns
@@ -49,7 +51,7 @@ mac:
     - target: zip
   artifactName: ${productName}-${version}-mac-${arch}.${ext}
   darkModeSupport: true
-  identity: null
+  identity: "-"
   hardenedRuntime: false
   gatekeeperAssess: false
   entitlements: mac/entitlements.mac.plist
