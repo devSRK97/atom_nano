@@ -7,6 +7,7 @@ const path = require("path");
 const store = require("./store");
 const profiles = require("./profiles");
 const platform = require("./platform");
+const credstore = require("./credstore");
 
 function run(cmd, args, timeout = 8000) {
   return new Promise((resolve) => {
@@ -48,11 +49,16 @@ function claudeConfigDir() {
   return process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), ".claude");
 }
 
-// The OS-level Claude login (~/.claude), independent of the app's own
-// CLAUDE_CONFIG_DIR home. This is where `claude login` lands when the user runs
-// it in their OWN terminal (CLAUDE_CONFIG_DIR unset there).
-function osCredentialsPath() {
-  return path.join(os.homedir(), ".claude", ".credentials.json");
+// The OS-level Claude login (~/.claude, and on macOS the default Keychain entry — credstore.osLogin)
+// is independent of the app's own CLAUDE_CONFIG_DIR home. It is where `claude login` lands when the
+// user runs it in their OWN terminal (CLAUDE_CONFIG_DIR unset there).
+// "How fresh is this login": the file's mtime when it came from a file, else the access token's
+// expiry (the Keychain keeps no timestamp; a refreshed token always expires later).
+function freshness(live) {
+  if (!live || !live.json) return -1;
+  if (live.mtime) return live.mtime;
+  const o = live.json.claudeAiOauth || live.json.oauth || {};
+  return +o.expiresAt || 0;
 }
 
 // Pull the OS-level terminal login into the app home when it's the real current
@@ -64,53 +70,41 @@ function osCredentialsPath() {
 // copied anything.
 function syncFromOsLogin() {
   try {
-    const osCred = osCredentialsPath();
-    if (!fs.existsSync(osCred)) return false;
-    const appCred = path.join(claudeConfigDir(), ".credentials.json");
-    if (path.resolve(osCred) === path.resolve(appCred)) return false; // OS home IS the app home
-    let appMtime = -1;
-    try { if (fs.existsSync(appCred)) appMtime = fs.statSync(appCred).mtimeMs; } catch { /* treat as missing */ }
-    const osMtime = fs.statSync(osCred).mtimeMs;
-    if (appMtime >= 0 && osMtime <= appMtime) return false; // app login is at least as fresh — keep it
+    const osLive = credstore.osLogin();
+    if (!osLive.json) return false;
+    if (path.resolve(claudeConfigDir()) === path.resolve(credstore.defaultHome())) return false; // OS home IS the app home
+    const appLive = credstore.readLive(claudeConfigDir());
+    const appFresh = freshness(appLive), osFresh = freshness(osLive);
+    if (appLive.json && osFresh <= appFresh) return false; // app login is at least as fresh — keep it
     // A newer OS login that is a DIFFERENT account must not clobber the account the
     // user chose in the app (they may be using the terminal for another account).
     // Only a same-account refresh (rotated tokens) — or an empty app home — imports.
-    if (appMtime >= 0) {
+    if (appLive.json) {
       try {
-        const P = require("./profiles");
-        const a = P.identityOf(P.PROVIDERS.anthropic, JSON.parse(fs.readFileSync(appCred, "utf8")), "");
-        const o = P.identityOf(P.PROVIDERS.anthropic, JSON.parse(fs.readFileSync(osCred, "utf8")), "");
+        const P = profiles;
+        const a = P.identityOf(P.PROVIDERS.anthropic, appLive.json, "");
+        const o = P.identityOf(P.PROVIDERS.anthropic, osLive.json, "");
         const comparable = (a.email && o.email) || (a.id && o.id);
         if (comparable && !P.sameAccount(a, o)) return false;
+        if (P.conflict(P.PROVIDERS.anthropic.identity(appLive.json), P.PROVIDERS.anthropic.identity(osLive.json))) return false;
       } catch { /* unreadable — fall through to the copy */ }
     }
-    // Never clobber an account the user deliberately switched to in the app with a
-    // DIFFERENT account from the terminal — only pull in the same account's newer
-    // tokens (or a first login when the app has none).
-    if (appMtime >= 0) {
-      const p = profiles.PROVIDERS.anthropic;
-      const a = p.identity(JSON.parse(fs.readFileSync(appCred, "utf8"))), b = p.identity(JSON.parse(fs.readFileSync(osCred, "utf8")));
-      if (profiles.conflict(a, b)) return false;
-    }
-    fs.mkdirSync(claudeConfigDir(), { recursive: true });
-    fs.copyFileSync(osCred, appCred);
+    credstore.writeLive(claudeConfigDir(), osLive.json);
     return true;
   } catch { return false; }
 }
 
 function credentialsInfo() {
-  const credPath = path.join(claudeConfigDir(), ".credentials.json");
-  const exists = fs.existsSync(credPath);
+  const live = credstore.readLive(claudeConfigDir());
+  const exists = !!live.json;
   let detail = "";
   if (exists) {
-    try {
-      const j = JSON.parse(fs.readFileSync(credPath, "utf8"));
-      const oauth = j.claudeAiOauth || j.oauth || {};
-      if (oauth.subscriptionType) detail = String(oauth.subscriptionType);
-      else if (oauth.expiresAt) detail = "OAuth token present";
-    } catch { detail = "present"; }
+    const oauth = live.json.claudeAiOauth || live.json.oauth || {};
+    if (oauth.subscriptionType) detail = String(oauth.subscriptionType);
+    else if (oauth.expiresAt) detail = "OAuth token present";
+    else detail = "present";
   }
-  return { credPath, exists, detail };
+  return { credPath: live.source === "keychain" ? credstore.describe(claudeConfigDir()) : live.file, exists, detail, source: live.source, json: live.json };
 }
 
 async function status() {
@@ -381,7 +375,7 @@ function liveLogin(provider) { return profiles.liveInfo(PROV(provider)); }
 const _emailByToken = new Map();
 async function resolveClaudeEmail() {
   try {
-    const live = JSON.parse(fs.readFileSync(profiles.PROVIDERS.anthropic.authPath(), "utf8"));
+    const live = profiles.PROVIDERS.anthropic.readLive();
     const o = (live && (live.claudeAiOauth || live.oauth)) || {};
     if (o.email) return o.email;
     const tok = o.accessToken || "";
@@ -423,8 +417,7 @@ function oauthToken() {
   try {
     const cred = credentialsInfo();
     if (!cred.exists) return "";
-    const j = JSON.parse(fs.readFileSync(cred.credPath, "utf8"));
-    return (j.claudeAiOauth || j.oauth || {}).accessToken || "";
+    return (cred.json.claudeAiOauth || cred.json.oauth || {}).accessToken || "";
   } catch { return ""; }
 }
 function oauthGet(apiPath, tokenOverride) {
@@ -479,4 +472,4 @@ async function saveNewLoginAsProfile(provider) {
   catch (e) { return { ok: false, detail: String(e.message || e) }; }
 }
 
-module.exports = { status, openLoginTerminal, whereClaude, cliVersion, checkUpdates, updateAll, toolVersions, toolLatest, updateTool, providerAuthStatus, authorizeProvider, listProfiles, saveCurrentAsProfile, switchProfile, deleteProfile, saveNewLoginAsProfile, renameProfile, exportProfile, importProfile, logout, liveLogin, profiles, fetchUsage, fetchProfile, isIntentionallyLoggedOut, clearLogoutMarker };
+module.exports = { status, openLoginTerminal, whereClaude, cliVersion, checkUpdates, updateAll, toolVersions, toolLatest, updateTool, providerAuthStatus, authorizeProvider, listProfiles, saveCurrentAsProfile, switchProfile, deleteProfile, saveNewLoginAsProfile, renameProfile, exportProfile, importProfile, logout, liveLogin, profiles, fetchUsage, fetchProfile, isIntentionallyLoggedOut, clearLogoutMarker, __syncFromOsLogin: syncFromOsLogin, __credentialsInfo: credentialsInfo };

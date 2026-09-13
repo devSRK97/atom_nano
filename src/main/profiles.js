@@ -24,6 +24,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const credstore = require("./credstore");   // Claude: macOS Keychain entry (+ file fallback); the file elsewhere
 
 const claudeConfigDir = () => process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), ".claude");
 const codexHome = () => process.env.CODEX_HOME || path.join(os.homedir(), ".codex");
@@ -36,10 +37,23 @@ function jwtClaims(tok) {
   try { const p = String(tok || "").split("."); if (p.length < 2) return null; return JSON.parse(Buffer.from(p[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8")); } catch { return null; }
 }
 
+// Atomic file install for the Codex login (temp next to the target, then rename over it).
+function writeFileAtomic(authPath, j) {
+  fs.mkdirSync(path.dirname(authPath), { recursive: true });
+  const tmp = authPath + ".tmp-" + process.pid;
+  fs.writeFileSync(tmp, JSON.stringify(j, null, 2), { mode: 0o600 });
+  fs.renameSync(tmp, authPath);
+}
+/* Each provider's LIVE login is accessed through readLive / writeLive / removeLive / liveStamp:
+ * Claude's lives in the macOS Keychain (see credstore.js) or a file; Codex's is always a file. */
 const PROVIDERS = {
   anthropic: {
     name: "Claude",
     authPath: () => path.join(claudeConfigDir(), ".credentials.json"),
+    readLive: () => credstore.readLive(claudeConfigDir()).json,
+    writeLive: (j) => credstore.writeLive(claudeConfigDir(), j),
+    removeLive: () => credstore.removeLive(claudeConfigDir()),
+    liveStamp: () => credstore.liveStamp(claudeConfigDir()),
     dir: () => path.join(claudeConfigDir(), "profiles"),
     valid: (j) => !!(j && (j.claudeAiOauth || j.oauth)),
     identity(j) {
@@ -53,6 +67,10 @@ const PROVIDERS = {
   openai: {
     name: "Codex",
     authPath: () => path.join(codexHome(), "auth.json"),
+    readLive: () => readJson(path.join(codexHome(), "auth.json")),
+    writeLive: (j) => writeFileAtomic(path.join(codexHome(), "auth.json"), j),
+    removeLive: () => { const f = path.join(codexHome(), "auth.json"); try { if (fs.existsSync(f)) fs.unlinkSync(f); return true; } catch { return false; } },
+    liveStamp: () => { try { return fs.statSync(path.join(codexHome(), "auth.json")).mtimeMs || 0; } catch { return 0; } },
     dir: () => path.join(codexHome(), "profiles"),
     valid: (j) => !!(j && (j.tokens || j.OPENAI_API_KEY)),
     identity(j) {
@@ -111,7 +129,7 @@ function conflict(a, b) {
 function accountKey(provider) {
   try {
     const p = P(provider);
-    const live = readJson(p.authPath());
+    const live = p.readLive();
     if (!p.valid(live)) return "";
     const id = p.identity(live);
     return id.id ? "id:" + shortHash(id.id) : id.email ? "email:" + shortHash(id.email.toLowerCase()) : id.fp ? "fp:" + shortHash(id.fp) : "";
@@ -123,7 +141,7 @@ function accountKey(provider) {
 // `hint.email` is an identity resolved out-of-band (OAuth profile API).
 function activeLabel(provider, hint = {}) {
   const p = P(provider);
-  const live = readJson(p.authPath());
+  const live = p.readLive();
   if (!p.valid(live)) return "";
   const labels = profileLabels(p);
   const lid = { ...p.identity(live) }; if (hint.email && !lid.email) lid.email = hint.email;
@@ -140,7 +158,7 @@ function activeLabel(provider, hint = {}) {
 // has none, which is what keeps a foreign login from being mistaken for rotation.
 function reconcile(provider, hint = {}) {
   const p = P(provider);
-  const live = readJson(p.authPath());
+  const live = p.readLive();
   if (!p.valid(live)) return { ok: false, reason: "no live login" };
   const lid = { ...p.identity(live) }; if (hint.email && !lid.email) lid.email = hint.email;
   const label = activeLabel(provider, hint);
@@ -175,7 +193,7 @@ function list(provider) {
 }
 function saveCurrent(provider, label, opts = {}) {
   const p = P(provider);
-  const live = readJson(p.authPath());
+  const live = p.readLive();
   if (!p.valid(live)) return { ok: false, detail: `No active ${p.name} login to save` };
   const lid = p.identity(live);
   const email = opts.email || lid.email;
@@ -210,8 +228,7 @@ function switchTo(provider, label) {
   if (!p.valid(target)) return { ok: false, detail: "Saved account not found or unreadable" };
   const tid = identityOf(p, target, label);
   if (tid.refreshExpiresAt && tid.refreshExpiresAt < Date.now()) return { ok: false, expired: true, detail: `The saved login for “${label}” has expired (its refresh token is past its lifetime). Sign in to that account again and re-save it.` };
-  const authPath = p.authPath();
-  const live = readJson(authPath);
+  const live = p.readLive();
   if (p.valid(live)) {
     if (sameAccount(p.identity(live), tid)) { setActive(p, label); return { ok: true, label, already: true }; }
     // Park the current login in ITS profile so its freshest tokens are what we restore later.
@@ -225,11 +242,8 @@ function switchTo(provider, label) {
       writeJson(profilePath(p, name), live); setMeta(p, name, { email: lid.email, id: lid.id });
     }
   }
-  // Atomic-ish install: write a temp file next to the target, then rename over it.
-  fs.mkdirSync(path.dirname(authPath), { recursive: true });
-  const tmp = authPath + ".tmp-" + process.pid;
-  fs.writeFileSync(tmp, JSON.stringify(target, null, 2));
-  fs.renameSync(tmp, authPath);
+  // Install where the CLI reads it (macOS Keychain + file, or the file alone).
+  p.writeLive(target);
   setActive(p, label);
   return { ok: true, label };
 }
@@ -278,7 +292,7 @@ function importFrom(provider, srcPath, label) {
 // Live-login summary for the UI (no secrets).
 function liveInfo(provider) {
   const p = P(provider);
-  const live = readJson(p.authPath());
+  const live = p.readLive();
   if (!p.valid(live)) return { loggedIn: false };
   const id = p.identity(live);
   return { loggedIn: true, email: id.email, sub: id.sub, savedAs: activeLabel(provider), expiresAt: id.expiresAt || 0, refreshExpiresAt: id.refreshExpiresAt || 0 };
@@ -287,9 +301,10 @@ const fileFilter = (provider) => P(provider).fileFilter;
 const exportExt = (provider) => P(provider).exportExt;
 
 /* ------------------------------ rotation watcher ------------------------------
- * Polls both live files (fs.watch misses the CLI's rename-over-write on Windows).
- * Any change is mirrored into the profile the login came from; listeners get
- * "profiles:changed" so open windows refresh their account lists. */
+ * Polls both live logins (fs.watch misses the CLI's rename-over-write on Windows, and the macOS
+ * Keychain has nothing to watch — its content hash is the stamp there). Any change is mirrored
+ * into the profile the login came from; listeners get "profiles:changed" so open windows refresh
+ * their account lists. */
 const stamps = {}, missing = {}, timers = {};
 const changedAt = {};   // provider → when the live file was last seen to change (identity-bound async work checks this)
 function lastChangeAt(provider) { return changedAt[provider] || 0; }
@@ -302,7 +317,7 @@ function checkOnce(notify) {
   const fire = (provider, info) => { clearTimeout(timers[provider]); timers[provider] = setTimeout(() => { try { notify && notify(provider, info); } catch { /* */ } }, 500); };
   for (const provider of Object.keys(PROVIDERS)) {
     const p = PROVIDERS[provider];
-    let st = 0; try { st = fs.statSync(p.authPath()).mtimeMs; } catch { st = 0; }
+    let st = 0; try { st = p.liveStamp() || 0; } catch { st = 0; }
     if (stamps[provider] === undefined) { stamps[provider] = st; missing[provider] = st ? 0 : 1; if (st) fire(provider, { initial: true }); continue; }
     if (!st) {
       missing[provider] = (missing[provider] || 0) + 1;
@@ -328,10 +343,9 @@ function stopWatcher() { if (watchTimer) { clearInterval(watchTimer); watchTimer
 function logout(provider) {
   const p = P(provider);
   try { reconcile(provider, {}); } catch { /* best effort */ }
-  const f = p.authPath();
-  try { if (fs.existsSync(f)) fs.unlinkSync(f); } catch (e) { return { ok: false, detail: String(e.message || e) }; }
+  try { if (!p.removeLive()) return { ok: false, detail: "The live login could not be removed" }; } catch (e) { return { ok: false, detail: String(e.message || e) }; }
   setActive(p, "");
   return { ok: true };
 }
 
-module.exports = { list, saveCurrent, switchTo, remove, rename, exportTo, importFrom, liveInfo, activeLabel, accountKey, persistLive, reconcile, logout, sameAccount, conflict, identityOf, fileFilter, exportExt, startWatcher, stopWatcher, lastChangeAt, jwtClaims, codexHome, claudeConfigDir, PROVIDERS };
+module.exports = { list, saveCurrent, switchTo, remove, rename, exportTo, importFrom, liveInfo, activeLabel, accountKey, persistLive, reconcile, logout, sameAccount, conflict, identityOf, fileFilter, exportExt, startWatcher, stopWatcher, lastChangeAt, jwtClaims, codexHome, claudeConfigDir, PROVIDERS, credstore };

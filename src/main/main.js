@@ -32,13 +32,14 @@ function seedClaudeHome(claudeDir) {
   // First-run only: carry the existing OS login into the app home so switching
   // to an app-level home doesn't log the user out. After that the app home is
   // authoritative; a later logout here won't touch ~/.claude (and vice versa).
+  // (credstore: on macOS the logins live in the Keychain, not in .credentials.json.)
   try {
-    const appCreds = path.join(claudeDir, ".credentials.json");
-    const homeCreds = path.join(os.homedir(), ".claude", ".credentials.json");
+    const credstore = require("./credstore");
     const marker = path.join(claudeDir, LOGOUT_MARKER);
-    if (fs.existsSync(appCreds)) { try { if (fs.existsSync(marker)) fs.unlinkSync(marker); } catch { /* */ } return; }
+    if (credstore.readLive(claudeDir).json) { try { if (fs.existsSync(marker)) fs.unlinkSync(marker); } catch { /* */ } return; }
     if (fs.existsSync(marker)) return;           // intentionally logged out — stay logged out
-    if (fs.existsSync(homeCreds)) fs.copyFileSync(homeCreds, appCreds);
+    const home = credstore.osLogin();
+    if (home.json) credstore.writeLive(claudeDir, home.json);
   } catch { /* ignore */ }
 }
 try {

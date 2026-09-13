@@ -33,6 +33,13 @@ xattr -cr /Applications/AtomNano.app && codesign --force --deep --sign - /Applic
 Apps launched from Finder get a minimal PATH; AtomNano merges your login shell's PATH
 (Homebrew, nvm, volta, `~/.local/bin`) at startup, so the tools your Terminal sees are found.
 
+**Login storage.** On macOS the Claude CLI keeps its login in the Keychain (account
+`claude-code-user`, service `Claude Code-credentials`), not in `~/.claude/.credentials.json`.
+AtomNano reads and writes the Keychain the same way (`src/main/credstore.js`): a `claude`
+→ `/login` done in Terminal is picked up at startup and by **Save current login**, and
+profile switching / logout act on the app's own Keychain entry
+(`Claude Code-credentials-<hash>` for AtomNano's separate Claude home), never on yours.
+
 ## Build it FROM WINDOWS (no Mac needed)
 
 electron-builder refuses macOS targets on a Windows host, and the native modules (terminal,
