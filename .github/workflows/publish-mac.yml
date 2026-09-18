@@ -1,0 +1,46 @@
+# Publish a finished build-mac run's DMG + zip as a GitHub Release, so the Mac can download it with a
+# plain link (a Release asset on a public repository needs no GitHub sign-in; an Actions artifact does).
+# Runs on a Linux runner and moves the artifact inside GitHub's network — nothing travels through the PC.
+# Started by hand from the Actions tab, or:  gh workflow run publish-mac.yml -f run_id=<id> -f tag=<tag>
+name: publish-mac
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "The build-mac run whose artifact to publish (its id from the run's URL)"
+        required: true
+        type: string
+      tag:
+        description: "Release tag (created if missing), e.g. mac-2026-09-18"
+        required: true
+        type: string
+      artifact:
+        description: "Artifact name on that run"
+        default: AtomNano-mac-arm64
+        type: string
+
+permissions:
+  contents: write   # create the release + upload its assets
+  actions: read     # download the artifact
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download the build artifact
+        run: gh run download "${{ inputs.run_id }}" --repo "${{ github.repository }}" -n "${{ inputs.artifact }}" -D out
+
+      - name: Publish the release
+        run: |
+          ls -la out
+          gh release create "${{ inputs.tag }}" out/*.dmg out/*.zip \
+            --repo "${{ github.repository }}" \
+            --title "AtomNano macOS (${{ inputs.tag }})" \
+            --latest \
+            --notes "macOS (Apple Silicon) build from build-mac run ${{ inputs.run_id }}, commit ${{ github.sha }}. Ad-hoc signed dev build: after dragging AtomNano to Applications, right-click → Open once (or run: xattr -dr com.apple.quarantine /Applications/AtomNano.app). Needs the Claude Code CLI installed and logged in on the Mac."
+          echo "Assets:"
+          gh release view "${{ inputs.tag }}" --repo "${{ github.repository }}" --json assets --jq '.assets[] | .url'
