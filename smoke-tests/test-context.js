@@ -1,8 +1,10 @@
-/* Unified workspace context (auto-included into every run) + prevent-sleep:
- *  - context.compose gathers EVERY graph/tree AtomNano maintains into one
- *    token-budgeted block: project memory graph + file tree + dependency
- *    load-bearing files + available skills
- *  - the block is bounded
+/* Context window + prevent-sleep:
+ *  - context.info reports a session's window picture before any turn — the window from the
+ *    catalog, nothing used, no native thread, no digest — through the current context API
+ *    (context:info / rollover / digest). The old unified "context.compose" block (project memory
+ *    graph + tree + load-bearing files + available skills) is gone with the graph and the Skills
+ *    dock (2026-09-18): no context.peek / context.compose / atom.graph on the bridge.
+ *  - the one-shot rollover flag round-trips (context.rollover → info.forceRollover)
  *  - the prevent-sleep setting persists (drives powerSaveBlocker in main)
  */
 "use strict";
@@ -18,8 +20,7 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   fs.rmSync(DIR, { recursive: true, force: true });
   fs.mkdirSync(path.join(DIR, "src"), { recursive: true });
   fs.writeFileSync(path.join(DIR, "package.json"), '{"name":"demo","scripts":{"test":"node t"}}\n');
-  fs.writeFileSync(path.join(DIR, "src", "b.js"), "exports.base=(a,b)=>a+b;\n");
-  fs.writeFileSync(path.join(DIR, "src", "a.js"), "const {base}=require('./b'); exports.compute=(x)=>base(x,1);\n");
+  fs.writeFileSync(path.join(DIR, "src", "a.js"), "exports.compute=(x)=>x+1;\n");
 
   const udir = path.join(os.tmpdir(), "atomnano-context-udata");
   fs.rmSync(udir, { recursive: true, force: true });
@@ -31,20 +32,28 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   await win.waitForFunction(() => typeof window.__setProject === "function" && window.atomnano && window.atomnano.context, null, { timeout: 15000 });
   await win.evaluate((p) => window.__setProject(p), DIR.replace(/\\/g, "/"));
   await win.waitForTimeout(300);
-  const CWD = DIR.replace(/\\/g, "/");
 
-  // seed a couple of graphs: a recorded run (project memory) + a skill
-  await win.evaluate((cwd) => window.atomnano.graph.record(cwd, { prompt: "add auth login flow", files: [{ path: cwd + "/src/a.js", added: 12, removed: 1 }] }), CWD);
-  await win.evaluate((cwd) => window.atomnano.skills.create(cwd, { name: "Add REST endpoint", description: "wire a new route", steps: "1 route 2 handler", triggers: ["endpoint", "route"] }), CWD);
+  /* ---------- the removed compose/graph surface is gone ---------- */
+  const api = await win.evaluate(() => ({ peek: typeof window.atomnano.context.peek, compose: typeof window.atomnano.context.compose, graph: typeof window.atomnano.graph, info: typeof window.atomnano.context.info, rollover: typeof window.atomnano.context.rollover, digest: typeof window.atomnano.context.digest }));
+  ok(api.peek === "undefined" && api.compose === "undefined" && api.graph === "undefined", "no context.peek / context.compose / atom.graph on the bridge");
+  ok(api.info === "function" && api.rollover === "function" && api.digest === "function", "context.info / rollover / digest are the context API");
 
-  /* ---------- compose pulls from every graph/tree ---------- */
-  const ctx = await win.evaluate((cwd) => window.atomnano.context.peek(cwd), CWD);
-  ok(/Project memory/.test(ctx.text), "context includes the project memory graph");
-  ok(/add auth login flow/.test(ctx.text), "…with the recorded recent work");
-  ok(/Project structure/.test(ctx.text) && /src\//.test(ctx.text), "context includes the project tree shape");
-  ok(/Load-bearing files/.test(ctx.text) && /b\.js \(1/.test(ctx.text), `context includes dependency load-bearing files (${(ctx.text.match(/Load-bearing[^\n]*/) || [""])[0]})`);
-  ok(/Available project skills/.test(ctx.text) && /Add REST endpoint/.test(ctx.text), "context includes available skills");
-  ok(ctx.chars > 0 && ctx.chars <= 2801, `composed block is bounded (${ctx.chars} chars)`);
+  /* ---------- context.info before any turn ---------- */
+  const sid = await win.evaluate(() => window.atomnano.sessions.list().then((l) => l[0] && l[0].id));
+  ok(!!sid, "a session exists to ask about");
+  const info = await win.evaluate((id) => window.atomnano.context.info(id), sid);
+  ok(info && typeof info.window === "number" && info.window > 0, `info reports the effective window (${info && info.window} tokens, ${info && info.windowSource})`);
+  ok(info && info.used === 0 && info.pct === 0 && info.source === "none", `nothing used yet (used ${info && info.used}, pct ${info && info.pct}, source ${info && info.source})`);
+  ok(info && info.thread === false && info.digest === null && info.compactions === 0, "no native thread, no digest, no compactions before the first turn");
+  ok(info && typeof info.totalEntries === "number" && typeof info.rolloverPct === "number" && info.forceRollover === false, `record size + rollover picture present (entries ${info && info.totalEntries}, rollover at ${info && info.rolloverPct}%)`);
+
+  /* ---------- the one-shot rollover flag round-trips ---------- */
+  const armed = await win.evaluate((id) => window.atomnano.context.rollover(id, true), sid);
+  const info2 = await win.evaluate((id) => window.atomnano.context.info(id), sid);
+  ok(armed === true && info2 && info2.forceRollover === true, "rollover(true) arms the next-message rollover");
+  await win.evaluate((id) => window.atomnano.context.rollover(id, false), sid);
+  const info3 = await win.evaluate((id) => window.atomnano.context.info(id), sid);
+  ok(info3 && info3.forceRollover === false, "rollover(false) disarms it again");
 
   /* ---------- prevent-sleep setting persists ---------- */
   const set = await win.evaluate(() => window.atomnano.settings.set({ preventSleep: true }));

@@ -35,15 +35,15 @@ function check(name, cond, detail) {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}${!ok && detail ? "  — " + detail : ""}`);
 }
 async function run() {
-  const store = require(path.join(ROOT, "src/main/store.js"));
-  const history = require(path.join(ROOT, "src/main/history.js"));
-  const attachments = require(path.join(ROOT, "src/main/attachments.js"));
-  const profiles = require(path.join(ROOT, "src/main/profiles.js"));
-  const providers = require(path.join(ROOT, "src/main/providers.js"));
-  const appserver = require(path.join(ROOT, "src/main/codex-appserver.js"));
-  const codex = require(path.join(ROOT, "src/main/codex.js"));
-  const claude = require(path.join(ROOT, "src/main/claude.js"));
-  const auth = require(path.join(ROOT, "src/main/auth.js"));
+  const store = require(path.join(ROOT, "src/main/storage/store.js"));
+  const history = require(path.join(ROOT, "src/main/storage/history.js"));
+  const attachments = require(path.join(ROOT, "src/main/storage/attachments.js"));
+  const profiles = require(path.join(ROOT, "src/main/auth/profiles.js"));
+  const providers = require(path.join(ROOT, "src/main/providers/catalog.js"));
+  const appserver = require(path.join(ROOT, "src/main/providers/codex-appserver.js"));
+  const codex = require(path.join(ROOT, "src/main/providers/codex-exec.js"));
+  const claude = require(path.join(ROOT, "src/main/session/index.js"));
+  const auth = require(path.join(ROOT, "src/main/auth/cli-auth.js"));
   const CI = claude.__internals;
 
   // ---------------- settings: removed-key migration + atomic save + failure ----------------
@@ -69,6 +69,16 @@ async function run() {
   const sess = store.getSession(v.id);
   history.setBinding(sess, "openai", { id: "thr_abc", syncedIndex: 3, account: "login" });
   history.setBinding(sess, "anthropic", { id: "sess_xyz", syncedIndex: 3 });
+  const nativeContext = {
+    activeTokens: 541917, activeTokensTs: "2026-09-16T15:02:00Z", compactions: 44,
+    ctxUsage: { totalTokens: 541917, maxTokens: 1000000, model: "claude-fable-5-1", oneM: false },
+    reportedWindow: { model: "claude-fable-5-1", oneM: false, tokens: 1000000 },
+    learnedWindow: { model: "other-model", oneM: true, tokens: 200000, from: 210000 },
+    digest: { upTo: 4400, entries: 3100, calls: 7, inputTokens: 650000, outputTokens: 14000 },
+    lastCompaction: { trigger: "auto", preTokens: 900000, postTokens: 100000, ts: "2026-09-16T15:01:00Z" },
+  };
+  history.setBinding(sess, "anthropic", nativeContext);
+  sess.forceRollover = true;
   sess.lastProvider = "openai"; sess.totalTokensIn = 100; sess.totalTokensOut = 20;
   for (let i = 0; i < 5; i++) sess.messages.push({ id: "m" + i, role: i % 2 ? "assistant" : "user", text: "msg " + i, ts: store.nowISO() });
   store.flush(v.id);
@@ -78,6 +88,9 @@ async function run() {
   check("F28 claudeSessionId + lastProvider survive reload", re.claudeSessionId === "sess_xyz" && re.lastProvider === "openai");
   check("F24 token totals survive reload", re.totalTokensIn === 100 && re.totalTokensOut === 20);
   check("F28 schema version stamped", re.schemaVersion === 2);
+  check("Context window, usage, digest and compaction measurements survive disk reload", Object.entries(nativeContext).every(([key, value]) => JSON.stringify(re.bindings.anthropic[key]) === JSON.stringify(value)));
+  check("Explicit next-turn rollover survives disk reload", re.forceRollover === true);
+  check("Reloaded context measurements do not alias the old session", re.bindings.anthropic.ctxUsage !== nativeContext.ctxUsage);
   // legacy v1 file: codexThreadId only, no bindings → migrated conservatively
   const legacyId = "legacy1";
   fs.writeFileSync(path.join(store.getSettings().historyDir, legacyId + ".json"), JSON.stringify({ id: legacyId, name: "old", messages: [{ id: "a", role: "user", text: "hi", ts: "" }, { id: "b", role: "assistant", text: "yo", ts: "" }], claudeSessionId: "c1", codexThreadId: "t1" }));
@@ -177,8 +190,22 @@ async function run() {
     for (const [a1, b1] of [[cut1, full.length], [cut2, full.length]]) { got.length = 0; s.buf = ""; s.dec = new StringDecoder("utf8"); onData(s, s.dec.write(full.subarray(0, a1))); onData(s, s.dec.write(full.subarray(a1, b1))); }
     check("F15 stdout split inside a multibyte char decodes intact (no U+FFFD)", got.length === 1 && got[0][1].delta === "नमस्ते 🙂 ok" && !got[0][1].delta.includes("\uFFFD"), JSON.stringify(got));
     check("F09 thread-lost classification is explicit", isThreadLost(new Error("no rollout found for thread id x")) && !isThreadLost(new Error("unauthorized")));
-    check("R10 opt-out list keeps lifecycle/usage/progress notifications", !JSON.stringify(fs.readFileSync(path.join(ROOT, "src/main/codex-appserver.js"), "utf8").match(/OPT_OUT_NOTIFICATIONS = \[[^\]]*\]/)[0]).match(/tokenUsage|thread\/started|account\/rateLimits|hook\//));
+    check("R10 opt-out list keeps lifecycle/usage/progress notifications", !JSON.stringify(fs.readFileSync(path.join(ROOT, "src/main/providers/codex-appserver.js"), "utf8").match(/OPT_OUT_NOTIFICATIONS = \[[^\]]*\]/)[0]).match(/tokenUsage|thread\/started|account\/rateLimits|hook\//));
     check("F01 auth contexts: API key → isolated context key; login → 'login'", appserver.ctxKeyOf({ apiKey: "sk-x" }).startsWith("apikey:") && appserver.ctxKeyOf({}) === "login" && appserver.ctxKeyOf({ apiKey: "sk-x" }) !== appserver.ctxKeyOf({ apiKey: "sk-y" }));
+    // Stop before turn/start has answered: the interrupt is deferred to the turn id, sent exactly once.
+    const { TurnInterruptGuard } = appserver.__internals;
+    const calls = []; let timedOut = 0;
+    const g = new TurnInterruptGuard({ onTurnId: (id) => calls.push("id:" + id), interrupt: async (id) => { calls.push("int:" + id); }, onTimeout: () => { timedOut++; }, isFinished: () => false, timeoutMs: 30 });
+    const r1 = g.request();
+    g.setTurnId("turn-9"); g.setTurnId("turn-9");   // notification then the turn/start response: the second is a no-op
+    await new Promise((r) => setTimeout(r, 5));
+    const r2 = g.request();
+    check("F31 a Stop before the turn id is deferred and fires once the id lands — once, whichever of notification / response arrives first", r1 === "deferred" && calls.join(",") === "id:turn-9,int:turn-9" && r2 === "sent", calls.join(","));
+    await new Promise((r) => setTimeout(r, 60));
+    check("F31b an interrupt the server never confirms ends our side after the timeout", timedOut === 1, String(timedOut));
+    const g2 = new TurnInterruptGuard({ interrupt: async () => {}, onTimeout: () => { timedOut++; }, isFinished: () => true, timeoutMs: 10 });
+    check("F31c a finished turn ignores a late interrupt", g2.request() === "finished");
+    g.dispose(); g2.dispose();
   }
 
   // ---------------- claude.js run-scoped permissions (F06) + terminal state (F04) ----------------
@@ -272,8 +299,8 @@ async function run() {
 
   // ---------------- source-level guards for removed layers ----------------
   {
-    const src = fs.readFileSync(path.join(ROOT, "src/main/claude.js"), "utf8");
-    check("R01 no bundled behaviour instructions in claude.js", !/caveman|frugal|codefrugal|readgate/.test(src));
+    const src = require("./lib/session-vm").sessionSource();   // every src/main/session/*.js module
+    check("R01 no bundled behaviour instructions in the session manager", !/caveman|frugal|codefrugal|readgate/.test(src));
     check("R04 no rotation / handoff / digest layers", !/ROTATE_TURNS|contextHandoff|rotateSession|convoDigest|HANDOFF_/.test(src));
     check("R05 no prompt / file caps", !/BATCH_PROMPT_CAP|slice\(0, 8\)|slice\(0, 12000\)/.test(src));
     check("R06 no image dedup / read gate", !/_imgHashes|imageHash/.test(src));
@@ -285,7 +312,7 @@ async function run() {
     check("R02 no <session-context> wrapper", !/session-context/.test(src));
     check("F10 no batch reviewer-CLI fallback for interactive Codex turns", !/reviewerRun\("openai", model, promptText/.test(src));
     for (const f of ["caveman.js", "frugal.js", "codefrugal.js", "readgate.js", "context.js", "graph.js", "convo-graph.js", "capabilities.js", "distill.js", "localmind.js"]) check(`removed module deleted: ${f}`, !fs.existsSync(path.join(ROOT, "src/main", f)));
-    const app = fs.readFileSync(path.join(ROOT, "src/renderer/app.js"), "utf8");
+    const app = require("./lib/renderer-src").rendererSource();   // every renderer module
     check("F29 New session never reuses a blank tab", !/find\(\(ts\) => tabIsEmpty\(ts\) && samePath/.test(app));
     check("F19 no live-line tail cap", !/MAX_LIVE_LINES/.test(app));
     check("F12 tool cards are patched in place", /patchToolCard\(node, m, ts\)/.test(app));

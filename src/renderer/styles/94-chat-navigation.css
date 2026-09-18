@@ -1,0 +1,138 @@
+/* AtomNano styles — Conversation navigation — prompt picker, disk search hits, paging, prompt timeline rail.
+ * Part 14 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ---- conversation navigation: prompt picker · disk search hits · paging ---- */
+.mf-prompts { width: auto !important; padding: 0 6px !important; gap: 1px; }
+.mf-prompts svg + svg { opacity: .6; }
+.prompt-picker { position: absolute; z-index: 70; width: min(560px, 62vw); max-height: 60vh; display: flex; flex-direction: column; background: var(--bg-3); border: 1px solid var(--line-2); border-radius: 10px; box-shadow: var(--sh-pop); overflow: hidden; animation: ddIn .12s ease; }
+.pp-head { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.pp-head .cf-input { flex: 1; }
+.pp-count { font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pp-list { overflow: auto; padding: 4px; min-height: 0; }
+.pp-item { display: grid; grid-template-columns: 42px 1fr auto; gap: 8px; align-items: baseline; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 12.5px; }
+.pp-item:hover, .pp-item.sel { background: var(--bg-4); }
+.pp-item.cur { box-shadow: inset 2px 0 0 var(--accent); }
+.pp-n { color: var(--text-4); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.pp-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-2); }
+.pp-item.sel .pp-text { color: var(--text); }
+.pp-time { color: var(--text-4); font-size: 10.5px; white-space: nowrap; }
+.pp-empty { padding: 14px; color: var(--text-4); font-size: 12px; text-align: center; }
+.cf-hit-row { display: grid; grid-template-columns: 76px 1fr auto; gap: 8px; align-items: baseline; padding: 5px 8px; cursor: pointer; border-radius: 5px; font-size: 12px; }
+.cf-hit-row:hover { background: var(--bg-4); }
+.cf-hit-role { font-size: 10px; text-transform: uppercase; opacity: .55; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-hit-snip { opacity: .9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-hit-when { font-size: 10.5px; color: var(--text-4); white-space: nowrap; }
+.load-more.load-more-bottom { margin-top: 6px; }
+.load-more-jump { margin-left: 8px; font-size: 11px; color: var(--accent); padding: 2px 8px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.load-more-jump:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.scroll-bottom[data-count]:not([data-count=""])::after { content: attr(data-count); position: absolute; top: -7px; right: -7px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: #1c1410; font-size: 10.5px; font-weight: 700; line-height: 18px; text-align: center; box-shadow: var(--sh-1); }
+.prof-item.expired .prof-email { color: var(--text-3); text-decoration: line-through; }
+.prof-item.expired .prof-ic { color: #e06c60; }
+
+/* ---- prompt timeline rail ---- */
+/* Sits INBOARD of the ~11px scrollbar (right:18px) so the browser scrollbar can
+   never cover it; revealed on chat hover so it doesn't clutter the reading view. */
+/* Pinned to #main (never scrolls) so the dots map to the conversation as a
+   minimap of the whole chat, and stay put while you scroll. Offsets clear the
+   tab header above and the composer below. */
+.prompt-rail { position: absolute; top: calc(var(--tabs-h) + 48px); bottom: 132px; right: 18px; width: 12px; z-index: 12; pointer-events: none; opacity: 0; transition: opacity .15s ease; }
+.prompt-rail.hidden { display: none; }
+#main:hover .prompt-rail { opacity: 1; }
+.rail-dot { position: absolute; right: 3px; width: 7px; height: 7px; margin-top: -3px; border-radius: 50%; background: var(--text-4); opacity: .5; cursor: pointer; pointer-events: auto; transition: transform .1s, opacity .1s, background .1s; }
+.rail-dot:hover { transform: scale(1.9); opacity: 1; background: var(--accent); }
+
+/* smooth streaming bubble: per-line elements; active line grows, new lines fade in */
+.stream-lines { display: flex; flex-direction: column; }
+.stream-lines .sl { white-space: pre-wrap; word-break: break-word; min-height: 1.5em; }
+.stream-lines .sl.sl-in { animation: slFade .34s ease both; }
+/* Every streamed line stays in the DOM (the user can scroll up and read the start
+   while the reply is still being written). Offscreen lines skip layout via
+   content-visibility, so a very long reply costs only its visible part per frame. */
+.stream-lines .sl:not(.sl-in) { content-visibility: auto; contain-intrinsic-size: auto 1.5em; }
+@keyframes slFade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.bubble.streaming .stream-caret { vertical-align: baseline; }
+
+/* taskbar tile color swatches (Settings) */
+.tag-swatch { width: 40px; height: 28px; border-radius: 7px; cursor: pointer; border: 2px solid transparent; transition: transform .1s; }
+.tag-swatch:hover { transform: scale(1.07); }
+.tag-swatch.sel { border-color: var(--text); box-shadow: 0 0 0 2px var(--accent); }
+/* taskbar tile (Settings → Appearance): live preview · letters · text size · free colour picker */
+.tile-box { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.tile-preview { width: 64px; height: 64px; flex-shrink: 0; display: grid; place-items: center; }
+.tile-canvas { width: 64px; height: 64px; border-radius: 11px; box-shadow: var(--sh-pop); }
+.tile-controls { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tile-ctl { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tile-ctl-label { font-size: 11.5px; color: var(--text-3); min-width: 32px; }
+.tile-ctl-hint { margin: 0; }
+.tile-text { width: 96px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; text-align: center; font-family: var(--font-mono); }
+.tag-swatch.tag-custom { position: relative; display: grid; place-items: center; overflow: hidden; margin: 0; color: #fff; background: conic-gradient(from 90deg, #e26a6a, #e2b96a, #7fc36e, #6ac2c2, #6a7fe2, #c26ac2, #e26a6a); }
+.tag-swatch.tag-custom .tag-custom-ic { font-size: 18px; font-weight: 700; line-height: 1; text-shadow: 0 1px 2px rgba(0,0,0,.7); pointer-events: none; }
+.tag-swatch.tag-custom.sel .tag-custom-ic { font-size: 14px; }
+.tag-custom-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; padding: 0; border: 0; }
+
+/* project dropdown (folder bar) + recents flyout */
+.proj-menu { position: fixed; z-index: 240; background: var(--bg-3); border: 1px solid var(--line-2); border-radius: 11px; box-shadow: var(--sh-pop); padding: 6px; min-width: 210px; animation: ddIn .12s ease; }
+.pm-item { display: flex; align-items: center; gap: 10px; padding: 8px 11px; border-radius: 8px; cursor: pointer; color: var(--text-2); font-size: 12.5px; position: relative; }
+.pm-item:hover { background: var(--bg-4); color: var(--text); }
+.pm-ico { color: var(--text-3); display: inline-flex; }
+.pm-item:hover .pm-ico { color: var(--accent); }
+.pm-label { flex: 1; }
+.pm-arrow { color: var(--text-4); display: inline-flex; }
+.pm-sub { display: none; position: absolute; left: 100%; top: -7px; min-width: 320px; max-width: 480px; max-height: 62vh; overflow: auto; background: var(--bg-3); border: 1px solid var(--line-2); border-radius: 11px; box-shadow: var(--sh-pop); padding: 6px; }
+.pm-has-sub:hover > .pm-sub { display: block; }
+.pm-recent { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
+.pm-recent:hover { background: var(--bg-4); }
+.pm-fico { color: var(--accent-2); display: inline-flex; flex-shrink: 0; }
+.pm-rmeta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pm-rname { color: var(--text); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-rpath { color: var(--text-4); font-size: 10.5px; font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-x { width: 20px; height: 20px; border-radius: 5px; display: grid; place-items: center; color: var(--text-4); flex-shrink: 0; }
+.pm-x:hover { background: var(--red-soft); color: var(--red); }
+.pm-empty { color: var(--text-4); font-size: 12px; padding: 10px 12px; font-style: italic; }
+
+/* history: selection checkboxes + export */
+.hist-bar { display: flex; align-items: center; margin: 8px 2px 0; }
+.hist-selall { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--text-3); cursor: pointer; user-select: none; }
+/* theme-aware custom checkbox (no white default box) — also covers the composer
+   1M / Sub-agents toggles, which were native (white) before. */
+.aqx-check, .hist-selall input, .hist-check, .onem-toggle input[type="checkbox"], .gv-file input[type="checkbox"] {
+  -webkit-appearance: none; appearance: none; width: 15px; height: 15px; flex-shrink: 0; margin: 0;
+  border: 1px solid var(--line-2); border-radius: 5px; background: var(--bg-2); cursor: pointer;
+  display: grid; place-items: center; position: relative;
+  transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .1s ease;
+}
+.aqx-check:hover, .hist-selall input:hover, .hist-check:hover, .onem-toggle input[type="checkbox"]:hover, .gv-file input[type="checkbox"]:hover { border-color: var(--accent-2); background: var(--bg-3); }
+.aqx-check:active, .hist-check:active, .onem-toggle input[type="checkbox"]:active, .gv-file input[type="checkbox"]:active { transform: scale(.86); }
+.aqx-check:checked, .hist-selall input:checked, .hist-check:checked, .onem-toggle input[type="checkbox"]:checked, .gv-file input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.aqx-check:checked::after, .hist-selall input:checked::after, .hist-check:checked::after, .onem-toggle input[type="checkbox"]:checked::after, .gv-file input[type="checkbox"]:checked::after {
+  content: ""; width: 4px; height: 8px; margin-top: -1px; border: solid #2a1a08; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.aqx-check:indeterminate { background: var(--accent-soft); border-color: var(--accent-2); }
+.aqx-check:indeterminate::after { content: ""; width: 8px; height: 2px; border-radius: 1px; background: var(--accent); }
+.change-row .hist-check { margin-right: 2px; }
+.btn:disabled { opacity: .45; cursor: default; }
+.modal-foot { flex-wrap: wrap; }
+
+/* tool chips — compact (spacing handled by .msg margins above) */
+.tool-card { border-radius: 8px; }
+.tool-head { gap: 7px; padding: 3px 9px; }
+.tool-ico { width: 18px; height: 18px; border-radius: 5px; }
+.tool-ico .icon { width: 13px; height: 13px; }
+.tool-name { font-size: 11px; }
+.tool-summary { font-size: 11px; }
+.tool-state { width: 16px; height: 16px; }
+
+/* markdown tables (GFM) */
+.bubble .md-table { border-collapse: collapse; margin: 10px 0 12px; font-size: 0.92em; display: block; max-width: 100%; overflow-x: auto; }
+.bubble .md-table th, .bubble .md-table td { border: 1px solid var(--line); padding: 6px 11px; text-align: left; vertical-align: top; }
+.bubble .md-table thead th { background: var(--bg-2); color: var(--text); font-weight: 650; white-space: nowrap; }
+.bubble .md-table tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-2) 45%, transparent); }
+.bubble .md-table code.md-code { white-space: nowrap; }
+
+/* resend button under a user message */
+.msg-resend { display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; padding: 3px 9px; border-radius: 7px; font-size: 11px; color: var(--text-4); background: var(--bg-2); border: 1px solid var(--line-soft); cursor: pointer; transition: color .12s, border-color .12s, background .12s; }
+.msg-resend:hover { color: var(--accent); border-color: var(--accent-2); background: var(--accent-softer); }
+.msg.user .msg-resend .icon { width: 12px; height: 12px; }
+
+/* (the Settings modal's layout, rows and section headers live in 72-settings.css) */
+

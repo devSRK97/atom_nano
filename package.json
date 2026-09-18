@@ -18,11 +18,12 @@
     "build:term": "esbuild src/renderer/vendor/xterm-entry.js --bundle --minify --format=iife --target=chrome120 --loader:.woff=dataurl --loader:.woff2=dataurl --loader:.ttf=dataurl --outfile=src/renderer/vendor/xterm.bundle.js",
     "rebuild:term": "node scripts/rebuild-pty.js",
     "postinstall": "node scripts/rebuild-pty.js",
-    "test": "node scripts/test-audit.js && node scripts/test-platform.js && node scripts/test-credstore.js && node scripts/test-tool-cards.js && node scripts/test-taskbar-tile.js && node scripts/test-transfer.js && node scripts/test-context.js && node scripts/test-permissions.js && node scripts/test-run-control.js && node scripts/test-git.js && node scripts/test-git-ui.js && node scripts/_xcheck-db-ipc.js && node scripts/test-db.js && node scripts/test-db-ui.js",
+    "test": "node scripts/check-requires.js && node scripts/check-renderer.js && node scripts/test-audit.js && node scripts/test-platform.js && node scripts/test-credstore.js && node scripts/test-tool-cards.js && node scripts/test-terminal-marker.js && node scripts/test-taskbar-tile.js && node scripts/test-transfer.js && node scripts/test-model-context.js && node scripts/test-adaptive-context.js && node scripts/test-context.js && node scripts/test-permissions.js && node scripts/test-run-control.js && node scripts/test-session-ui.js && node scripts/test-workflow-ui.js && node scripts/test-session-ipc.js && node scripts/test-agents.js && node scripts/test-workflow.js && node scripts/test-workflow-cli.js && node scripts/test-workflow-skills.js && node scripts/test-tasks.js && node scripts/test-git.js && node scripts/test-git-ui.js && node scripts/_xcheck-db-ipc.js && node scripts/test-db.js && node scripts/test-db-ui.js",
     "test:tool-cards": "node scripts/test-tool-cards.js",
     "test:taskbar-tile": "node scripts/test-taskbar-tile.js",
     "test:appearance-e2e": "node smoke-tests/test-appearance-tile.js",
     "test:transfer": "node scripts/test-transfer.js",
+    "test:model-context": "node scripts/test-model-context.js",
     "test:context": "node scripts/test-context.js",
     "test:context-e2e": "node smoke-tests/test-synthesize.js",
     "test:permissions": "node scripts/test-permissions.js",
@@ -41,7 +42,12 @@
     "dist:mac": "npm run icon && npm run build:cm && npm run build:term && electron-builder --mac dmg zip --publish never",
     "mac:build": "powershell -NoProfile -ExecutionPolicy Bypass -File mac/build-mac.ps1",
     "test:platform": "node scripts/test-platform.js",
-    "test:credstore": "node scripts/test-credstore.js"
+    "test:credstore": "node scripts/test-credstore.js",
+    "test:workflow": "node scripts/test-workflow.js && node scripts/test-workflow-cli.js && node scripts/test-workflow-skills.js && node scripts/test-tasks.js",
+    "test:workflow-e2e": "node smoke-tests/test-workflow-studio.js",
+    "test:board-e2e": "node smoke-tests/test-task-board.js",
+    "test:session-ui": "node scripts/test-session-ui.js && node scripts/test-session-ipc.js",
+    "test:session-preparation-e2e": "node smoke-tests/test-session-preparation.js"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.3.263",

@@ -1,0 +1,125 @@
+/* AtomNano styles — Body layout, sidebar file tree and the git commit view.
+ * Part 03 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ---------------- Body layout ---------------- */
+#body { display: flex; min-height: 0; overflow: hidden; }
+#sidebar { width: var(--sidebar-w); flex-shrink: 0; display: flex; flex-direction: column; background: var(--bg-1); border-right: 1px solid var(--line); min-height: 0; }
+#main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; position: relative; }
+.resizer { width: 5px; flex-shrink: 0; cursor: col-resize; background: transparent; transition: background .15s; }
+.resizer:hover { background: var(--accent-soft); }
+
+/* ---------------- Sidebar ---------------- */
+#folderBar { padding: 10px 10px 8px; border-bottom: 1px solid var(--line-soft); }
+.folder-pick {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 10px; border-radius: var(--radius);
+  background: var(--bg-3); border: 1px solid var(--line);
+  color: var(--text-2); transition: border-color .14s, background .14s;
+}
+.folder-pick:hover { border-color: var(--line-2); background: var(--bg-4); }
+.folder-pick .fp-name { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; color: var(--text); font-weight: 500; }
+.folder-pick .fp-icon { color: var(--accent); }
+.folder-actions { display: flex; gap: 4px; margin-top: 7px; }
+.sb-act { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 5px 4px; border-radius: var(--radius-sm); color: var(--text-3); font-size: 10.5px; white-space: nowrap; overflow: hidden; transition: background .12s, color .12s; }
+.sb-act .icon { flex-shrink: 0; }
+.sb-act:hover { background: var(--bg-3); color: var(--text-2); }
+.sb-act.hot { color: var(--accent); }
+.sb-act.active { background: var(--accent-soft); color: var(--accent); }
+#sidebarFooter:empty { display: none; }
+
+.file-tree { flex: 1; overflow: auto; padding: 6px 4px 10px; min-height: 0; }
+.tree-row {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3.5px 6px; border-radius: 6px; cursor: pointer;
+  color: var(--text-2); font-size: 12.5px; white-space: nowrap;
+  position: relative;
+}
+.tree-row:hover { background: var(--bg-2); }
+.tree-row.selected { background: var(--accent-soft); color: var(--text); }
+.tree-row.active { background: var(--accent-soft); color: var(--text); }
+.tree-row.active::before { content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 2px; border-radius: 0 2px 2px 0; background: var(--accent); }
+.tree-row.active .tw-icon { color: var(--accent); }
+.tree-row.active .tw-name { color: var(--text); }
+.tree-row .tw-chev { width: 14px; height: 14px; color: var(--text-4); transition: transform .12s; flex-shrink: 0; }
+.tree-row.open > .tw-chev { transform: rotate(90deg); }
+.tree-row .tw-icon { color: var(--text-3); flex-shrink: 0; }
+.tree-row.is-dir .tw-icon { color: var(--accent-2); }
+.tree-row .tw-name { overflow: hidden; text-overflow: ellipsis; }
+.tree-row.dim .tw-name { color: var(--text-4); }
+.tree-row .edit-badge { margin-left: auto; font-size: 9px; color: var(--accent); }
+.tree-children { margin-left: 0; }
+.tree-empty, .tree-loading { color: var(--text-4); font-size: 12px; padding: 8px 12px; font-style: italic; }
+
+/* ---------------- Git commit view (replaces the file tree) ---------------- */
+.git-view { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+/* Header stacks: a row of action buttons on top, the branch name row below. */
+.gv-head { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 10px; border-bottom: 1px solid var(--line-soft); flex-shrink: 0; }
+.gv-head-actions { display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+.gv-branch { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text); min-width: 0; }
+.gv-branch .icon { color: var(--accent-2); flex-shrink: 0; }
+.gv-branch .gvb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.gv-track { font-size: 11px; color: var(--text-4); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.gv-iconbtn { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; color: var(--text-3); flex-shrink: 0; transition: background .12s, color .12s; }
+.gv-iconbtn:hover { background: var(--bg-3); color: var(--text); }
+.gv-msg { margin: 9px 10px 7px; }
+.gv-msg textarea { width: 100%; min-height: 60px; max-height: 180px; resize: vertical; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; color: var(--text); font-family: var(--font-ui); font-size: 12.5px; line-height: 1.5; outline: none; }
+.gv-msg textarea:focus { border-color: var(--accent-2); box-shadow: 0 0 0 2px var(--accent-softer); }
+.gv-actions { display: flex; gap: 6px; padding: 0 10px 9px; flex-shrink: 0; }
+.gv-actions .btn { flex: 1; justify-content: center; padding: 8px 10px; font-size: 12.5px; }
+.gv-list { flex: 1; overflow: auto; padding: 2px 6px 10px; min-height: 0; }
+.gv-section { display: flex; align-items: center; gap: 7px; padding: 9px 8px 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-4); }
+.gv-section .gvs-count { color: var(--text-3); }
+.gv-section .gvs-act { margin-left: auto; text-transform: none; letter-spacing: 0; font-size: 11px; font-weight: 500; color: var(--accent); cursor: pointer; }
+.gv-section .gvs-act:hover { text-decoration: underline; }
+/* per-repo accordion header (chevron + folder checkbox + name + branch + count + Stage all / Unstage) */
+.gv-repo { display: flex; align-items: center; gap: 7px; padding: 8px 8px; margin-top: 4px; border-top: 1px solid var(--line-soft); cursor: pointer; border-radius: 7px; }
+.gv-repo:hover { background: var(--bg-2); }
+.gv-repo:first-child { border-top: 0; margin-top: 0; }
+.gv-repo .gvr-chev { width: 13px; height: 13px; color: var(--text-4); flex-shrink: 0; transition: transform .12s; }
+.gv-repo.open .gvr-chev { transform: rotate(90deg); }
+.gv-repo .gvr-count { font-size: 10px; color: var(--text-3); background: var(--bg-3); border-radius: 10px; padding: 1px 7px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.gv-repo .gvf-ico { color: var(--accent-2); flex-shrink: 0; display: inline-flex; }
+.gv-repo .gvr-name { font-size: 12.5px; font-weight: 600; color: var(--text); flex-shrink: 0; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-repo .gvr-branch { font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-repo .gvr-act { font-size: 10.5px; color: var(--accent); padding: 2px 7px; border-radius: 6px; flex-shrink: 0; }
+.gv-repo .gvr-act:hover { background: var(--accent-soft); }
+.gv-subsection { display: flex; align-items: center; gap: 7px; padding: 6px 8px 3px 26px; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: none; letter-spacing: 0; }
+.gv-subsection .gvf-ico { color: var(--accent-2); flex-shrink: 0; display: inline-flex; }
+.gv-subsection .gvs-count { color: var(--text-4); background: var(--bg-3); border-radius: 10px; padding: 0 6px; font-size: 9.5px; }
+.gv-subsection .gvs-act { margin-left: auto; color: var(--accent); cursor: pointer; font-size: 10.5px; font-weight: 500; }
+.gv-subsection .gvs-act:hover { text-decoration: underline; }
+.gv-untracked .gvf-ico { color: var(--text-3); }
+.gv-file { padding-left: 12px; }
+.gv-file { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
+.gv-file:hover { background: var(--bg-2); }
+.gv-file input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; flex-shrink: 0; cursor: pointer; margin: 0; }
+.gv-file .gvf-ico { color: var(--text-3); flex-shrink: 0; display: inline-flex; }
+.gv-file .gvf-name { font-size: 12.5px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; max-width: 55%; }
+.gv-file .gvf-path { font-size: 10.5px; color: var(--text-4); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.gv-file .gvf-stat { margin-left: auto; font-size: 9.5px; font-weight: 700; flex-shrink: 0; padding: 1px 7px; border-radius: 10px; }
+.gvf-stat.staged { color: var(--green); background: var(--green-soft); }
+.gvf-stat.unstaged { color: var(--accent); background: var(--accent-soft); }
+.gvf-stat.untracked { color: var(--text-3); background: var(--bg-3); }
+.gvf-stat.conflict { color: var(--red); background: var(--red-soft); }
+.gv-empty { color: var(--text-4); text-align: center; padding: 34px 16px; font-style: italic; font-size: 12.5px; }
+.gv-empty .icon { display: block; margin: 0 auto 10px; color: var(--line-2); }
+
+/* git enhancements: per-project push button, selection highlight, busy/ahead cues */
+.gv-iconbtn { position: relative; }
+.gv-iconbtn.hot { color: var(--accent); }
+.gv-iconbtn.hot::after { content: ""; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.gv-repo .gvr-push { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; color: var(--accent-2); flex-shrink: 0; margin-left: 2px; transition: background .12s, color .12s; }
+.gv-repo .gvr-push:hover { background: var(--accent-soft); color: var(--accent); }
+.gv-repo .gvr-push.busy { color: var(--accent); cursor: default; }
+.gv-repo .gvr-push.busy:hover { background: transparent; }
+.gv-repo .gvr-push .icon.spin { animation: gx-spin .8s linear infinite; }
+.gv-file.sel { background: var(--accent-softer); }
+.gv-file.sel:hover { background: var(--accent-soft); }
+.tb-btn.hot, .tb-btn.hot .icon { color: var(--accent); }
+
+/* per-repo branch chip (opens the branches & merge menu) */
+.gv-repo .gvr-branch { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; flex: 1; min-width: 0; padding: 2px 6px; border-radius: 6px; transition: background .12s, color .12s; }
+.gv-repo .gvr-branch .gvrb-ico { display: inline-flex; flex-shrink: 0; opacity: .85; }
+.gv-repo .gvr-branch span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-repo .gvr-branch:hover { background: var(--accent-soft); color: var(--accent); }
+

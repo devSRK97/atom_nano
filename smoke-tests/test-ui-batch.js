@@ -20,42 +20,37 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   await win.waitForLoadState("domcontentloaded");
   await win.waitForFunction(() => !!window.atomnano && !!window.atomnano.sessions, null, { timeout: 15000 });
 
-  // ---------- Settings categories + controls ----------
+  // ---------- Settings categories + controls (two-pane modal: grouped categories, searchable rows) ----------
   await win.evaluate(() => { const b = [...document.querySelectorAll("#sidebarFooter .foot-btn")].find((x) => /Settings/i.test(x.textContent)); b.click(); });
-  await win.waitForTimeout(450);
-  const settings = await win.evaluate(() => {
-    const sections = [...document.querySelectorAll(".set-section")].map((s) => s.textContent.trim());
-    const labels = [...document.querySelectorAll(".field label")].map((l) => l.textContent.trim());
-    return {
-      sections,
-      hasEditorFontStyle: labels.includes("Editor font style"),
-      hasEditorFontSize: labels.includes("Editor font size"),
-      hasStepper: !!document.querySelector(".stepper .step-val"),
-      hasResend: labels.includes("Resend button on my messages"),
-      hasZoom: labels.some((l) => /Interface size/i.test(l)),
-    };
-  });
-  for (const s of ["CONNECTION", "APPEARANCE", "AGENT", "EDITOR"]) {
-    ok(settings.sections.some((x) => x.toUpperCase().includes(s)), `settings has “${s}” section`);
-  }
-  ok(settings.hasEditorFontStyle, "Editor: font style control present");
-  ok(settings.hasEditorFontSize && settings.hasStepper, "Editor: font size stepper present");
-  ok(settings.hasResend, "Agent: resend toggle present");
-  ok(settings.hasZoom, "Agent: interface size / zoom present");
+  await win.waitForSelector(".st-cat");
+  const cats = await win.evaluate(() => [...document.querySelectorAll(".st-cat")].map((b) => b.dataset.label));
+  for (const s of ["Providers", "Agent", "Agents & context", "Appearance", "Editor", "Storage"]) ok(cats.includes(s), `settings has the “${s}” category`);
+  const openCat = (label) => win.evaluate((l) => window.__settingsCat(l), label);
+  const labelsOf = () => win.evaluate(() => [...document.querySelectorAll(".st-content .field > label")].map((l) => l.textContent.trim()));
+  await openCat("Editor");
+  const ed = await labelsOf();
+  ok(ed.includes("Font style"), "Editor: font style control present");
+  ok(ed.includes("Font size") && await win.evaluate(() => !!document.querySelector(".st-content .stepper .step-val")), "Editor: font size stepper present");
+  await openCat("Appearance");
+  ok((await labelsOf()).some((l) => /Interface size/i.test(l)), "Appearance: interface size / zoom present");
+  await openCat("Agent");
+  ok((await labelsOf()).includes("Retry button"), "Agent: retry toggle present");
 
-  // Enable the resend toggle.
+  // The Retry toggle is a switch (on by default) — make sure it ends up ON and persisted.
   const enabled = await win.evaluate(() => {
-    const label = [...document.querySelectorAll(".field label")].find((l) => l.textContent.trim() === "Resend button on my messages");
-    if (!label) return false;
-    const seg = label.parentElement.querySelector(".segmented");
-    const on = [...seg.querySelectorAll("button")].find((b) => /^On$/i.test(b.textContent.trim()));
-    on.click();
-    return true;
+    const label = [...document.querySelectorAll(".st-content .field > label")].find((l) => l.textContent.trim() === "Retry button");
+    const sw = label && label.parentElement.querySelector(".sw");
+    if (!sw) return false;
+    if (!sw.classList.contains("on")) sw.click();
+    return sw.classList.contains("on");
   });
-  ok(enabled, "resend toggle switched On");
-  // Confirm persisted to settings.
+  ok(enabled, "retry toggle is On");
   const persisted = await win.evaluate(() => window.atomnano.settings.get().then((s) => s.resendButton));
   ok(persisted === true, "resendButton persisted to settings");
+  // Search finds rows across categories and highlights the label
+  const search = await win.evaluate(() => { const i = document.querySelector(".st-search input"); i.value = "retry"; i.dispatchEvent(new Event("input")); return { rows: document.querySelectorAll(".st-content .field").length, marks: document.querySelectorAll(".st-content mark.st-hl").length }; });
+  ok(search.rows >= 1 && search.marks >= 1, `settings search lists ${search.rows} matching row(s) with highlighted labels`);
+  await win.evaluate(() => { const i = document.querySelector(".st-search input"); i.value = ""; i.dispatchEvent(new Event("input")); });
 
   // close settings
   await win.evaluate(() => { const b = [...document.querySelectorAll(".modal-foot button")].find((x) => x.textContent.trim() === "Done"); if (b) b.click(); });

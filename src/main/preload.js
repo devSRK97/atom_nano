@@ -174,6 +174,7 @@ contextBridge.exposeInMainWorld("atomnano", {
     interrupt: (id, reason) => invoke("sessions:interrupt", id, reason),
     steer: (id, payload) => invoke("sessions:steer", id, payload),   // Codex: add to the running turn without stopping it
     running: (id) => invoke("sessions:running", id),
+    runState: (id) => invoke("sessions:run-state", id),
     lastRun: () => invoke("sessions:last-run"),   // per-run diagnostics (provider, transport, auth context, sent model/effort, transferred entries)
     permissionResponse: (requestId, decision) => ipcRenderer.send("sessions:permission-response", requestId, decision),
     openHistory: () => invoke("sessions:open-history"),
@@ -300,21 +301,62 @@ contextBridge.exposeInMainWorld("atomnano", {
     req: (kind, root, file, payload) => invoke("ts:request", kind, root, file, payload),
   },
   editorconfig: (filePath) => invoke("editorconfig:get", filePath),
+  // This project's skills (the Workflow studio's Skills modal is the only UI, 2026-09-18).
   skills: {
     list: (cwd) => invoke("skills:list", cwd),
     create: (cwd, input) => invoke("skills:create", cwd, input),
     update: (cwd, id, patch) => invoke("skills:update", cwd, id, patch),
     remove: (cwd, id) => invoke("skills:remove", cwd, id),
-    promote: (cwd, id) => invoke("skills:promote", cwd, id),
-    peek: (cwd) => invoke("skills:peek", cwd),
-    hub: (category) => invoke("skills:hub", category),
-    crossProject: (cwd) => invoke("skills:cross-project", cwd),
-    scout: (cwd, query) => invoke("skills:scout", cwd, query),
-    importSkill: (cwd, input) => invoke("skills:import-skill", cwd, input),
-    importUrl: (cwd, url) => invoke("skills:import-url", cwd, url),
-    exportSkill: (cwd, id) => invoke("skills:export-skill", cwd, id),
-    marketplace: (opts) => invoke("skills:marketplace", opts),
-    install: (cwd, entry) => invoke("skills:install", cwd, entry),
+    importUrl: (cwd, url) => invoke("skills:import-url", cwd, url),   // JSON (object / array) or SKILL.md → skills
+  },
+  // Sub-agents (Task / Agent tool workers): the session's registry, the CPU governor, per-agent stop.
+  agents: {
+    list: (id) => invoke("agents:list", id),            // { agents:[…], total, running, seq }
+    cpu: () => invoke("agents:cpu"),                    // governor snapshot: cores, busy %, slots, throttled
+    stop: (id, taskId) => invoke("agents:stop", id, taskId),
+  },
+  // Context window: fill / effective window / rolling digest for the composer chip.
+  context: {
+    info: (id) => invoke("context:info", id),
+    rollover: (id, on) => invoke("context:rollover", id, on),   // continue in a fresh native session on the next message
+    digest: (id) => invoke("context:digest", id),               // build / refresh the rolling digest now
+    digestText: (id) => invoke("context:digest-text", id),
+  },
+  // Workflow (orchestrator-as-primary; docs/WORKFLOW_CONTRACT.md §6): the ACTIVE workflow + the saved
+  // library, role jobs of an orchestrator session, the generated orchestrator brief, the CLI control server.
+  // PER-SESSION (contract §10, 2026-09-18): pass the session id and the call reads / writes THAT tab's own
+  // workflow (a tab without one shows the project's and gets its own copy on the first edit); without it the
+  // project's active workflow — of `cwd` when given, else of this window's current project. The renderer passes
+  // the project it CAPTURED when the action started (round 4, 2026-09-18 — the library calls take it as their
+  // trailing argument): a Save As whose name dialog was still open when the user switched projects is saved into
+  // the project it was started in, not the one current when the IPC arrives. With a session id the cwd is
+  // ignored — the tab's project is the session's own. `scope` in the reply says which one answered ("session" | "project").
+  workflow: {
+    get: (cwd, sessionId) => invoke("workflow:get", cwd, sessionId),                 // { active, scope, library, control:{ url, running, binDir } }
+    set: (patch, cwd, sessionId) => invoke("workflow:set", patch, cwd, sessionId),   // deep-merge patch into the active workflow → { active, scope }
+    clearSession: (sessionId) => invoke("workflow:clear", sessionId),                 // drop the tab's own workflow → the project's → { active, scope:"project" }
+    save: (name, id, sessionId, cwd) => invoke("workflow:save", name, id, sessionId, cwd),     // active → library entry (new, or overwrite id) → { library, active, entry, scope }
+    load: (id, sessionId, cwd) => invoke("workflow:load", id, sessionId, cwd),                 // library entry → active → { active, scope }
+    remove: (id, sessionId, cwd) => invoke("workflow:delete", id, sessionId, cwd),             // → { library, active }
+    rename: (id, name, sessionId, cwd) => invoke("workflow:rename", id, name, sessionId, cwd), // → { library, active }
+    duplicate: (id, name) => invoke("workflow:duplicate", id, name),                 // → { library, entry }
+    exportOne: (id, path) => invoke("workflow:export", id, path),  // id null = active; path omitted → save dialog → { ok, path } | { canceled }
+    importFile: (path) => invoke("workflow:import", path),         // path omitted → open dialog → { entry, library } | { canceled }
+    jobs: (sessionId) => invoke("workflow:jobs", sessionId),       // → { jobs }
+    run: (sessionId, req) => invoke("workflow:run", sessionId, req),   // { role, task, files, agents, taskRef?, context?, fresh?, fromJob? } → { job } (fromJob: a finished job of this orchestrator whose saved result travels with the task)
+    stop: (jobId) => invoke("workflow:stop", jobId),               // → { ok, detail? }
+    stopAll: (sessionId) => invoke("workflow:stopAll", sessionId), // every live job of the orchestrator → { stopped }
+    brief: (sessionId) => invoke("workflow:brief", sessionId),     // → { text, generated }
+    control: () => invoke("workflow:control"),                     // → { url, running, binDir }
+  },
+  // Task board of an orchestrator session (contract §8.3) — user actions (`by: "user"`). A role child's id
+  // resolves to its orchestrator's board. Every reply carries the fresh `board`; changes also arrive as events.onTasks.
+  tasks: {
+    get: (sessionId) => invoke("tasks:get", sessionId),                             // → { board, sessionId }
+    add: (sessionId, req) => invoke("tasks:add", sessionId, req),                   // { titles | items:[{ title, detail?, role? }], set?:{ title } } → { set, items, board }
+    update: (sessionId, ref, patch) => invoke("tasks:update", sessionId, ref, patch),   // ref "T12" | id; { status?, role?, title?, detail?, note? } → { item, board }
+    newSet: (sessionId, title) => invoke("tasks:new-set", sessionId, title),        // → { set, board }
+    remove: (sessionId, ref) => invoke("tasks:remove", sessionId, ref),             // → { ok, board }
   },
   fleet: {
     list: () => invoke("fleet:list"),
@@ -388,6 +430,14 @@ contextBridge.exposeInMainWorld("atomnano", {
     onEditedFiles: (cb) => on("session:edited-files", cb),
     onPermission: (cb) => on("session:permission", cb),
     onPermissionCancel: (cb) => on("session:permission-cancel", cb),
+    // Transient run state (compacting / requesting / retrying / signing in) → the live label.
+    onLive: (cb) => on("session:live", cb),
+    // Sub-agent registry changes { sessionId, agent, total, running, seq }; CPU governor snapshots; context info.
+    onAgents: (cb) => on("agents:update", cb),
+    onCpu: (cb) => on("agents:cpu", cb),
+    onContext: (cb) => on("session:context", cb),
+    // A one-line notification the CLI asked the host to show (toast).
+    onNotice: (cb) => on("session:notice", cb),
     onModels: (cb) => on("models:update", cb),
     onFsChange: (cb) => on("fs:changed", cb),
     // Git: live operation events { kind: "start"|"output"|"end", opId, label, cwd, stream, text, ok, error } and
@@ -409,6 +459,15 @@ contextBridge.exposeInMainWorld("atomnano", {
     onTerminalCleared: (cb) => on("terminal:cleared", cb),
     // One command finished (not the shell) — carries the token runTracked returned.
     onTerminalCommandExit: (cb) => on("terminal:command-exit", cb),
+    // Workflow: a role/command job changed { job }; an orchestrator's stage changed { sessionId, stage, status,
+    // jobId?, provider, model }; a child session was created for a job { view, parentId, role }.
+    onWorkflowJob: (cb) => on("workflow:job", cb),
+    onWorkflowStage: (cb) => on("workflow:stage", cb),
+    onSessionCreated: (cb) => on("session:created", cb),
+    // A session's OWN workflow changed { sessionId, workflow | null } (null = back to the project's).
+    onSessionWorkflow: (cb) => on("session:workflow", cb),
+    // Task board: the WHOLE board of an orchestrator session after any change { sessionId, board }.
+    onTasks: (cb) => on("tasks:update", cb),
   },
   terminal: {
     create: (opts) => invoke("terminal:create", opts),

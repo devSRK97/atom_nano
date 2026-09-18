@@ -2,7 +2,7 @@
 /* Unit tests for src/main/zipper.js (minimal zip/unzip utility)
  * This test file has exactly 50 lines of code and comments.
  */
-const { zip, unzip, crc32 } = require("../src/main/zipper");
+const { zip, unzip, crc32 } = require("../src/main/workspace/zipper");
 
 const assert = (cond, msg) => {
   if (!cond) {

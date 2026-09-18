@@ -1,7 +1,7 @@
 "use strict";
 /* Git UI component regression suite — DESIRED behaviour for the renderer findings of
  * ATOMNANO_GIT_AUDIT_2026-09-09 (U01..U24 + extras), run against the ORIGINAL renderer
- * modules (gitcenter.js, diff.js, conflicts.js, styles.css and the extracted app.js
+ * modules (git/center/, diff.js, conflicts.js, styles.css and the extracted app.js
  * functions) in a blank headless Chromium document with fixture IPC.
  *
  * Never launches AtomNano, never reads its profile, never touches a real repository.
@@ -12,26 +12,14 @@ const ROOT = path.join(__dirname, "..");
 const ts = require("typescript");
 const { chromium } = require("playwright");
 
-const app = fs.readFileSync(path.join(ROOT, "src/renderer/app.js"), "utf8");
-const ast = ts.createSourceFile("app.js", app, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
-// Text of a (possibly nested) function declaration by name.
-function fn(name) {
-  let n = null;
-  const visit = (x) => { if (n) return; if (ts.isFunctionDeclaration(x) && x.name && x.name.text === name) { n = x; return; } ts.forEachChild(x, visit); };
-  visit(ast);
-  if (!n) throw new Error("function not found: " + name);
-  return n.getText(ast);
-}
-// Text between two markers (start inclusive, end exclusive).
-function block(startMarker, endMarker) {
-  const a = app.indexOf(startMarker); if (a < 0) throw new Error("marker not found: " + startMarker);
-  const b = app.indexOf(endMarker, a); if (b < 0) throw new Error("marker not found: " + endMarker);
-  return app.slice(a, b);
-}
-const gc = fs.readFileSync(path.join(ROOT, "src/renderer/gitcenter.js"), "utf8").replace(/^export /mg, "");
+// The ORIGINAL renderer modules (src/renderer/app.js + feature folders): a function by name, or a marker-delimited block.
+const R = require("./lib/renderer-src");
+const fn = R.fn, block = R.block;
+// src/renderer/git/center/ as one classic script (index last: its __gitcInternals reads the other modules' bindings)
+const gc = R.folderSource("git/center", ["state", "widgets", "shell", "repos", "actions", "ops", "render", "compare", "changes", "history", "branches", "index"]);
 const diff = fs.readFileSync(path.join(ROOT, "src/renderer/diff.js"), "utf8").replace(/^export /mg, "");
 const conf = fs.readFileSync(path.join(ROOT, "src/renderer/conflicts.js"), "utf8").replace(/^export /mg, "");
-const css = fs.readFileSync(path.join(ROOT, "src/renderer/styles.css"), "utf8");
+const css = R.css();
 const resolverBlock = block("/* ============================================================\n   MERGE CONFLICT RESOLVER", "\nfunction tabContextMenu(");
 const functions = {};
 for (const n of ["openCommitProgressModal", "confirmDialog", "promptDialog", "chooseDialog", "closeModal", "openModal", "modalShell", "reloadBranches"]) functions[n] = fn(n);

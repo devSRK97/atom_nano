@@ -184,10 +184,10 @@ function mkRedis() {
 const resetFakes = () => { fake.mysql = mkMysql(); fake.pg = mkPg(); fake.mssql = mkMssql(); fake.oracle = mkOracle(); fake.mongo = mkMongo(); fake.redis = mkRedis(); };
 resetFakes();
 
-const db = require("../src/main/db");
-const io = require("../src/main/db-io");
-const F = require("../src/main/db-formats");
-const S = require("../src/main/sqlscript");
+const db = require("../src/main/db/db");
+const io = require("../src/main/db/db-io");
+const F = require("../src/main/db/db-formats");
+const S = require("../src/main/db/sqlscript");
 const STORE = path.join(USER, "db-connections.json");
 
 /* ------------------------------ harness ------------------------------ */

@@ -59,3 +59,20 @@ Observed live inside AtomNano (tool calls failing with `Tool permission request 
 | Stop left the command running; the CLI was killed but not its shell children (Windows `child.kill` is not tree-aware). | `interrupt()` aborted the transport FIRST, so the SDK killed the CLI before `query.interrupt()` could reach it, and the graceful path never ran. | Graceful-first: `query.interrupt()` → release the input stream → the CLI cancels the tool (killing its shell) and ends the turn; only after `interruptGraceMs` (4 s) the transport is aborted and the whole process tree is killed (`taskkill /T /F` with the pid captured by our `spawnClaudeCodeProcess`, which mirrors the SDK's spawn options). A replacing run waits for the stopped one to drain (`awaitDrain`). A cancelled tool keeps its "interrupted" state; the stopped turn's late result adds no card. (R05–R08) |
 
 Test fakes: any fake SDK must read the prompt stream concurrently (first message, drain in the background) — `scripts/test-context.js` was updated; draining it to completion before yielding would deadlock against the held-open stream.
+
+## Follow-up 2026-09-15 — sub-agents refused with "The user doesn't want to take this action right now"
+
+Reproduced live inside AtomNano with four background worker agents, then isolated with two probes against the real SDK + CLI (`scripts/_probe-subagents.js` raw SDK; `scripts/_probe-app-subagents.js` through claude.js — both make paid Haiku calls and are not part of `npm test`).
+
+| Finding | Detail |
+| --- | --- |
+| Symptom | After the first batches succeed, every tool call — the main agent's and each sub-agent's, Read/Grep/Glob/Edit/Write/Bash — is refused with the CLI's interrupt-family text; the state persists for the rest of the CLI process. |
+| Trigger | The CLI's wake-up turn after a background task reports, but only when the app had already ended the CLI's input. With stdin closed the CLI keeps running the tasks, yet no PreToolUse hook or permission round-trip can be answered, and each such failure is reported as that refusal. |
+| Why the input was ended | Task lifecycle events are `system` messages with subtypes (`task_started`, `task_progress`, `task_notification`, `task_updated`, `background_tasks_changed`); claude.js switched on `m.type === "task_started"`, so `activeTasks` never filled and the turn's `result` released the input. `task_started` also arrives ~1 s after the `result`, so even a correct check at result time would have been too early. |
+| Fix | `handleMessage` routes system task subtypes to the task handler; `background_tasks_changed` replaces the live set (ambient watchers excluded); `scheduleRelease` waits 2.5 s after a result for late `task_started`; while tasks are alive the run stays open with a visible note; the last report starts a 20 s idle release unless the CLI's follow-up turn ends it first. Agent cards now carry `taskId`/`background`. |
+| Verification | run control R11–R13 (real message shapes, late task_started, REPLACE semantics, plain-turn grace); live: both agents 6/6, wake-up Bash served, 0 refusals, run ended `done`. |
+
+### Same day — sending while agents run, and the chat tail
+
+- **A message sent while background agents are alive no longer interrupts them.** `claude.js` now feeds the run's prompt stream from a queue (`inputFeed`); `steer()` pushes the new user message onto the LIVE process as its next turn when background work is alive (recorded as a steered user message), so the agents keep working and only the Stop button ends them. Without background work Enter keeps its "interrupt and run now" behaviour (steer is refused, the renderer falls back). Tests: run control R14, R15.
+- **Chat stays pinned to the tail while sub-agents stream.** The renderer decided "following" by measuring the distance to the bottom AFTER appending the new card; a tall card (thinking, tool detail) failed the 140 px test and detached the view for good. It now uses the scroll listener's verdict (`_followTail`) taken before the append and scrolls with force; card updates that grow (results, status) re-pin as well.

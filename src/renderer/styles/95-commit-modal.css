@@ -1,0 +1,392 @@
+/* AtomNano styles — Commit modal — review & commit, merge view, commit progress, file-type icon colouring.
+ * Part 15 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ============================================================
+   Commit modal — production-grade "Review & commit changes"
+   ============================================================ */
+/* Force the commit modal to fill the viewport so the file list has real room
+   to breathe — fixed buttons in modal footer can't be scrolled away anymore. */
+.modal:has(.commit-modal), .modal:has(.commit-progress) { max-width: min(1320px, 96vw); width: 1240px; max-height: 92vh; height: 92vh; display: flex; flex-direction: column; }
+.modal:has(.commit-modal) .modal-body, .modal:has(.commit-progress) .modal-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; padding: 14px 16px; }
+.modal:has(.commit-modal) .modal-foot, .modal:has(.commit-progress) .modal-foot { padding: 12px 16px; border-top: 1px solid var(--line); flex-shrink: 0; }
+
+.commit-modal { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 0; }
+.commit-modal .cm-tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 12px; align-self: flex-start; }
+.commit-modal .cm-tabs .cm-tab { padding: 7px 18px; font-size: 12.5px; font-weight: 600; color: var(--text-3); background: transparent; border: none; border-radius: 7px; cursor: pointer; transition: background .12s, color .12s; }
+.commit-modal .cm-tabs .cm-tab:hover { color: var(--text); background: var(--bg-2); }
+.commit-modal .cm-tabs .cm-tab.active { color: var(--text); background: var(--bg-2); box-shadow: 0 1px 0 0 var(--accent) inset, 0 1px 4px rgba(0,0,0,.15); }
+.commit-modal .cm-view { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.commit-modal .cm-view.hidden { display: none; }
+.cm-foot-group { display: flex; align-items: center; gap: 12px; width: 100%; }
+.cm-foot-group.hidden { display: none; }
+.cm-foot-group .spacer { flex: 1; }
+.cm-foot-group .cm-actions-right { display: flex; gap: 8px; }
+.commit-modal .cm-main { display: grid; grid-template-columns: var(--cm-left, 380px) 6px 1fr; gap: 0; background: var(--line); border-radius: 12px; overflow: hidden; flex: 1; min-height: 0; --cm-left: 380px; }
+.commit-modal .cm-divider { background: var(--line); cursor: col-resize; position: relative; transition: background .12s; }
+.commit-modal .cm-divider:hover, .commit-modal .cm-divider:active { background: var(--accent-2); }
+.commit-modal .cm-divider::before { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 2px; height: 24px; border-radius: 1px; background: var(--text-4); opacity: .4; }
+body.cm-resizing { cursor: col-resize; user-select: none; }
+body.cm-resizing * { cursor: col-resize !important; }
+
+.commit-modal .cm-files-pane { display: flex; flex-direction: column; min-height: 0; background: var(--bg-2); }
+.commit-modal .cm-files-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--bg-inset); flex-shrink: 0; }
+.commit-modal .cm-files-summary { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; }
+.commit-modal .cm-select-all { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); cursor: pointer; user-select: none; }
+.commit-modal .cm-select-all input { width: 14px; height: 14px; cursor: pointer; }
+.commit-modal .cm-files-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+.commit-modal .cm-files-list::-webkit-scrollbar { width: 8px; }
+.commit-modal .cm-files-list::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 4px; }
+
+.commit-modal .cm-repo-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px 9px; font-size: 12px; font-weight: 600; color: var(--text-2); cursor: pointer; user-select: none; border-top: 1px solid var(--line); background: var(--bg-inset); transition: background .1s; position: sticky; top: 0; z-index: 2; }
+.commit-modal .cm-repo-head:first-child { border-top: none; }
+.commit-modal .cm-repo-head:hover { background: color-mix(in srgb, var(--accent) 6%, var(--bg-inset)); color: var(--text); }
+.commit-modal .cm-repo-head .cm-repo-caret { display: grid; place-items: center; color: var(--text-3); transition: transform .15s; flex-shrink: 0; }
+.commit-modal .cm-repo-head .cm-repo-caret.collapsed { transform: rotate(-90deg); }
+.commit-modal .cm-repo-head input[type="checkbox"] { margin: 0; }
+.commit-modal .cm-repo-head .cm-repo-ic { color: var(--accent); display: grid; place-items: center; flex-shrink: 0; }
+.commit-modal .cm-repo-head .cm-repo-name { font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 35%; }
+.commit-modal .cm-repo-head .cm-repo-branch { font-size: 11px; font-weight: 500; color: var(--text-3); font-family: var(--font-mono, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.commit-modal .cm-repo-head .cm-repo-ab { font-size: 10.5px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; padding: 1px 5px; border-radius: 4px; background: color-mix(in srgb, var(--accent) 14%, transparent); flex-shrink: 0; }
+.commit-modal .cm-repo-head .cm-repo-spacer { flex: 1; min-width: 6px; }
+.commit-modal .cm-repo-head .cm-repo-count { font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums; font-weight: 600; flex-shrink: 0; padding: 2px 6px; border-radius: 4px; background: var(--bg-2); }
+.commit-modal .cm-mini-btn { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 6px; background: transparent; color: var(--text-3); border: 1px solid var(--line); cursor: pointer; transition: background .12s, color .12s, border-color .12s; flex-shrink: 0; }
+.commit-modal .cm-mini-btn:hover { background: var(--bg-2); color: var(--text); border-color: var(--line-2, var(--line)); }
+.commit-modal .cm-mini-btn:active { transform: scale(.97); }
+
+.commit-modal .cm-file { display: flex; align-items: center; gap: 9px; padding: 5px 14px 5px 40px; cursor: pointer; transition: background .1s; min-width: 0; position: relative; }
+.commit-modal .cm-file::after { content: ""; position: absolute; left: 26px; top: 0; bottom: 0; width: 1px; background: var(--line); opacity: .7; }
+.commit-modal .cm-file:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.commit-modal .cm-file.active { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.commit-modal .cm-file.active::before { content: ""; position: absolute; width: 3px; background: var(--accent); left: 0; top: 0; bottom: 0; }
+.commit-modal .cm-file.conflict { background: var(--red-soft); }
+/* Clean square checkboxes — no big rounded chip, just a small precise box.
+   Overrides the default app-wide .aqx-check chip style by being more specific.
+   Tri-state (`indeterminate`) gets a horizontal bar instead of a checkmark. */
+.commit-modal input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 14px; height: 14px; flex-shrink: 0; cursor: pointer; border: 1.5px solid var(--text-4); border-radius: 3px; background: var(--bg-1); position: relative; transition: background .12s, border-color .12s; box-shadow: none; }
+.commit-modal input[type="checkbox"]:hover { border-color: var(--accent); }
+.commit-modal input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+.commit-modal input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 3px; top: 0px; width: 5px; height: 8px; border-right: 1.8px solid var(--bg-1); border-bottom: 1.8px solid var(--bg-1); transform: rotate(45deg); }
+.commit-modal input[type="checkbox"]:indeterminate { background: var(--accent); border-color: var(--accent); }
+.commit-modal input[type="checkbox"]:indeterminate::after { content: ""; position: absolute; left: 2px; right: 2px; top: 50%; height: 2px; background: var(--bg-1); transform: translateY(-50%); border-radius: 1px; }
+.commit-modal input[type="checkbox"]:disabled { opacity: .35; cursor: not-allowed; }
+.commit-modal .cm-file-ic { display: grid; place-items: center; flex-shrink: 0; }
+.commit-modal .cm-file-name { font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50%; }
+.commit-modal .cm-file-dir { font-size: 10.5px; color: var(--text-4); font-family: var(--font-mono, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+.commit-modal .cm-file-stat { font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; text-transform: uppercase; }
+.commit-modal .cm-file-stat.modified { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.commit-modal .cm-file-stat.added { background: color-mix(in srgb, var(--green) 22%, transparent); color: var(--green); }
+.commit-modal .cm-file-stat.deleted { background: color-mix(in srgb, var(--red) 22%, transparent); color: var(--red); }
+.commit-modal .cm-file-stat.untracked { background: color-mix(in srgb, var(--accent-2) 22%, transparent); color: var(--accent-2); }
+
+.commit-modal .cm-diff-pane { display: flex; flex-direction: column; min-height: 0; background: var(--bg-2); }
+.commit-modal .cm-diff-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg-inset); flex-shrink: 0; }
+.commit-modal .cm-diff-ic { display: grid; place-items: center; }
+.commit-modal .cm-diff-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.commit-modal .cm-diff-path { font-size: 11px; color: var(--text-4); font-family: var(--font-mono, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.commit-modal .cm-diff-stat { display: flex; gap: 12px; padding: 6px 14px; font-size: 11.5px; font-family: var(--font-mono, monospace); border-bottom: 1px solid var(--line); flex-shrink: 0; }
+.commit-modal .cm-diff-stat .ds-add { color: var(--green); font-weight: 700; }
+.commit-modal .cm-diff-stat .ds-del { color: var(--red); font-weight: 700; }
+.commit-modal .cm-diff-stat .ds-bin { color: var(--text-4); }
+.commit-modal .cm-diff-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--text-4); font-size: 13px; padding: 40px 20px; text-align: center; }
+.commit-modal .cm-diff-empty .icon { color: var(--text-4); opacity: .35; }
+.commit-modal .cm-diff-empty-small { font-size: 12px; padding: 16px 18px; flex: 0 0 auto; align-items: flex-start; text-align: left; }
+.commit-modal .cm-diff-loading { display: flex; align-items: center; gap: 10px; padding: 16px 18px; color: var(--text-3); font-size: 12.5px; }
+.commit-modal .cm-diff-body { flex: 1; min-height: 0; margin: 0; padding: 12px 14px; overflow: auto; font-family: var(--font-mono, monospace); font-size: 12px; line-height: 1.55; background: var(--bg-1); color: var(--text-2); white-space: pre; tab-size: 2; }
+.commit-modal .cm-diff-body span { display: block; padding: 0 6px; margin: 0 -6px; }
+.commit-modal .cm-diff-body .diff-add { background: color-mix(in srgb, var(--green) 14%, transparent); color: color-mix(in srgb, var(--green) 60%, var(--text)); }
+.commit-modal .cm-diff-body .diff-del { background: color-mix(in srgb, var(--red) 16%, transparent); color: color-mix(in srgb, var(--red) 55%, var(--text)); }
+.commit-modal .cm-diff-body .diff-hunk { color: var(--accent); font-weight: 600; background: color-mix(in srgb, var(--accent) 8%, transparent); margin-top: 4px; }
+.commit-modal .cm-diff-body .diff-meta { color: var(--text-4); }
+
+.commit-modal .cm-bottom { display: flex; flex-direction: column; gap: 8px; padding: 14px 0 4px; flex-shrink: 0; }
+.commit-modal .cm-msg-label { display: flex; align-items: baseline; gap: 12px; }
+.commit-modal .cm-msg-label-text { font-size: 11.5px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.4px; }
+.commit-modal .cm-msg-hint { font-size: 10.5px; color: var(--text-4); }
+.commit-modal .cm-msg { width: 100%; min-height: 64px; padding: 11px 14px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-inset); color: var(--text); font-family: var(--font-ui); font-size: 13px; line-height: 1.5; outline: none; transition: border-color .14s, background .14s; }
+.commit-modal .cm-msg:focus { border-color: var(--accent-2); background: var(--bg-2); }
+.commit-modal .cm-msg::placeholder { color: var(--text-4); }
+.commit-modal .cm-actions { display: flex; align-items: center; gap: 12px; }
+.commit-modal .cm-actions .spacer { flex: 1; }
+.commit-modal .cm-actions-right { display: flex; gap: 8px; }
+.commit-modal .cm-stats-chip { font-size: 11.5px; color: var(--text-3); font-weight: 500; padding: 4px 10px; border-radius: 14px; background: var(--bg-inset); border: 1px solid var(--line); }
+.commit-modal .cm-actions .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* The modal-footer version of the action row — used when buttons live in the
+   modalShell footer (always visible, can't scroll off). */
+.cm-foot { display: flex; align-items: center; gap: 12px; width: 100%; }
+.cm-foot .spacer { flex: 1; }
+.cm-foot .cm-actions-right { display: flex; gap: 8px; }
+.cm-foot .cm-stats-chip { font-size: 11.5px; color: var(--text-3); font-weight: 500; padding: 4px 10px; border-radius: 14px; background: var(--bg-inset); border: 1px solid var(--line); }
+.cm-foot .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ============================================================
+   Merge view inside the commit modal — GitLab/GitHub-style compare UI
+   ============================================================ */
+.merge-view { gap: 14px; padding: 4px 0 0; }
+.merge-view .cm-merge-picker { display: flex; align-items: flex-end; gap: 12px; padding: 14px 16px; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 12px; flex-wrap: wrap; }
+.merge-view .cm-merge-field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 170px; }
+.merge-view .cm-merge-field label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-4); }
+.merge-view .cm-merge-select { padding: 8px 11px; font-size: 12.5px; color: var(--text); background: var(--bg-2); border: 1px solid var(--line); border-radius: 7px; outline: none; font-family: var(--font-mono, monospace); cursor: pointer; transition: border-color .12s; }
+.merge-view .cm-merge-select:focus { border-color: var(--accent-2); }
+.merge-view .cm-merge-select:disabled { opacity: .55; cursor: not-allowed; }
+.merge-view .cm-merge-swap { padding: 7px 10px; height: 36px; align-self: flex-end; margin-bottom: 0; }
+.merge-view .cm-merge-compare { padding: 8px 18px; height: 36px; align-self: flex-end; }
+
+.merge-view .cm-merge-summary { display: flex; align-items: center; gap: 16px; padding: 12px 18px; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 10px; flex-shrink: 0; }
+.merge-view .cm-merge-summary.hidden { display: none; }
+.merge-view .cm-merge-stat { display: flex; align-items: baseline; gap: 6px; }
+.merge-view .cm-merge-stat .n { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.merge-view .cm-merge-stat .k { font-size: 11.5px; color: var(--text-3); }
+.merge-view .cm-merge-arrow { font-size: 14px; color: var(--text-4); }
+.merge-view .cm-merge-branchpair { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono, monospace); font-size: 12px; }
+.merge-view .cm-merge-branch-from, .merge-view .cm-merge-branch-to { padding: 3px 9px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--line); }
+.merge-view .cm-merge-branch-from { color: color-mix(in srgb, var(--accent) 80%, var(--text)); }
+.merge-view .cm-merge-branch-to { color: color-mix(in srgb, var(--green) 70%, var(--text)); }
+.merge-view .cm-merge-loading { display: flex; align-items: center; gap: 8px; color: var(--text-3); font-size: 12px; }
+.merge-view .cm-merge-error { padding: 12px 16px; color: var(--red); font-size: 12px; background: var(--red-soft); border-radius: 10px; }
+
+.merge-view .cm-merge-initial { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex: 1; text-align: center; padding: 30px 20px; color: var(--text-3); }
+.merge-view .cm-merge-initial.hidden { display: none; }
+.merge-view .cm-merge-initial .icon { color: var(--text-4); opacity: .35; margin-bottom: 6px; }
+.merge-view .cm-merge-initial h3 { margin: 0; font-size: 15px; color: var(--text); }
+.merge-view .cm-merge-initial p { margin: 0; max-width: 480px; font-size: 12.5px; line-height: 1.5; }
+
+.merge-view .cm-merge-results { display: grid; grid-template-columns: minmax(280px, 1fr) 1.4fr; gap: 12px; flex: 1; min-height: 0; }
+.merge-view .cm-merge-results.hidden { display: none; }
+.merge-view .cm-merge-col { display: flex; flex-direction: column; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 12px; min-height: 0; overflow: hidden; }
+.merge-view .cm-merge-col-head { padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); border-bottom: 1px solid var(--line); flex-shrink: 0; background: var(--bg-2); }
+.merge-view .cm-merge-col-body { flex: 1; min-height: 0; overflow-y: auto; }
+.merge-view .cm-merge-empty { padding: 24px; color: var(--text-4); font-size: 12px; text-align: center; }
+.merge-view .cm-merge-empty-small { padding: 12px; text-align: left; }
+
+.merge-view .cm-merge-commit { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); transition: background .1s; cursor: default; }
+.merge-view .cm-merge-commit:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.merge-view .cm-merge-commit:last-child { border-bottom: none; }
+.merge-view .cm-commit-hash { font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; color: var(--accent); padding: 2px 7px; border-radius: 4px; background: color-mix(in srgb, var(--accent) 14%, transparent); height: fit-content; flex-shrink: 0; }
+.merge-view .cm-commit-body { flex: 1; min-width: 0; }
+.merge-view .cm-commit-subject { font-size: 12.5px; color: var(--text); font-weight: 500; line-height: 1.35; word-break: break-word; }
+.merge-view .cm-commit-meta { font-size: 10.5px; color: var(--text-4); margin-top: 3px; }
+
+.merge-view .cm-merge-file { border-bottom: 1px solid var(--line); }
+.merge-view .cm-merge-file:last-child { border-bottom: none; }
+.merge-view .cm-merge-file-head { display: flex; align-items: center; gap: 8px; padding: 9px 14px; cursor: pointer; transition: background .1s; }
+.merge-view .cm-merge-file-head:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.merge-view .cm-merge-file.expanded > .cm-merge-file-head { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.merge-view .cm-merge-file-caret { color: var(--text-4); transition: transform .15s; display: grid; place-items: center; flex-shrink: 0; }
+.merge-view .cm-merge-file.expanded .cm-merge-file-caret { transform: rotate(90deg); }
+.merge-view .cm-merge-file-ic { display: grid; place-items: center; flex-shrink: 0; }
+.merge-view .cm-merge-file-name { font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; }
+.merge-view .cm-merge-file-path { font-size: 10.5px; color: var(--text-4); font-family: var(--font-mono, monospace); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.merge-view .cm-merge-file-stat { font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; flex-shrink: 0; }
+.merge-view .cm-merge-file-stat.modified { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.merge-view .cm-merge-file-stat.added { background: color-mix(in srgb, var(--green) 22%, transparent); color: var(--green); }
+.merge-view .cm-merge-file-stat.deleted { background: color-mix(in srgb, var(--red) 22%, transparent); color: var(--red); }
+.merge-view .cm-merge-file-diff { padding: 0 14px 14px 38px; }
+.merge-view .cm-merge-file-diff.hidden { display: none; }
+.merge-view .cm-merge-file-diff .cm-diff-body { max-height: 360px; background: var(--bg-1); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+
+/* ============================================================
+   Commit Progress modal — per-repo live status (Stage → Commit → Push)
+   ============================================================ */
+.commit-progress { display: flex; flex-direction: column; gap: 14px; flex: 1; min-height: 0; }
+.commit-progress .cp-headline { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; background: var(--bg-inset); border: 1px solid var(--line); font-weight: 600; color: var(--text); }
+.commit-progress .cp-headline.ok { color: var(--green); border-color: color-mix(in srgb, var(--green) 35%, var(--line)); background: color-mix(in srgb, var(--green) 8%, var(--bg-inset)); }
+.commit-progress .cp-headline.error { color: var(--red); border-color: color-mix(in srgb, var(--red) 35%, var(--line)); background: color-mix(in srgb, var(--red) 8%, var(--bg-inset)); }
+.commit-progress .cp-headline .cp-spin { display: grid; place-items: center; flex-shrink: 0; }
+.commit-progress .cp-rows { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 6px; }
+.commit-progress .cp-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-inset); transition: background .15s, border-color .15s; }
+.commit-progress .cp-row.pending { opacity: .65; }
+.commit-progress .cp-row.doing { border-color: var(--accent-2); background: color-mix(in srgb, var(--accent) 6%, var(--bg-inset)); }
+.commit-progress .cp-row.ok { border-color: color-mix(in srgb, var(--green) 38%, var(--line)); background: color-mix(in srgb, var(--green) 8%, var(--bg-inset)); }
+.commit-progress .cp-row.error { border-color: color-mix(in srgb, var(--red) 38%, var(--line)); background: color-mix(in srgb, var(--red) 8%, var(--bg-inset)); }
+.commit-progress .cp-row .cp-row-ic { width: 22px; height: 22px; display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; background: var(--bg-2); }
+.commit-progress .cp-row.doing .cp-row-ic { color: var(--accent); background: color-mix(in srgb, var(--accent) 22%, var(--bg-2)); }
+.commit-progress .cp-row.ok .cp-row-ic { color: var(--green); background: color-mix(in srgb, var(--green) 22%, var(--bg-2)); }
+.commit-progress .cp-row.error .cp-row-ic { color: var(--red); background: color-mix(in srgb, var(--red) 22%, var(--bg-2)); }
+.commit-progress .cp-row .cp-row-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.commit-progress .cp-row .cp-row-head { display: flex; align-items: center; gap: 10px; }
+.commit-progress .cp-row .cp-row-name { font-weight: 700; font-size: 13px; color: var(--text); }
+.commit-progress .cp-row .cp-row-branch { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-family: var(--font-mono, monospace); color: var(--text-3); padding: 1px 6px; border-radius: 4px; background: var(--bg-2); }
+.commit-progress .cp-row .cp-row-branch svg { display: block; }
+.commit-progress .cp-row .cp-row-count { margin-left: auto; font-size: 11px; color: var(--text-4); font-variant-numeric: tabular-nums; }
+.commit-progress .cp-row .cp-row-phase { font-size: 11.5px; color: var(--text-3); }
+.commit-progress .cp-row.error .cp-row-phase { color: var(--red); white-space: pre-wrap; word-break: break-word; }
+.commit-progress .cp-foot { display: flex; align-items: center; gap: 8px; width: 100%; }
+.commit-progress .cp-foot .spacer { flex: 1; }
+
+/* numeric stepper (editor font size) */
+.stepper { display: inline-flex; align-items: center; gap: 8px; }
+.stepper .step-val { min-width: 52px; text-align: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); background: var(--bg-inset); border: 1px solid var(--line); border-radius: var(--radius); padding: 7px 0; }
+
+/* ---- File-type icon + name colouring (WebStorm-inspired) -------------------
+   Each .ft-* class targets BOTH the icon glyph (saturated brand colour) and
+   the filename text (a softer blend with the default text colour so it stays
+   readable on every theme). We use color-mix to derive the muted name tint
+   from the same hex per type — one source of truth per language. ---------- */
+:root {
+  --ft-js:       #f1e05a;
+  --ft-jsx:      #f0bf4d;
+  --ft-ts:       #3178c6;
+  --ft-tsx:      #5fb3d0;
+  --ft-html:     #e44d26;
+  --ft-css:      #6a8cff;
+  --ft-scss:     #cc6699;
+  --ft-vue:      #41b883;
+  --ft-svelte:   #ff3e00;
+  --ft-astro:    #ff5d01;
+  --ft-json:     #c4b13c;
+  --ft-yaml:     #d33f33;
+  --ft-xml:      #0060ac;
+  --ft-csv:      #1f7a4d;
+  --ft-py:       #4584b6;
+  --ft-rb:       #cc342d;
+  --ft-php:      #777bb4;
+  --ft-go:       #00add8;
+  --ft-rs:       #dea584;
+  --ft-java:     #b07219;
+  --ft-kt:       #a97bff;
+  --ft-swift:    #ffac45;
+  --ft-scala:    #c22d40;
+  --ft-c:        #5c6bc0;
+  --ft-cs:       #178600;
+  --ft-sh:       #89e051;
+  --ft-bat:      #c1f12e;
+  --ft-ps:       #5391fe;
+  --ft-md:       #b0b8c2;
+  --ft-txt:      #9aa0a6;
+  --ft-pdf:      #db4437;
+  --ft-env:      #ecd058;
+  --ft-ini:      #9aa0a6;
+  --ft-lock:     #a35aff;
+  --ft-docker:   #2496ed;
+  --ft-img:      #e94b8c;
+  --ft-svg:      #ffb13b;
+  --ft-sql:      #f29111;
+  --ft-proto:    #4385f4;
+  --ft-gradle:   #02303a;
+  --ft-log:      #8a8a8a;
+  --ft-pkgjson:  #cb3837;
+  --ft-tsconfig: #3178c6;
+  --ft-git:      #f1502f;
+  --ft-npm:      #cb3837;
+  --ft-lint:     #8080f2;
+  --ft-makefile: #427819;
+  --ft-readme:   #5fb3d0;
+  --ft-license:  #d9bd6f;
+}
+
+/* Icon glyphs: full brand colour. The bare .ft-* selectors apply anywhere we
+   intentionally tag a span with the type class (tree rows, editor tabs, git
+   diff panel, search results, overflow menus). The selectors are limited via
+   the parent containers below to avoid accidental tinting in tool cards. */
+.tw-icon, .et-ico, .gvf-ico, .dfh-ico, .srn-row .srn-ico { transition: color .12s; }
+.tw-icon.ft-js, .et-ico.ft-js, .gvf-ico.ft-js, .dfh-ico.ft-js { color: var(--ft-js); }
+.tw-icon.ft-jsx, .et-ico.ft-jsx, .gvf-ico.ft-jsx, .dfh-ico.ft-jsx { color: var(--ft-jsx); }
+.tw-icon.ft-ts, .et-ico.ft-ts, .gvf-ico.ft-ts, .dfh-ico.ft-ts { color: var(--ft-ts); }
+.tw-icon.ft-tsx, .et-ico.ft-tsx, .gvf-ico.ft-tsx, .dfh-ico.ft-tsx { color: var(--ft-tsx); }
+.tw-icon.ft-html, .et-ico.ft-html, .gvf-ico.ft-html, .dfh-ico.ft-html { color: var(--ft-html); }
+.tw-icon.ft-css, .et-ico.ft-css, .gvf-ico.ft-css, .dfh-ico.ft-css { color: var(--ft-css); }
+.tw-icon.ft-scss, .et-ico.ft-scss, .gvf-ico.ft-scss, .dfh-ico.ft-scss { color: var(--ft-scss); }
+.tw-icon.ft-vue, .et-ico.ft-vue, .gvf-ico.ft-vue, .dfh-ico.ft-vue { color: var(--ft-vue); }
+.tw-icon.ft-svelte, .et-ico.ft-svelte, .gvf-ico.ft-svelte, .dfh-ico.ft-svelte { color: var(--ft-svelte); }
+.tw-icon.ft-astro, .et-ico.ft-astro, .gvf-ico.ft-astro, .dfh-ico.ft-astro { color: var(--ft-astro); }
+.tw-icon.ft-json, .et-ico.ft-json, .gvf-ico.ft-json, .dfh-ico.ft-json { color: var(--ft-json); }
+.tw-icon.ft-yaml, .et-ico.ft-yaml, .gvf-ico.ft-yaml, .dfh-ico.ft-yaml { color: var(--ft-yaml); }
+.tw-icon.ft-xml, .et-ico.ft-xml, .gvf-ico.ft-xml, .dfh-ico.ft-xml { color: var(--ft-xml); }
+.tw-icon.ft-csv, .et-ico.ft-csv, .gvf-ico.ft-csv, .dfh-ico.ft-csv { color: var(--ft-csv); }
+.tw-icon.ft-py, .et-ico.ft-py, .gvf-ico.ft-py, .dfh-ico.ft-py { color: var(--ft-py); }
+.tw-icon.ft-rb, .et-ico.ft-rb, .gvf-ico.ft-rb, .dfh-ico.ft-rb { color: var(--ft-rb); }
+.tw-icon.ft-php, .et-ico.ft-php, .gvf-ico.ft-php, .dfh-ico.ft-php { color: var(--ft-php); }
+.tw-icon.ft-go, .et-ico.ft-go, .gvf-ico.ft-go, .dfh-ico.ft-go { color: var(--ft-go); }
+.tw-icon.ft-rs, .et-ico.ft-rs, .gvf-ico.ft-rs, .dfh-ico.ft-rs { color: var(--ft-rs); }
+.tw-icon.ft-java, .et-ico.ft-java, .gvf-ico.ft-java, .dfh-ico.ft-java { color: var(--ft-java); }
+.tw-icon.ft-kt, .et-ico.ft-kt, .gvf-ico.ft-kt, .dfh-ico.ft-kt { color: var(--ft-kt); }
+.tw-icon.ft-swift, .et-ico.ft-swift, .gvf-ico.ft-swift, .dfh-ico.ft-swift { color: var(--ft-swift); }
+.tw-icon.ft-scala, .et-ico.ft-scala, .gvf-ico.ft-scala, .dfh-ico.ft-scala { color: var(--ft-scala); }
+.tw-icon.ft-c, .et-ico.ft-c, .gvf-ico.ft-c, .dfh-ico.ft-c { color: var(--ft-c); }
+.tw-icon.ft-cs, .et-ico.ft-cs, .gvf-ico.ft-cs, .dfh-ico.ft-cs { color: var(--ft-cs); }
+.tw-icon.ft-sh, .et-ico.ft-sh, .gvf-ico.ft-sh, .dfh-ico.ft-sh { color: var(--ft-sh); }
+.tw-icon.ft-bat, .et-ico.ft-bat, .gvf-ico.ft-bat, .dfh-ico.ft-bat { color: var(--ft-bat); }
+.tw-icon.ft-ps, .et-ico.ft-ps, .gvf-ico.ft-ps, .dfh-ico.ft-ps { color: var(--ft-ps); }
+.tw-icon.ft-md, .et-ico.ft-md, .gvf-ico.ft-md, .dfh-ico.ft-md { color: var(--ft-md); }
+.tw-icon.ft-txt, .et-ico.ft-txt, .gvf-ico.ft-txt, .dfh-ico.ft-txt { color: var(--ft-txt); }
+.tw-icon.ft-pdf, .et-ico.ft-pdf, .gvf-ico.ft-pdf, .dfh-ico.ft-pdf { color: var(--ft-pdf); }
+.tw-icon.ft-env, .et-ico.ft-env, .gvf-ico.ft-env, .dfh-ico.ft-env { color: var(--ft-env); }
+.tw-icon.ft-ini, .et-ico.ft-ini, .gvf-ico.ft-ini, .dfh-ico.ft-ini { color: var(--ft-ini); }
+.tw-icon.ft-lock, .et-ico.ft-lock, .gvf-ico.ft-lock, .dfh-ico.ft-lock { color: var(--ft-lock); }
+.tw-icon.ft-docker, .et-ico.ft-docker, .gvf-ico.ft-docker, .dfh-ico.ft-docker { color: var(--ft-docker); }
+.tw-icon.ft-img, .et-ico.ft-img, .gvf-ico.ft-img, .dfh-ico.ft-img { color: var(--ft-img); }
+.tw-icon.ft-svg, .et-ico.ft-svg, .gvf-ico.ft-svg, .dfh-ico.ft-svg { color: var(--ft-svg); }
+.tw-icon.ft-sql, .et-ico.ft-sql, .gvf-ico.ft-sql, .dfh-ico.ft-sql { color: var(--ft-sql); }
+.tw-icon.ft-proto, .et-ico.ft-proto, .gvf-ico.ft-proto, .dfh-ico.ft-proto { color: var(--ft-proto); }
+.tw-icon.ft-gradle, .et-ico.ft-gradle, .gvf-ico.ft-gradle, .dfh-ico.ft-gradle { color: var(--ft-gradle); }
+.tw-icon.ft-log, .et-ico.ft-log, .gvf-ico.ft-log, .dfh-ico.ft-log { color: var(--ft-log); }
+.tw-icon.ft-pkgjson, .et-ico.ft-pkgjson, .gvf-ico.ft-pkgjson, .dfh-ico.ft-pkgjson { color: var(--ft-pkgjson); }
+.tw-icon.ft-tsconfig, .et-ico.ft-tsconfig, .gvf-ico.ft-tsconfig, .dfh-ico.ft-tsconfig { color: var(--ft-tsconfig); }
+.tw-icon.ft-git, .et-ico.ft-git, .gvf-ico.ft-git, .dfh-ico.ft-git { color: var(--ft-git); }
+.tw-icon.ft-npm, .et-ico.ft-npm, .gvf-ico.ft-npm, .dfh-ico.ft-npm { color: var(--ft-npm); }
+.tw-icon.ft-lint, .et-ico.ft-lint, .gvf-ico.ft-lint, .dfh-ico.ft-lint { color: var(--ft-lint); }
+.tw-icon.ft-makefile, .et-ico.ft-makefile, .gvf-ico.ft-makefile, .dfh-ico.ft-makefile { color: var(--ft-makefile); }
+.tw-icon.ft-readme, .et-ico.ft-readme, .gvf-ico.ft-readme, .dfh-ico.ft-readme { color: var(--ft-readme); }
+.tw-icon.ft-license, .et-ico.ft-license, .gvf-ico.ft-license, .dfh-ico.ft-license { color: var(--ft-license); }
+
+/* Filename text: softer tint so colour reads as "type signal", not "graffiti".
+   color-mix blends 38% of the brand colour with the current text colour, which
+   keeps contrast on every theme (light/dark/blue/amber). */
+.tw-name.ft-js, .et-name.ft-js, .srn-name.ft-js, .et-menu-name.ft-js        { color: color-mix(in srgb, var(--ft-js)        38%, var(--text)); }
+.tw-name.ft-jsx, .et-name.ft-jsx, .srn-name.ft-jsx, .et-menu-name.ft-jsx       { color: color-mix(in srgb, var(--ft-jsx)       38%, var(--text)); }
+.tw-name.ft-ts, .et-name.ft-ts, .srn-name.ft-ts, .et-menu-name.ft-ts        { color: color-mix(in srgb, var(--ft-ts)        50%, var(--text)); }
+.tw-name.ft-tsx, .et-name.ft-tsx, .srn-name.ft-tsx, .et-menu-name.ft-tsx       { color: color-mix(in srgb, var(--ft-tsx)       50%, var(--text)); }
+.tw-name.ft-html, .et-name.ft-html, .srn-name.ft-html, .et-menu-name.ft-html      { color: color-mix(in srgb, var(--ft-html)      40%, var(--text)); }
+.tw-name.ft-css, .et-name.ft-css, .srn-name.ft-css, .et-menu-name.ft-css       { color: color-mix(in srgb, var(--ft-css)       42%, var(--text)); }
+.tw-name.ft-scss, .et-name.ft-scss, .srn-name.ft-scss, .et-menu-name.ft-scss      { color: color-mix(in srgb, var(--ft-scss)      42%, var(--text)); }
+.tw-name.ft-vue, .et-name.ft-vue, .srn-name.ft-vue, .et-menu-name.ft-vue       { color: color-mix(in srgb, var(--ft-vue)       42%, var(--text)); }
+.tw-name.ft-svelte, .et-name.ft-svelte, .srn-name.ft-svelte, .et-menu-name.ft-svelte    { color: color-mix(in srgb, var(--ft-svelte)    38%, var(--text)); }
+.tw-name.ft-astro, .et-name.ft-astro, .srn-name.ft-astro, .et-menu-name.ft-astro     { color: color-mix(in srgb, var(--ft-astro)     38%, var(--text)); }
+.tw-name.ft-json, .et-name.ft-json, .srn-name.ft-json, .et-menu-name.ft-json      { color: color-mix(in srgb, var(--ft-json)      40%, var(--text)); }
+.tw-name.ft-yaml, .et-name.ft-yaml, .srn-name.ft-yaml, .et-menu-name.ft-yaml      { color: color-mix(in srgb, var(--ft-yaml)      38%, var(--text)); }
+.tw-name.ft-xml, .et-name.ft-xml, .srn-name.ft-xml, .et-menu-name.ft-xml       { color: color-mix(in srgb, var(--ft-xml)       40%, var(--text)); }
+.tw-name.ft-csv, .et-name.ft-csv, .srn-name.ft-csv, .et-menu-name.ft-csv       { color: color-mix(in srgb, var(--ft-csv)       42%, var(--text)); }
+.tw-name.ft-py, .et-name.ft-py, .srn-name.ft-py, .et-menu-name.ft-py        { color: color-mix(in srgb, var(--ft-py)        50%, var(--text)); }
+.tw-name.ft-rb, .et-name.ft-rb, .srn-name.ft-rb, .et-menu-name.ft-rb        { color: color-mix(in srgb, var(--ft-rb)        40%, var(--text)); }
+.tw-name.ft-php, .et-name.ft-php, .srn-name.ft-php, .et-menu-name.ft-php       { color: color-mix(in srgb, var(--ft-php)       45%, var(--text)); }
+.tw-name.ft-go, .et-name.ft-go, .srn-name.ft-go, .et-menu-name.ft-go        { color: color-mix(in srgb, var(--ft-go)        45%, var(--text)); }
+.tw-name.ft-rs, .et-name.ft-rs, .srn-name.ft-rs, .et-menu-name.ft-rs        { color: color-mix(in srgb, var(--ft-rs)        45%, var(--text)); }
+.tw-name.ft-java, .et-name.ft-java, .srn-name.ft-java, .et-menu-name.ft-java      { color: color-mix(in srgb, var(--ft-java)      45%, var(--text)); }
+.tw-name.ft-kt, .et-name.ft-kt, .srn-name.ft-kt, .et-menu-name.ft-kt        { color: color-mix(in srgb, var(--ft-kt)        40%, var(--text)); }
+.tw-name.ft-swift, .et-name.ft-swift, .srn-name.ft-swift, .et-menu-name.ft-swift     { color: color-mix(in srgb, var(--ft-swift)     42%, var(--text)); }
+.tw-name.ft-scala, .et-name.ft-scala, .srn-name.ft-scala, .et-menu-name.ft-scala     { color: color-mix(in srgb, var(--ft-scala)     40%, var(--text)); }
+.tw-name.ft-c, .et-name.ft-c, .srn-name.ft-c, .et-menu-name.ft-c         { color: color-mix(in srgb, var(--ft-c)         50%, var(--text)); }
+.tw-name.ft-cs, .et-name.ft-cs, .srn-name.ft-cs, .et-menu-name.ft-cs        { color: color-mix(in srgb, var(--ft-cs)        50%, var(--text)); }
+.tw-name.ft-sh, .et-name.ft-sh, .srn-name.ft-sh, .et-menu-name.ft-sh        { color: color-mix(in srgb, var(--ft-sh)        40%, var(--text)); }
+.tw-name.ft-bat, .et-name.ft-bat, .srn-name.ft-bat, .et-menu-name.ft-bat       { color: color-mix(in srgb, var(--ft-bat)       40%, var(--text)); }
+.tw-name.ft-ps, .et-name.ft-ps, .srn-name.ft-ps, .et-menu-name.ft-ps        { color: color-mix(in srgb, var(--ft-ps)        45%, var(--text)); }
+.tw-name.ft-md, .et-name.ft-md, .srn-name.ft-md, .et-menu-name.ft-md        { color: color-mix(in srgb, var(--ft-md)        45%, var(--text)); }
+.tw-name.ft-txt, .et-name.ft-txt, .srn-name.ft-txt, .et-menu-name.ft-txt       { color: color-mix(in srgb, var(--ft-txt)       45%, var(--text)); }
+.tw-name.ft-pdf, .et-name.ft-pdf, .srn-name.ft-pdf, .et-menu-name.ft-pdf       { color: color-mix(in srgb, var(--ft-pdf)       40%, var(--text)); }
+.tw-name.ft-env, .et-name.ft-env, .srn-name.ft-env, .et-menu-name.ft-env       { color: color-mix(in srgb, var(--ft-env)       42%, var(--text)); }
+.tw-name.ft-ini, .et-name.ft-ini, .srn-name.ft-ini, .et-menu-name.ft-ini       { color: color-mix(in srgb, var(--ft-ini)       42%, var(--text)); }
+.tw-name.ft-lock, .et-name.ft-lock, .srn-name.ft-lock, .et-menu-name.ft-lock      { color: color-mix(in srgb, var(--ft-lock)      42%, var(--text)); }
+.tw-name.ft-docker, .et-name.ft-docker, .srn-name.ft-docker, .et-menu-name.ft-docker    { color: color-mix(in srgb, var(--ft-docker)    45%, var(--text)); }
+.tw-name.ft-img, .et-name.ft-img, .srn-name.ft-img, .et-menu-name.ft-img       { color: color-mix(in srgb, var(--ft-img)       42%, var(--text)); }
+.tw-name.ft-svg, .et-name.ft-svg, .srn-name.ft-svg, .et-menu-name.ft-svg       { color: color-mix(in srgb, var(--ft-svg)       45%, var(--text)); }
+.tw-name.ft-sql, .et-name.ft-sql, .srn-name.ft-sql, .et-menu-name.ft-sql       { color: color-mix(in srgb, var(--ft-sql)       45%, var(--text)); }
+.tw-name.ft-proto, .et-name.ft-proto, .srn-name.ft-proto, .et-menu-name.ft-proto     { color: color-mix(in srgb, var(--ft-proto)     45%, var(--text)); }
+.tw-name.ft-gradle, .et-name.ft-gradle, .srn-name.ft-gradle, .et-menu-name.ft-gradle    { color: color-mix(in srgb, var(--ft-gradle)    55%, var(--text)); }
+.tw-name.ft-log, .et-name.ft-log, .srn-name.ft-log, .et-menu-name.ft-log       { color: color-mix(in srgb, var(--ft-log)       55%, var(--text)); }
+.tw-name.ft-pkgjson, .et-name.ft-pkgjson, .srn-name.ft-pkgjson, .et-menu-name.ft-pkgjson   { color: color-mix(in srgb, var(--ft-pkgjson)   45%, var(--text)); }
+.tw-name.ft-tsconfig, .et-name.ft-tsconfig, .srn-name.ft-tsconfig, .et-menu-name.ft-tsconfig  { color: color-mix(in srgb, var(--ft-tsconfig)  50%, var(--text)); }
+.tw-name.ft-git, .et-name.ft-git, .srn-name.ft-git, .et-menu-name.ft-git       { color: color-mix(in srgb, var(--ft-git)       40%, var(--text)); }
+.tw-name.ft-npm, .et-name.ft-npm, .srn-name.ft-npm, .et-menu-name.ft-npm       { color: color-mix(in srgb, var(--ft-npm)       45%, var(--text)); }
+.tw-name.ft-lint, .et-name.ft-lint, .srn-name.ft-lint, .et-menu-name.ft-lint      { color: color-mix(in srgb, var(--ft-lint)      40%, var(--text)); }
+.tw-name.ft-makefile, .et-name.ft-makefile, .srn-name.ft-makefile, .et-menu-name.ft-makefile  { color: color-mix(in srgb, var(--ft-makefile)  50%, var(--text)); }
+.tw-name.ft-readme, .et-name.ft-readme, .srn-name.ft-readme, .et-menu-name.ft-readme    { color: color-mix(in srgb, var(--ft-readme)    55%, var(--text)); font-weight: 600; }
+.tw-name.ft-license, .et-name.ft-license, .srn-name.ft-license, .et-menu-name.ft-license   { color: color-mix(in srgb, var(--ft-license)   50%, var(--text)); }
+
+/* Active tab/row override — the selected file should stay clearly readable,
+   so on .editor-tab.active and .tree-row.active we drop back to plain --text
+   for the name but KEEP the icon's brand colour (which is what makes the
+   file type recognisable at a glance even when selected). */
+.editor-tab.active .et-name { color: var(--text); }
+.tree-row.active .tw-name   { color: var(--text); }
+

@@ -39,7 +39,7 @@ cp.execFileSync = function (file, args, opts) {
 };
 function on(platform, fn) { const d = Object.getOwnPropertyDescriptor(process, "platform"); Object.defineProperty(process, "platform", { value: platform, configurable: true }); try { return fn(); } finally { Object.defineProperty(process, "platform", d); } }
 
-const C = require("../src/main/credstore");
+const C = require("../src/main/auth/credstore");
 const creds = (tag, extra = {}) => ({ claudeAiOauth: { accessToken: "at-" + tag, refreshToken: "rt-" + tag, expiresAt: extra.expiresAt || Date.now() + 3600e3, scopes: ["user:inference"], subscriptionType: extra.sub || "max", ...(extra.email ? { email: extra.email } : {}), ...(extra.id ? { accountUuid: extra.id } : {}) } });
 const hash8 = (s) => crypto.createHash("sha256").update(String(s).normalize("NFC")).digest("hex").slice(0, 8);
 
@@ -81,8 +81,8 @@ const hash8 = (s) => crypto.createHash("sha256").update(String(s).normalize("NFC
   });
 
   // ---- profiles.js + auth.js on the emulated Mac ----
-  const profiles = require("../src/main/profiles");
-  const auth = require("../src/main/auth");
+  const profiles = require("../src/main/auth/profiles");
+  const auth = require("../src/main/auth/cli-auth");
   on("darwin", () => {
     keychain.clear(); for (const f of fs.readdirSync(APP_HOME)) fs.rmSync(path.join(APP_HOME, f), { recursive: true, force: true });
     // the user logged in from Terminal.app → default Keychain entry only

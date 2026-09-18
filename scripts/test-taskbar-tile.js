@@ -16,16 +16,9 @@ let pass = 0, failN = 0; const failures = [];
 function check(id, name, ok, evidence) { if (ok) pass++; else { failN++; failures.push(`${id} ${name}`); console.log(`  FAIL ${id} ${name}  ${evidence ? JSON.stringify(evidence).slice(0, 500) : ""}`); } }
 const watchdog = setTimeout(() => { console.error("HARNESS TIMEOUT"); process.exit(3); }, 120000);
 
-const app = fs.readFileSync(path.join(ROOT, "src/renderer/app.js"), "utf8");
-const ast = ts.createSourceFile("app.js", app, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
-function fn(name) {
-  let n = null;
-  const visit = (x) => { if (n) return; if (ts.isFunctionDeclaration(x) && x.name && x.name.text === name) { n = x; return; } ts.forEachChild(x, visit); };
-  visit(ast);
-  if (!n) throw new Error("function not found: " + name);
-  return n.getText(ast);
-}
-const constLine = (name) => { const m = new RegExp(`^const ${name}\\b.*$`, "m").exec(app); if (!m) throw new Error("const not found: " + name); return m[0]; };
+const R = require("./lib/renderer-src");   // the ORIGINAL renderer modules (functions / consts by name)
+const fn = R.fn;
+const constLine = (name) => R.constLine(name, true);
 const extracted = [constLine("TAG_COLORS"), constLine("TAG_TEXT_MAX"),
   ...["tagColor", "projectKeyOf", "projectTagRec", "projectColor", "saveProjectColor", "saveProjectTag", "tagLetters", "tagSizePct", "tagTextColor", "drawAtomBadge", "renderTagTile", "applyTaskbarTag", "baseName"].map(fn)].join("\n");
 

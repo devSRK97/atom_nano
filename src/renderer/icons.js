@@ -75,6 +75,12 @@ const P = {
   jsLetters:   '<text x="12" y="17" font-size="13" font-weight="900" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" fill="currentColor" stroke="none" text-anchor="middle" letter-spacing="-0.2">JS</text>',
   tsLetters:   '<text x="12" y="17" font-size="13" font-weight="900" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" fill="currentColor" stroke="none" text-anchor="middle" letter-spacing="-0.2">TS</text>',
   jsonBraces:  '<text x="12" y="17" font-size="14" font-weight="900" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" fill="currentColor" stroke="none" text-anchor="middle" letter-spacing="-0.4">{ }</text>',
+  // Sub-agents: a robot head (antenna, eyes, mouth) — the worker agents (user request 2026-09-17).
+  agents: '<rect x="5" y="8" width="14" height="11" rx="2.5"/><path d="M12 8V5.4"/><circle cx="12" cy="4" r="1.3"/><circle cx="9.2" cy="13" r="1.25" fill="currentColor" stroke="none"/><circle cx="14.8" cy="13" r="1.25" fill="currentColor" stroke="none"/><path d="M9.5 16.3h5"/><path d="M3 12.5v3M21 12.5v3"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.8" r=".9" fill="currentColor" stroke="none"/>',
+  activity: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  gauge: '<path d="M4 15a8 8 0 1 1 16 0"/><path d="M12 15l4.5-4.5"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
 };
 
 export function icon(name, size = 18, extraClass = "") {

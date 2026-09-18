@@ -24,11 +24,18 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   const def = await win.evaluate(() => window.atomnano.settings.get());
   ok(def.llmProvider === "anthropic", `default provider is Anthropic (${def.llmProvider})`);
 
-  /* ---------- provider dropdown lives in the tab bar, before the Skills icon ---------- */
+  /* ---------- provider dropdown lives in the tab bar, first among the header actions ---------- */
   const hdr = await win.evaluate(() => document.querySelector("#headerProvider .dd .dd-val").textContent.trim());
   ok(/Anthropic|OpenAI|Google|Custom/.test(hdr), `provider dropdown is in the chat header (${hdr})`);
-  const beforeSkills = await win.evaluate(() => { const a = document.getElementById("headerProvider"); const b = document.getElementById("skillsBtn"); return !!(a && b) && (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING); });
-  ok(beforeSkills, "provider dropdown sits before the Skills icon");
+  const placement = await win.evaluate(() => {
+    const a = document.getElementById("headerProvider"), s = document.getElementById("chatSearchBtn"), m = document.getElementById("chatMore");
+    const before = (x, y) => !!(x && y) && !!(x.compareDocumentPosition(y) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return { inActions: !!(a && a.closest(".cht-actions")), beforeSearch: before(a, s), beforeMore: before(a, m) };
+  });
+  ok(placement.inActions && placement.beforeSearch && placement.beforeMore, "provider dropdown sits in the header actions, before Find and the ⋮ menu");
+  // The Skills button it used to precede is gone (skills live in the Workflow Studio, 2026-09-18).
+  const skillsUi = await win.evaluate(() => ({ btn: !!document.getElementById("skillsBtn"), panel: !!document.getElementById("skillsPanel"), hook: typeof window.__toggleSkills }));
+  ok(!skillsUi.btn && !skillsUi.panel && skillsUi.hook === "undefined", "no Skills button, dock or hook in the chat header");
 
   /* ---------- composer toolbar now starts with the model dropdown ---------- */
   const vals = await win.evaluate(() => [...document.querySelectorAll(".composer-toolbar .dd .dd-val")].map((v) => v.textContent.trim()));

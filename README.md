@@ -118,20 +118,31 @@ requirements (Claude CLI), the GitHub setup, and how to sign later.
 ## Architecture
 
 ```
-src/main/        Electron main process (Node, CommonJS)
-  main.js        window + IPC wiring
-  preload.js     secure contextBridge API (window.atomnano)
-  claude.js      Claude Agent SDK session manager (streaming, permissions)
-  store.js       settings + session persistence
-  files.js       file tree / read / reveal
-  auth.js        CLI detection + login
-src/renderer/    UI (vanilla ES modules, no framework)
-  app.js         controller + state
-  styles.css     warm dark theme
-  markdown.js    dependency-free markdown renderer
-  icons.js       inline SVG icon set
-scripts/         .bat build/run scripts
-build/           generated app icon
+src/main/                Electron main process (Node, CommonJS) — one folder per domain
+  main.js                app bootstrap + windows     preload.js   contextBridge API (window.atomnano)
+  ipc/                   ipcMain handlers, one module per domain (index.js = handle() envelope + registerAll)
+  control/               local control server — how the `atomnano` CLI (src/cli, bin/) reaches the running app
+  platform.js            Windows / macOS / Linux differences
+  session/               conversation engine: index (SessionManager) · anthropic + anthropic-events (Claude Agent SDK)
+                         · openai (Codex) · custom-http · transfer (record → model) · roles · permissions · control · recovery
+                         · subagents (registry + CPU gate) · workflow (orchestrator-as-primary: the Orchestrator drives Planner / Coder / Reviewer / Tester jobs; briefs; `--from` hands one job's saved result to the next role)
+                         · tasks (the session's task board: titled sets of numbered tasks the agents update)
+  providers/             provider catalog, Codex transports + cards + models, custom API, council reviewers, image gen, MCP config
+  storage/               settings + sessions (store), canonical record (history), convo digest, attachments
+  auth/                  CLI detection + login, credential store, login profiles
+  agents/                fleet queue, the project skill store (skills attach to workflow roles in the Studio), sub-agents (registry + CPU governor)
+  db/  git/  lang/  testing/  workspace/
+                         database manager (db.js facade + db-* modules) · git wrapper (git.js facade + git-* modules)
+                         · LSP / TypeScript · test director · files, search, terminal, zip
+src/renderer/            UI (vanilla ES modules, no framework)
+  index.html             static shell; links styles/*.css in order and loads app.js
+  app.js                 entry (init) — the UI is split by feature:
+  core/  chat/  git/ (+ git/center = Git Center)  db/ (Database Manager)  workspace/  panels/
+  workflow/ (the Workflow studio canvas)  settings/ (one module per settings page)  editor/
+  styles/                stylesheet partials (00-base … 98-dbm-updates); numeric prefix = cascade order
+  markdown.js icons.js diff.js conflicts.js
+scripts/                 build / run scripts, regression suites (npm test — the workflow ones: test-workflow, test-workflow-cli, test-workflow-skills, test-tasks), check-requires + check-renderer
+build/                   generated app icon
 ```
 
 Built by Atom AI Labs.

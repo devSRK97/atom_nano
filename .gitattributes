@@ -1,0 +1,5 @@
+# The CLI shims must keep their native line endings on every platform: the sh shim is executed by
+# Git Bash / macOS / Linux (CRLF would break it), the cmd shim by cmd.exe.
+bin/atomnano text eol=lf
+bin/atomnano.js text eol=lf
+bin/atomnano.cmd text eol=crlf

@@ -1,0 +1,82 @@
+/* AtomNano styles — Database Manager — later additions (contrast, a11y, statement states, jobs, plans).
+ * Part 18 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ============================================================
+   DBM — audit DB-001..051 additions (contrast, a11y, statement states, jobs, plans)
+   ============================================================ */
+/* DB-048: essential metadata text meets contrast (text-3 instead of text-4) and a readable size */
+.dbm-log-meta, .dbm-log-time, .dbm-statusbar, .dbm-stmt-label, .dbm-empty, .dbm-vcell.rn, .dbm-vgrid-hcell.rn, .dbm-obj-rows, .dbm-page-info, .dbm-ed-hint { color: var(--text-3); }
+.dbm-statusbar { font-size: 11.5px; }
+.dbm-log-time, .dbm-log-meta { font-size: 11px; }
+/* DB-048: visible focus everywhere in the grid / lists / tabs */
+.dbm-vcell:focus-visible, .dbm-vgrid-hcell:focus-visible, .dbm-vgrid:focus-visible, .dbm-vlist:focus-visible, .dbm-table:focus-visible, .dbm-conn:focus-visible, .dbm-conn-tab:focus-visible, .dbm-stab:focus-visible, .dbm-tab:focus-visible, .dbm-mini:focus-visible, .dbm-ix-col:focus-visible, .dbm-log-row:focus-visible, .dbm-link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; box-shadow: 0 0 0 1px var(--bg-1); z-index: 1; }
+.dbm-vcell.bytes { font-family: var(--font-mono); color: var(--tok-number, var(--text-2)); }
+.dbm-vcell.tagged { color: var(--tok-keyword, var(--text-2)); }
+.dbm-vrow[aria-selected="true"] .dbm-vcell.rn { color: var(--accent); }
+/* DB-024 / DB-039: one row per statement whose state advances */
+.dbm-stmt-label { display: flex; align-items: center; gap: 8px; }
+.dbm-stmt-state { font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: var(--bg-3); color: var(--text-3); flex: none; }
+.dbm-stmt-label.running .dbm-stmt-state { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.dbm-stmt-label.done .dbm-stmt-state { color: #58c07a; background: color-mix(in srgb, #58c07a 14%, transparent); }
+.dbm-stmt-label.failed .dbm-stmt-state { color: #e06c60; background: color-mix(in srgb, #e06c60 14%, transparent); }
+.dbm-stmt-label.unknown .dbm-stmt-state { color: #e0a84a; background: color-mix(in srgb, #e0a84a 16%, transparent); }
+.dbm-stmt-label.not-run .dbm-stmt-state, .dbm-stmt-label.queued .dbm-stmt-state { opacity: .8; }
+.dbm-stmt-text { font-family: var(--font-mono); color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+.dbm-stmt-ms { font-variant-numeric: tabular-nums; color: var(--text-3); flex: none; }
+.dbm-stmt-body:empty { display: none; }
+.dbm-stmt-body .dbm-result-block { min-height: 120px; max-height: 60vh; display: flex; flex-direction: column; }
+.dbm-stmt-body .dbm-vgrid { flex: 1; min-height: 90px; }
+.dbm-run-btn:disabled { opacity: .55; }
+.dbm-stop-btn { color: #e06c60; }
+/* DB-003 / DB-024: unknown outcome is its own state, never "failed" */
+.dbm-err.dbm-unknown { border-color: color-mix(in srgb, #e0a84a 55%, transparent); background: color-mix(in srgb, #e0a84a 10%, transparent); }
+.dbm-err.dbm-unknown > span:first-child { color: #e0a84a; }
+.dbm-err-type { font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-3); align-self: flex-start; }
+.dbm-log-row.unknown .dbm-log-kind { color: #e0a84a; }
+.dbm-log-row.unknown .dbm-log-meta { color: #e0a84a; }
+.dbm-log-row.err .dbm-log-meta { color: #e06c60; }
+.dbm-log-kind.k-import, .dbm-log-kind.k-export { color: #58c07a; }
+/* DB-002: session / transaction ownership visible per tab */
+.dbm-tx-badge { font-size: 9.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; background: color-mix(in srgb, #e0a84a 18%, transparent); color: #e0a84a; border: 1px solid color-mix(in srgb, #e0a84a 45%, transparent); }
+.dbm-spinner.sm { width: 10px; height: 10px; border-width: 2px; margin-left: 4px; }
+.dbm-conn-tab.busy .dbm-conn-tab-name { color: var(--accent); }
+/* DB-015 / DB-016 / DB-046: connection form */
+.dbm-secret-acts { position: absolute; right: 6px; bottom: 5px; display: inline-flex; gap: 2px; }
+.dbm-pw-field .input { padding-right: 78px; }
+.dbm-tls-box { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-2); }
+.dbm-tls-warn.dbm-bad { color: #e06c60; font-weight: 600; }
+.dbm-lock-ic.warn { color: #e0a84a; }
+.dbm-welcome-pref { margin-top: 14px; font-size: 12px; color: var(--text-2); }
+.dbm-conn.reconnecting .dbm-conn-dot { background: #e0a84a; animation: dbm-blink 1.2s ease-in-out infinite; }
+.dbm-conn-dot.error { background: #e06c60; }
+@keyframes dbm-blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+/* DB-032: browse state */
+.dbm-effective { cursor: help; }
+.dbm-col-filter.searching { border-color: var(--accent); }
+.dbm-sort-note { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; }
+/* DB-008 / DB-009 / DB-033: import job dialog */
+.dbm-imp-head { font-weight: 600; color: var(--text-3); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.dbm-imp-state { font-weight: 700; font-size: 13px; }
+.dbm-imp-state.done { color: #58c07a; } .dbm-imp-state.failed { color: #e06c60; } .dbm-imp-state.cancelled { color: #e0a84a; }
+.dbm-imp-stats { display: flex; flex-wrap: wrap; gap: 14px; }
+.dbm-imp-stat { display: inline-flex; gap: 6px; align-items: baseline; font-variant-numeric: tabular-nums; }
+.dbm-imp-stat.bad b { color: #e06c60; } .dbm-imp-stat.warn b { color: #e0a84a; }
+.dbm-imp-errors { display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow: auto; font-size: 12px; }
+.dbm-imp-err { display: grid; grid-template-columns: 90px 1fr; gap: 8px; padding: 3px 0; border-bottom: 1px solid var(--line-soft, var(--line)); }
+.dbm-imp-err code { grid-column: 2; font-family: var(--font-mono); color: var(--text-3); white-space: pre-wrap; word-break: break-all; font-size: 11px; }
+.dbm-imp-preview .dbm-vgrid { position: relative; height: 200px; }
+/* DB-040: schema plan review with per-step outcome */
+.dbm-steps { display: flex; flex-direction: column; gap: 6px; }
+.dbm-step { display: grid; grid-template-columns: 22px 1fr auto; gap: 6px 10px; align-items: center; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg-2); font-size: 12.5px; }
+.dbm-step-label { font-weight: 600; }
+.dbm-step-sql { grid-column: 2 / 4; font-family: var(--font-mono); font-size: 11px; color: var(--text-2); white-space: pre-wrap; word-break: break-word; }
+.dbm-step > .dbm-bad { grid-column: 2 / 4; font-size: 11.5px; }
+.dbm-step-state { font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: var(--bg-3); color: var(--text-3); }
+.dbm-step-state.done { color: #58c07a; } .dbm-step-state.failed { color: #e06c60; } .dbm-step-state.skipped, .dbm-step-state.pending { color: var(--text-3); } .dbm-step-state.rolled-back { color: #e0a84a; }
+.dbm-step.failed { border-color: color-mix(in srgb, #e06c60 45%, transparent); }
+.dbm-row-acts { white-space: nowrap; text-align: right; }
+.dbm-row-acts .dbm-mini { display: inline-grid; }
+.dbm-grid tr.dragging td { opacity: .4; }
+.dbm-ix-col.on { border-color: var(--accent); color: var(--text); }
+.dbm-ix-ord { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 9.5px; font-weight: 700; }
+.dbm-ac-preview.dbm-bad { color: #e06c60; }

@@ -19,7 +19,7 @@ process.env.GIT_CONFIG_NOSYSTEM = "1";
 process.env.HOME = ROOT; process.env.USERPROFILE = ROOT;
 delete process.env.GIT_DIR; delete process.env.GIT_WORK_TREE; delete process.env.GIT_INDEX_FILE;
 
-const git = require("../src/main/git");
+const git = require("../src/main/git/git");
 
 let pass = 0, failN = 0; const failures = [];
 function check(name, cond, extra) { if (cond) { pass++; } else { failN++; failures.push(name + (extra ? " — " + extra : "")); console.log("  FAIL " + name + (extra ? "  (" + extra + ")" : "")); } }
@@ -445,7 +445,7 @@ async function main() {
     w(d, "COMMIT.txt", "user file\n"); w(d, "ünï/ファイル.txt", "u\n"); sh(d, ["rm", "-q", "b.txt"]); commitAll(d, "zip me");
     const out = path.join(ROOT, `commit-${++n}.zip`);
     const z = await git.commitZip(d, "HEAD", out);
-    const { unzip } = require("../src/main/zipper");
+    const { unzip } = require("../src/main/workspace/zipper");
     const entries = unzip(fs.readFileSync(out));
     const names = entries.map((e) => e.name).sort();
     check("G16 zip ok + files under files/", z.ok && names.includes("files/COMMIT.txt") && names.includes("COMMIT.txt") && names.includes("manifest.json") && names.includes("files/ünï/ファイル.txt"), names.join(","));

@@ -1,0 +1,190 @@
+/* AtomNano styles — Sub-agents: the Agents button + popover, the live strip above the composer,
+ * numbered agent cards (orbit animation, info popover, nested-output labels), the Agents dock
+ * (live / history / timeline, CPU meter) and the context-window chip + popover.
+ * Part 6.5 of the stylesheet: loads after the docks, before the overlays. */
+
+/* ---- per-agent colour: every agent number gets a stable hue (golden-angle spacing) ---- */
+.agent-num { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; font-variant-numeric: tabular-nums; color: hsl(var(--ag-h, 40) 75% 78%); background: hsl(var(--ag-h, 40) 55% 32% / .55); border: 1px solid hsl(var(--ag-h, 40) 60% 55% / .55); flex-shrink: 0; }
+html[data-theme="light"] .agent-num { color: hsl(var(--ag-h, 40) 60% 28%); background: hsl(var(--ag-h, 40) 70% 88%); border-color: hsl(var(--ag-h, 40) 50% 70%); }
+.agent-type { font-size: 10px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: var(--text-3); background: var(--bg-3); padding: 1px 6px; border-radius: 4px; flex-shrink: 0; white-space: nowrap; }
+
+/* ---- orbit: three dots circling — the "agent is working" motion (distinct from the tool spinner) ---- */
+.ag-orbit { position: relative; width: 16px; height: 16px; display: inline-block; flex-shrink: 0; animation: ag-spin 1.6s linear infinite; will-change: transform; }
+.ag-orbit i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: hsl(var(--ag-h, 40) 80% 65%); top: 0; left: 50%; margin-left: -2.5px; transform-origin: 2.5px 8px; }
+.ag-orbit i:nth-child(2) { transform: rotate(120deg); opacity: .75; }
+.ag-orbit i:nth-child(3) { transform: rotate(240deg); opacity: .5; }
+.ag-orbit.sm { width: 12px; height: 12px; } .ag-orbit.sm i { width: 4px; height: 4px; margin-left: -2px; transform-origin: 2px 6px; }
+@keyframes ag-spin { to { transform: rotate(360deg); } }
+.tool-state.running.agent-run { color: hsl(var(--ag-h, 40) 80% 65%); }
+
+/* ---- the Agents button in the composer row ("Agents · 3" = running now; the orbit spins while any run) ---- */
+.agents-btn { position: relative; font-variant-numeric: tabular-nums; }
+.agents-btn .ag-live { display: inline-flex; align-items: center; margin-left: 1px; color: var(--accent); }
+.agents-btn .ag-live .ag-orbit { width: 12px; height: 12px; --ag-h: 40; } .agents-btn .ag-live .ag-orbit i { width: 4px; height: 4px; margin-left: -2px; transform-origin: 2px 6px; background: var(--accent); }
+.agents-btn.running { border-color: var(--accent-2); color: var(--accent); }
+
+/* ---- shared popover controls (agents + context popovers) ---- */
+.ag-pop, .ctx-pop { width: 360px; padding: 12px; }
+.ag-pop { width: 380px; }
+.ag-pop .rv-pop-head .spacer, .ctx-pop .rv-pop-head .spacer { flex: 1; }
+.ag-link { font-size: 11.5px; color: var(--accent); padding: 2px 6px; border-radius: 6px; } .ag-link:hover { background: var(--accent-soft); }
+.ag-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 7px 0; border-top: 1px solid var(--line-soft); }
+.ag-row:first-of-type { border-top: none; }
+.ag-row.ag-inline { flex-wrap: nowrap; gap: 6px; } .ag-row.ag-inline .spacer { flex: 1; }
+.ag-label { font-size: 12px; color: var(--text-2); font-weight: 600; min-width: 108px; }
+.ag-label.sm { min-width: 0; font-weight: 500; font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+/* one line of facts under the controls: running · free slots · cap (· CPU when the gate is on) */
+.ag-statusline { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; margin-top: 8px; padding: 7px 10px; border-radius: 9px; background: var(--bg-inset); border: 1px solid var(--line-soft); font-size: 11.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.ag-statusline span + span::before { content: "·"; margin-right: 6px; color: var(--text-4); }
+.ag-statusline .on { color: var(--accent); font-weight: 600; }
+.ag-hint { flex-basis: 100%; font-size: 10.5px; color: var(--text-4); line-height: 1.45; }
+.ag-section { font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-4); margin: 10px 0 5px; }
+.ag-switch { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; }
+.ag-switch-input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ag-switch-track { position: relative; width: 32px; height: 18px; border-radius: 9px; background: var(--bg-4); border: 1px solid var(--line-2); transition: background .15s, border-color .15s; flex-shrink: 0; }
+.ag-switch-knob { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--text-3); transition: transform .15s, background .15s; }
+.ag-switch-input:checked + .ag-switch-track { background: var(--accent-soft); border-color: var(--accent-2); }
+.ag-switch-input:checked + .ag-switch-track .ag-switch-knob { transform: translateX(14px); background: var(--accent); }
+.ag-switch-input:focus-visible + .ag-switch-track { box-shadow: 0 0 0 2px var(--accent-soft); }
+.ag-switch-label { font-size: 12px; color: var(--text); font-weight: 600; }
+.ag-stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-inset); overflow: hidden; }
+.ag-step { width: 26px; height: 26px; display: grid; place-items: center; color: var(--text-2); font-size: 15px; } .ag-step:hover { background: var(--bg-3); color: var(--accent); }
+.ag-num { width: 40px; height: 26px; text-align: center; background: transparent; border: none; border-left: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); color: var(--text); font: inherit; font-weight: 700; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+.ag-num::-webkit-inner-spin-button, .ag-num::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.ag-seg { display: inline-flex; gap: 3px; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 8px; padding: 3px; }
+.ag-seg button { padding: 4px 9px; border-radius: 6px; font-size: 11.5px; color: var(--text-3); } .ag-seg button:hover { color: var(--text); } .ag-seg button.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+/* the running-agents list in the popover: the room goes here (scrolls past ~46 % of the window) */
+.ag-list-host { margin-top: 4px; }
+.ag-mini-list { display: flex; flex-direction: column; gap: 4px; max-height: 46vh; overflow: auto; padding-right: 2px; }
+.ag-mini { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 6px 8px; border-radius: 9px; background: var(--bg-2); border: 1px solid var(--line-soft); border-left: 3px solid hsl(var(--ag-h, 40) 60% 55% / .7); }
+.ag-mini:hover { border-color: hsl(var(--ag-h) 60% 55% / .6); background: var(--bg-3); }
+.ag-mini.st-waiting, .ag-mini.st-queued { border-left-style: dashed; }
+.ag-mini-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.ag-mini-desc { min-width: 0; font-size: 12px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-mini-prog { font-size: 11px; color: var(--text-3); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-mini-time { font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* ---- slots line (dock + settings): running · free · cap, plus the CPU picture only when the gate is on ---- */
+.cpu-meter { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; padding: 7px 10px; border-radius: 9px; background: var(--bg-inset); border: 1px solid var(--line-soft); font-size: 11.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.cpu-meter.compact { margin-top: 8px; }
+.cpu-meter > span + span::before { content: "·"; margin-right: 6px; color: var(--text-4); }
+.cpu-line.muted { color: var(--text-4); font-style: italic; }
+.cpu-busy.warm { color: var(--accent); } .cpu-busy.hot { color: var(--red); font-weight: 700; }
+.cpu-slots { color: var(--text-2); } .cpu-slots.on { color: var(--accent); font-weight: 600; }
+.cpu-throttle { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--red); background: var(--red-soft); padding: 1px 7px; border-radius: 10px; }
+.cpu-waiting { font-size: 10.5px; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 10px; }
+.cpu-throttle::before, .cpu-waiting::before { content: none; }
+
+/* ---- live strip above the composer ---- */
+.agents-strip { display: flex; flex-direction: column; gap: 5px; padding: 4px 4px 6px; }
+.agents-strip.hidden { display: none; }
+.ag-strip-head { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 3px 9px 3px 7px; border-radius: 8px; font-size: 11.5px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent; --ag-h: 40; }
+.ag-strip-ico { display: inline-flex; }
+.ag-strip-head .ag-orbit i { background: var(--accent); }
+.ag-strip-head:hover { border-color: var(--accent-2); }
+.ag-strip-head.done { color: var(--green); background: var(--green-soft); }
+.ag-strip-more { font-weight: 500; opacity: .8; }
+.ag-strip-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.ag-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 320px; padding: 3px 8px 3px 4px; border-radius: 9px; background: var(--bg-2); border: 1px solid hsl(var(--ag-h) 60% 55% / .45); font-size: 11.5px; color: var(--text-2); text-align: left; }
+.ag-chip:hover { background: var(--bg-3); border-color: hsl(var(--ag-h) 65% 60%); }
+.ag-chip.st-waiting { border-style: dashed; color: var(--text-3); }
+.ag-chip-desc { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-chip-time { font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.ag-chip.more { color: var(--text-4); border-color: var(--line); }
+
+/* ---- Task / Agent tool cards ---- */
+.tool-card.agent { border-left: 3px solid hsl(var(--ag-h, 40) 60% 55% / .7); }
+.tool-card.agent.running { border-color: hsl(var(--ag-h, 40) 60% 55% / .5); border-left-color: hsl(var(--ag-h, 40) 75% 62%); background: linear-gradient(90deg, hsl(var(--ag-h, 40) 60% 55% / .07), transparent 40%); }
+.tool-card.agent .tool-ico { color: hsl(var(--ag-h, 40) 75% 68%); }
+.tool-card.agent .agent-info { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; color: var(--text-4); flex-shrink: 0; }
+.tool-card.agent .agent-info:hover { color: var(--accent); background: var(--bg-3); }
+.agent-progress { display: flex; align-items: center; gap: 8px; padding: 0 12px 7px 41px; font-size: 11.5px; color: var(--text-3); font-style: italic; }
+.agent-progress .ag-orbit { flex-shrink: 0; }
+.agent-progress-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.agent-progress-tool { font-style: normal; font-family: var(--font-mono); font-size: 10.5px; color: var(--text-4); flex-shrink: 0; }
+.tool-card.agent.done, .tool-card.agent.error, .tool-card.agent.interrupted { background: none; }
+
+/* nested output of a sub-agent: a coloured rail + "#n · type" label in the left gutter */
+.msg.subagent { position: relative; }
+.msg.subagent::before { content: attr(data-agent); position: absolute; left: 14px; top: 4px; max-width: 34px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9.5px; font-weight: 700; letter-spacing: .02em; color: hsl(var(--ag-h, 40) 70% 70%); }
+.msg.subagent::after { content: ""; position: absolute; left: 44px; top: 4px; bottom: 4px; width: 2px; border-radius: 2px; background: hsl(var(--ag-h, 40) 60% 55% / .5); }
+.msg.subagent .msg-body::before { content: none; }
+
+/* ---- agent info popover ---- */
+.ag-info-pop { position: fixed; z-index: 620; width: 420px; max-width: 92vw; max-height: 70vh; overflow: auto; background: var(--bg-3); border: 1px solid var(--line-2); border-left: 3px solid hsl(var(--ag-h, 40) 65% 58%); border-radius: 11px; box-shadow: var(--sh-pop); padding: 12px 14px; animation: ddIn .12s ease; }
+.ag-info-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600; color: var(--text); }
+.ag-info-head .spacer { flex: 1; }
+.ag-info-desc { font-size: 13px; color: var(--text); margin-bottom: 8px; line-height: 1.45; }
+.ag-det-label { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-4); margin: 8px 0 4px; }
+.ag-pre { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--text-2); white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow: auto; background: var(--bg-inset); border: 1px solid var(--line-soft); border-radius: 7px; padding: 8px 10px; user-select: text; margin: 0; }
+.ag-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+.ag-meta-cell { display: flex; flex-direction: column; gap: 1px; font-size: 11.5px; }
+.ag-meta-cell .k { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-4); }
+.ag-meta-cell .v { color: var(--text-2); font-variant-numeric: tabular-nums; word-break: break-word; }
+.ag-info-acts { display: flex; gap: 6px; justify-content: flex-end; margin-top: 10px; flex-wrap: wrap; }
+
+/* ---- Agents dock ---- */
+.ag-cpu { padding: 8px 10px 0; }
+.ag-tabs { display: flex; gap: 4px; padding: 8px 10px 6px; border-bottom: 1px solid var(--line-soft); }
+.ag-tab { flex: 1; padding: 6px 8px; border-radius: 7px; font-size: 12px; color: var(--text-3); background: var(--bg-2); }
+.ag-tab:hover { color: var(--text); } .ag-tab.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.ag-list { flex: 1; overflow: auto; padding: 8px; min-height: 0; display: flex; flex-direction: column; gap: 7px; }
+/* one agent = one card: everything left-aligned, the head on one line (the time never wraps), actions at the right */
+.ag-list .ag-card { display: flex; flex-direction: column; align-items: stretch; gap: 5px; padding: 9px 10px; border-radius: 10px; text-align: left; background: var(--bg-2); border: 1px solid var(--line-soft); border-left: 3px solid hsl(var(--ag-h, 40) 60% 55% / .7); transition: box-shadow .2s; }
+.ag-list .ag-card.live { border-left-color: hsl(var(--ag-h, 40) 75% 62%); background: linear-gradient(90deg, hsl(var(--ag-h, 40) 60% 55% / .08), var(--bg-2) 45%); }
+.ag-list .ag-card.flash { box-shadow: 0 0 0 2px hsl(var(--ag-h, 40) 70% 60% / .65); }
+.ag-card-head { display: flex; align-items: center; gap: 7px; flex-wrap: nowrap; min-width: 0; }
+.ag-card-head .spacer { flex: 1; min-width: 6px; }
+.ag-card-ico { display: inline-flex; color: hsl(var(--ag-h, 40) 70% 68%); flex-shrink: 0; }
+.ag-status { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 2px 7px; border-radius: 10px; background: var(--bg-4); color: var(--text-3); white-space: nowrap; flex-shrink: 0; }
+.ag-status.st-running { background: var(--accent-soft); color: var(--accent); } .ag-status.st-waiting { background: var(--bg-4); color: var(--text-2); border: 1px dashed var(--line-2); } .ag-status.st-queued { background: var(--bg-4); color: var(--text-2); }
+.ag-status.st-done { background: var(--green-soft); color: var(--green); } .ag-status.st-error { background: var(--red-soft); color: var(--red); } .ag-status.st-stopped, .ag-status.st-interrupted { background: var(--bg-4); color: var(--text-4); }
+.ag-time { font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0; }
+.ag-desc { font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.4; overflow-wrap: anywhere; }
+.ag-progress { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 11.5px; color: var(--text-3); font-style: italic; }
+.ag-progress-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-result-preview { font-size: 11.5px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-bits { font-size: 10.5px; color: var(--text-4); font-variant-numeric: tabular-nums; }
+.ag-acts { display: flex; gap: 4px; justify-content: flex-end; }
+.ag-act { width: 26px; height: 26px; border-radius: 7px; color: var(--text-3); display: grid; place-items: center; } .ag-act:hover { background: var(--bg-4); color: var(--text); } .ag-act.danger:hover { color: var(--red); background: var(--red-soft); }
+.ag-detail { display: flex; flex-direction: column; gap: 4px; padding-top: 4px; border-top: 1px dashed var(--line-soft); }
+.ag-group-head { display: flex; align-items: baseline; gap: 8px; padding: 8px 4px 2px; }
+.ag-group-title { flex: 1; min-width: 0; font-size: 11.5px; font-weight: 600; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-group-sum { font-size: 10.5px; color: var(--text-4); flex-shrink: 0; }
+/* timeline */
+.ag-timeline { display: flex; flex-direction: column; gap: 6px; padding: 4px 2px; }
+.ag-axis { position: relative; height: 16px; margin-left: 96px; border-bottom: 1px solid var(--line-soft); font-size: 9.5px; color: var(--text-4); }
+.ag-axis span { position: absolute; top: 0; transform: translateX(-50%); }
+.ag-tl-row { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.ag-tl-label { width: 88px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; min-width: 0; }
+.ag-tl-desc { font-size: 10.5px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-tl-track { position: relative; flex: 1; height: 14px; background: var(--bg-inset); border-radius: 4px; }
+.ag-tl-bar { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; background: hsl(var(--ag-h, 40) 60% 55% / .75); }
+.ag-tl-bar.st-error { background: var(--red); } .ag-tl-bar.st-stopped, .ag-tl-bar.st-interrupted { background: var(--text-4); }
+.ag-tl-bar.live { background-image: linear-gradient(90deg, transparent 0 40%, rgba(255,255,255,.28) 50%, transparent 60% 100%); background-size: 40px 100%; animation: ag-sweep 1.2s linear infinite; }
+@keyframes ag-sweep { to { background-position: 40px 0; } }
+.ag-tl-foot { font-size: 10.5px; color: var(--text-4); padding-top: 4px; }
+
+/* ---- context window chip + popover ---- */
+.ctx-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); padding: 3px 9px 3px 5px; border: 1px solid var(--line-soft); border-radius: 20px; --pct: 0; }
+.ctx-chip:hover { border-color: var(--line-2); color: var(--text-2); }
+.ctx-chip.hidden { display: none; }
+.ctx-ring { width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--bg-4) 0); position: relative; flex-shrink: 0; }
+.ctx-ring::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--bg-1); }
+.ctx-chip.warn { color: var(--accent); border-color: var(--accent-2); } .ctx-chip.warn .ctx-ring { background: conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--bg-4) 0); }
+.ctx-chip.hot { color: var(--red); border-color: rgba(232,122,100,.55); } .ctx-chip.hot .ctx-ring { background: conic-gradient(var(--red) calc(var(--pct) * 1%), var(--bg-4) 0); }
+.ctx-flag { font-size: 10px; font-weight: 800; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+.ctx-flag.roll { background: var(--green-soft); color: var(--green); }
+.ctx-bar-wrap { display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px; }
+.ctx-bar { position: relative; height: 8px; border-radius: 4px; background: var(--bg-inset); border: 1px solid var(--line-soft); overflow: visible; }
+.ctx-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width .3s; } .ctx-bar-fill.warm { background: var(--accent-2); } .ctx-bar-fill.hot { background: var(--red); }
+.ctx-bar-mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-2); border-radius: 1px; opacity: .7; }
+.ctx-nums { font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.ctx-grid { margin: 6px 0 4px; }
+.ctx-actions { gap: 6px; }
+.ctx-digest-line { flex-basis: 100%; margin-bottom: 4px; }
+.ctx-digest-text { max-height: 60vh; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-orbit, .ag-tl-bar.live { animation: none !important; }
+}

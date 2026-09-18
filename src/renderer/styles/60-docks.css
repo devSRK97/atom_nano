@@ -1,0 +1,108 @@
+/* AtomNano styles — Changed-files panel and the right docks (fleet, tests).
+ * Part 07 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ---------------- Changes panel ---------------- */
+.changes-panel { width: var(--changes-w); flex-shrink: 0; background: var(--bg-1); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+.changes-head { display: flex; align-items: center; gap: 8px; padding: 13px 14px; border-bottom: 1px solid var(--line-soft); }
+.changes-head .ch-title { font-weight: 600; font-size: 13px; }
+.changes-head .ch-count { background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 600; padding: 1px 8px; border-radius: 20px; }
+.changes-head .ch-close { margin-left: auto; color: var(--text-3); width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; }
+.changes-head .ch-close:hover { background: var(--bg-3); color: var(--text); }
+.changes-list { flex: 1; overflow: auto; padding: 7px; min-height: 0; }
+.change-row { display: flex; align-items: center; gap: 9px; padding: 8px 9px; border-radius: 9px; cursor: pointer; transition: background .12s; }
+.change-row:hover { background: var(--bg-2); }
+.change-ico { width: 26px; height: 26px; border-radius: 7px; background: var(--green-soft); color: var(--green); display: grid; place-items: center; flex-shrink: 0; }
+.change-meta { flex: 1; min-width: 0; }
+.change-name { font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.change-path { font-size: 10.5px; color: var(--text-4); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); }
+.change-count { font-size: 10px; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 12px; flex-shrink: 0; }
+.changes-empty { color: var(--text-4); font-size: 12px; text-align: center; padding: 30px 16px; font-style: italic; }
+
+/* ---------------- Right docks: Fleet + Tests (shared shell, also used by Agents and Task board) ---------------- */
+.side-dock { width: var(--changes-w); flex-shrink: 0; background: var(--bg-1); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+.side-dock .spacer, .changes-head .spacer { flex: 1 1 auto; }
+.dock-mini { width: 26px; height: 26px; border-radius: 6px; color: var(--text-3); display: grid; place-items: center; }
+.dock-mini:hover { background: var(--bg-3); color: var(--text); }
+.dock-empty { color: var(--text-4); font-size: 12px; text-align: center; padding: 26px 16px; font-style: italic; }
+
+/* Fleet */
+.fleet-compose { padding: 10px 11px; border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 8px; }
+.fleet-input { width: 100%; resize: vertical; background: var(--bg-2); border: 1px solid var(--line); border-radius: 9px; color: var(--text); font: inherit; font-size: 12.5px; padding: 8px 10px; line-height: 1.45; }
+.fleet-input:focus { border-color: var(--accent); outline: none; }
+.fleet-compose-row { display: flex; align-items: center; gap: 8px; }
+.fleet-conc-l { display: inline-flex; align-items: center; gap: 5px; color: var(--text-4); font-size: 11px; }
+.fleet-conc { width: 46px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 7px; color: var(--text-2); padding: 4px 6px; font: inherit; font-size: 12px; }
+.fleet-dispatch { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: #1a1205; font-weight: 600; font-size: 12.5px; padding: 7px 14px; border-radius: 9px; }
+.fleet-dispatch:hover { filter: brightness(1.07); }
+.fleet-dispatch:disabled { opacity: .5; cursor: default; filter: none; }
+.fleet-list { flex: 1; overflow: auto; padding: 8px; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+.fleet-row { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 10px; padding: 9px 10px; display: flex; flex-direction: column; gap: 7px; }
+.fleet-row-top { display: flex; align-items: center; gap: 8px; }
+.fleet-name { font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fleet-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; background: var(--bg-4); color: var(--text-3); }
+.fleet-badge.fb-running { background: var(--accent-soft); color: var(--accent); }
+.fleet-badge.fb-done { background: var(--green-soft); color: var(--green); }
+.fleet-badge.fb-error { background: var(--red-soft); color: var(--red); }
+.fleet-badge.fb-queued { background: var(--bg-4); color: var(--text-2); }
+.fleet-badge.fb-canceled, .fleet-badge.fb-interrupted { background: var(--bg-4); color: var(--text-4); }
+.fleet-conflict { font-size: 10.5px; color: var(--red); background: var(--red-soft); padding: 1px 7px; border-radius: 12px; flex-shrink: 0; }
+.fleet-claims { display: flex; flex-wrap: wrap; gap: 5px; }
+.fleet-chip { font-size: 10px; font-family: var(--font-mono); color: var(--accent-2, var(--accent)); background: var(--accent-soft); padding: 1px 7px; border-radius: 11px; }
+.fleet-err { font-size: 11px; color: #f0b0a2; background: var(--red-soft); padding: 5px 8px; border-radius: 7px; }
+.fleet-row-acts { display: flex; gap: 4px; }
+.fleet-act { width: 26px; height: 26px; border-radius: 7px; color: var(--text-3); display: grid; place-items: center; }
+.fleet-act:hover { background: var(--bg-4); color: var(--text); }
+/* (The Skills dock's styles — skill rows, form, scout bar, hub chips, import view — left with the dock on
+   2026-09-18; the Workflow Studio's Skills modal has its own rules in 67-workflow.css.) */
+
+/* Tests (Test Director) */
+.tests-filter { display: flex; flex-wrap: wrap; gap: 5px; padding: 9px 10px; border-bottom: 1px solid var(--line-soft); }
+.tcat { font-size: 11px; color: var(--text-3); padding: 3px 9px; border-radius: 20px; border: 1px solid var(--line); text-transform: capitalize; }
+.tcat:hover { background: var(--bg-3); color: var(--text); }
+.tcat.active { background: var(--accent-soft); color: var(--accent); border-color: transparent; font-weight: 600; }
+.tests-list { flex: 1; overflow: auto; padding: 8px; min-height: 0; display: flex; flex-direction: column; gap: 7px; }
+.test-row { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 10px; padding: 9px 10px; display: flex; flex-direction: column; gap: 5px; }
+.test-row-top { display: flex; align-items: center; gap: 7px; }
+.test-name { font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.test-lock { color: var(--text-4); display: inline-grid; place-items: center; }
+.test-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; background: var(--bg-4); color: var(--text-3); }
+.test-badge.tb-pass { background: var(--green-soft); color: var(--green); }
+.test-badge.tb-fail { background: var(--red-soft); color: var(--red); }
+.test-badge.tb-quarantined { background: var(--red-soft); color: #f0b0a2; }
+.test-badge.tb-unknown { background: var(--bg-4); color: var(--text-4); }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.test-cat, .test-adp, .test-flaky { font-size: 10px; padding: 1px 7px; border-radius: 11px; }
+.test-cat { color: var(--accent); background: var(--accent-soft); text-transform: capitalize; }
+.test-adp { color: var(--text-3); background: var(--bg-4); }
+.test-flaky { color: var(--red); background: var(--red-soft); }
+.test-files { font-size: 10.5px; color: var(--text-4); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.test-row-acts { display: flex; gap: 4px; margin-top: 2px; }
+.test-act { width: 26px; height: 26px; border-radius: 7px; color: var(--text-3); display: grid; place-items: center; }
+.test-act:hover { background: var(--bg-4); color: var(--text); }
+
+/* Goal → Green */
+.goal-compose { padding: 10px 11px; border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 7px; }
+.goal-input { width: 100%; resize: vertical; background: var(--bg-2); border: 1px solid var(--line); border-radius: 9px; color: var(--text); font: inherit; font-size: 12.5px; padding: 8px 10px; line-height: 1.45; }
+.goal-input:focus { border-color: var(--accent); outline: none; }
+.goal-compose-row { display: flex; align-items: center; gap: 8px; }
+.goal-hint { font-size: 10px; color: var(--text-4); }
+.goal-plan { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #1a1205; font-weight: 600; font-size: 12px; padding: 6px 13px; border-radius: 9px; }
+.goal-plan:hover { filter: brightness(1.07); }
+.goal-list { display: flex; flex-direction: column; gap: 7px; padding: 9px 10px; border-bottom: 1px solid var(--line-soft); }
+.goal-row { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 10px; padding: 9px 10px; display: flex; flex-direction: column; gap: 6px; }
+.goal-row-top { display: flex; align-items: center; gap: 7px; }
+.goal-name { font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.goal-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; background: var(--bg-4); color: var(--text-3); }
+.goal-badge.gb-complete { background: var(--green-soft); color: var(--green); }
+.goal-badge.gb-blocked { background: var(--red-soft); color: var(--red); }
+.goal-badge.gb-red, .goal-badge.gb-fixing { background: var(--red-soft); color: #f0b0a2; }
+.goal-badge.gb-authoring, .goal-badge.gb-building, .goal-badge.gb-gating { background: var(--accent-soft); color: var(--accent); }
+.goal-badge.gb-draft, .goal-badge.gb-approved { background: var(--bg-4); color: var(--text-2); }
+.goal-spec { display: flex; flex-direction: column; gap: 3px; }
+.goal-bullet { display: flex; gap: 6px; font-size: 11px; color: var(--text-3); line-height: 1.4; }
+.goal-bullet .gbid { font-family: var(--font-mono); font-size: 9.5px; color: var(--accent); background: var(--accent-soft); padding: 0 5px; border-radius: 8px; height: 15px; display: inline-grid; place-items: center; flex-shrink: 0; }
+.goal-row-acts { display: flex; gap: 6px; }
+.goal-act { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-2); background: var(--bg-3); padding: 5px 11px; border-radius: 8px; }
+.goal-act:hover { background: var(--bg-4); color: var(--text); }
+.goal-act.run { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+

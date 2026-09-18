@@ -9,7 +9,7 @@
  *   · Codex: Full access auto-accepts commands / file changes / permissions, Plan declines
  *     them, Ask asks; approvals for an untracked (sub-agent) thread go to the live turn;
  *   · run-scoped cancellation is unchanged (stop/replace only affects its own run).
- * Same harness as scripts/test-context.js: the ORIGINAL claude.js in a VM with injected
+ * Same harness as scripts/test-context.js: the ORIGINAL session modules in a VM with injected
  * providers; the REAL store/history on an isolated data home; no model calls.
  * Run: node scripts/test-permissions.js */
 const fs = require("fs");
@@ -30,11 +30,11 @@ function check(id, name, ok, evidence) { if (ok) pass++; else { failN++; failure
 const watchdog = setTimeout(() => { console.error("HARNESS TIMEOUT"); process.exit(3); }, 180000);
 const tick = () => new Promise((r) => setImmediate(r));
 
-const store = require(path.join(ROOT, "src/main/store.js"));
-const history = require(path.join(ROOT, "src/main/history.js"));
+const store = require(path.join(ROOT, "src/main/storage/store.js"));
+const history = require(path.join(ROOT, "src/main/storage/history.js"));
 store.loadSettings();
-const src = fs.readFileSync(path.join(ROOT, "src/main/claude.js"), "utf8");
-const appSrc = fs.readFileSync(path.join(ROOT, "src/renderer/app.js"), "utf8");
+const { loadSessionInVm } = require("./lib/session-vm");   // the ORIGINAL session modules, fakes injected
+const appSrc = require("./lib/renderer-src").rendererSource();   // every renderer module
 
 function environment() {
   const sdkCalls = [], appCalls = [], perms = [], sends = [];
@@ -51,14 +51,8 @@ function environment() {
     async run(opts) { const id = opts.resumeId || "native-openai-1"; const call = { opts, id, decisions: [] }; appCalls.push(call); opts.on.onThreadId(id, !opts.resumeId, "login"); await opts.beforeTurn(id, !opts.resumeId); opts.on.onTurnId("turn-1"); if (control.app) return control.app(opts, call); return { ok: true, text: "done", threadId: id }; },
     async injectItems() { return { ok: true }; }, interrupt: async () => true, steer: async () => ({ ok: true }),
   };
-  const req = (name) => {
-    const map = { path, fs, os, crypto: require("crypto"), child_process: require("child_process"), "./store": store, "./history": history, "./auth": {}, "./attachments": { persistAll: (a) => a, light: (a) => a, readBase64: () => "" }, "./tool-args": require(path.join(ROOT, "src/main/tool-args.js")), "./providers": providers, "./codex-appserver": appserver, "./codex": { run: async () => ({ ok: true, text: "x" }) }, "./codex-cards": { unwrapCmd: (x) => x, parseDiff: () => ({ oldText: "", newText: "", added: 0, removed: 0 }), classifyCmd: () => null }, "./council": { reviewerRun: async () => ({ ok: true, text: "advice" }), label: () => "R" }, "./customApi": { getEndpoint: () => null, call: async () => ({ ok: true, text: "c" }) } };
-    if (Object.prototype.hasOwnProperty.call(map, name)) return map[name];
-    throw new Error("Unexpected manager dependency " + name);
-  };
-  const mod = { exports: {} };
-  vm.runInNewContext(src + "\nsdkPromise = Promise.resolve(__auditSdk);", { module: mod, exports: mod.exports, require: req, __filename: path.join(ROOT, "src/main/claude.js"), __dirname: path.join(ROOT, "src/main"), process, Buffer, AbortController, setTimeout, clearTimeout, setInterval, clearInterval, setImmediate, queueMicrotask, URL, TextEncoder, TextDecoder, console: { log() {}, warn() {}, error() {} }, __auditSdk: sdk }, { filename: "claude.js" });
-  const M = mod.exports;
+  const map = { path, fs, os, crypto: require("crypto"), child_process: require("child_process"), "./store": store, "./history": history, "./cli-auth": {}, "./attachments": { persistAll: (a) => a, light: (a) => a, readBase64: () => "" }, "./tool-args": require(path.join(ROOT, "src/main/session/tool-args.js")), "./subagents": require(path.join(ROOT, "src/main/agents/subagents.js")), "./catalog": providers, "./codex-appserver": appserver, "./codex-exec": { run: async () => ({ ok: true, text: "x" }) }, "./codex-cards": { unwrapCmd: (x) => x, parseDiff: () => ({ oldText: "", newText: "", added: 0, removed: 0 }), classifyCmd: () => null }, "./council": { reviewerRun: async () => ({ ok: true, text: "advice" }), label: () => "R" }, "./custom-api": { getEndpoint: () => null, call: async () => ({ ok: true, text: "c" }) } };
+  const { M } = loadSessionInVm({ deps: map, sdk });
   M.send = (name, data) => { sends.push({ name, data }); if (name === "session:permission") perms.push(data); };
   M.buildEnv = () => ({}); M.resolveCli = async () => ""; M.composeMcp = () => ({}); M.registerModel = () => {}; M.scheduleRetry = () => {};
   const make = (opts = {}) => { const v = store.createSession({ cwd: HOME, name: "perm", model: opts.model || "claude-opus-4-8", thinking: "low", permissionMode: opts.permissionMode || "default" }); return store.getSession(v.id); };
@@ -147,7 +141,7 @@ async function main() {
     check("P16", "Codex user-input questions receive the chosen labels from the allow+answers reply", ans && ans.answers.q1 && ans.answers.q1.answers.join("|") === "Postgres|SQLite", ans); }
 
   // ---- P17: Codex approvals for an untracked (sub-agent) thread go to the live turn ----
-  { const appserver = require(path.join(ROOT, "src/main/codex-appserver.js"));
+  { const appserver = require(path.join(ROOT, "src/main/providers/codex-appserver.js"));
     const I = appserver.__internals;
     const writes = [];
     const decisions = [];

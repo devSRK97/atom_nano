@@ -1,0 +1,183 @@
+/* AtomNano styles — Git Center — later additions (v2 header, status states, live operations).
+ * Part 17 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ===== Git Center v2 (gitcenter.js) — header repo dropdown, picker, confirm popover, splits, tree, big diff ===== */
+.gitc-repodd { display: inline-flex; align-items: center; gap: 7px; max-width: 460px; padding: 5px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg-inset); color: var(--text); font-size: 12.5px; margin-left: 6px; }
+.gitc-repodd:hover { border-color: var(--line-2); background: var(--bg-3); }
+.gitc-repodd-ic { display: inline-flex; color: var(--accent-2); }
+.gitc-repodd-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-repodd-branch { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
+.gitc-head .gitc-sub { font-size: 11px; color: var(--text-4); font-family: var(--font-mono); max-width: 30vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-pick { position: fixed; z-index: 720; display: flex; flex-direction: column; background: var(--bg-3); border: 1px solid var(--line-2); border-radius: 11px; box-shadow: var(--sh-pop); overflow: hidden; animation: ddIn .12s ease; }
+.gitc-pick-search { display: flex; align-items: center; gap: 7px; padding: 8px 10px; border-bottom: 1px solid var(--line-soft); color: var(--text-4); flex-shrink: 0; }
+.gitc-pick-search .gitc-pick-in { flex: 1; margin: 0; padding: 0; background: transparent; border: none; outline: none; color: var(--text); font-size: 12.5px; font-family: inherit; }
+.gitc-pick-list { flex: 1; overflow: auto; padding: 5px; min-height: 0; }
+.gitc-pick-item.cur { background: var(--bg-4, var(--bg-2)); color: var(--text); }
+.gitc-pick-ic { display: inline-flex; color: var(--accent-2); flex-shrink: 0; }
+.gitc-pick-label { flex: 1; min-width: 0; font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-pick-item.sel .gitc-pick-label { color: var(--accent); }
+.gitc-pick-hint { font-size: 10.5px; color: var(--text-4); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 45%; flex-shrink: 0; }
+.gitc-pick-badge { font-size: 10px; padding: 0 6px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); flex-shrink: 0; }
+.gitc-pop { width: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px 12px; }
+.gitc-pop-head { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13px; }
+.gitc-pop-ic { display: inline-flex; color: var(--accent-2); } .gitc-pop.danger .gitc-pop-ic { color: var(--red); }
+.gitc-pop-body { display: flex; flex-direction: column; gap: 7px; }
+.gitc-pop-body .gitc-pop-msg { margin: 0; }
+.gitc-pop-label { font-size: 10.5px; color: var(--text-4); text-transform: uppercase; letter-spacing: .4px; }
+.gitc-pop-body .gitc-input, .gitc-pop-body .gitc-check { margin: 0; }
+.gitc-split-part { min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.gitc-divider { background: var(--line-soft); border-left: none; position: relative; }
+.gitc-divider:hover, .gitc-divider.dragging { background: var(--accent); }
+.gitc-divider::after { content: ""; position: absolute; inset: 0 -3px; }
+body.gitc-resizing { cursor: col-resize; user-select: none; }
+.gitc-cmpbar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-shrink: 0; flex-wrap: wrap; }
+.gitc-cmpbar .gitc-cmp-summary { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size: 12px; color: var(--text-2); }
+.gitc-tabs.hidden, .gitc-cmpbar.hidden { display: none; }
+.gitc-act.comparebtn.active { background: var(--accent-soft); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.gitc-sec-chev { display: inline-flex; color: var(--text-4); transition: transform .14s; }
+.gitc-sec.open .gitc-sec-chev { transform: rotate(90deg); }
+.gitc-sec:not(.open) .gitc-sec-body { display: none; }
+.gitc-sec-head { cursor: pointer; user-select: none; }
+.gitc-sec-acts { display: inline-flex; align-items: center; gap: 4px; }
+.gitc-sec-empty { padding: 8px 14px 10px; font-size: 12px; color: var(--text-4); }
+.gitc-link.danger { color: var(--red); }
+.gitc-tree { display: flex; flex-direction: column; padding: 2px 4px 6px; }
+.gitc-tree-dir, .gitc-tree-file { display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px calc(8px + var(--depth, 0) * 16px); border-radius: 7px; cursor: pointer; font-size: 12px; color: var(--text-2); min-height: 26px; }
+.gitc-tree-dir:hover, .gitc-tree-file:hover { background: var(--bg-3); }
+.gitc-tree-file.active { background: var(--accent-soft); color: var(--text); }
+.gitc-tree-file.conflict .gitc-tree-name { color: var(--red); }
+.gitc-tree-chev { display: inline-flex; color: var(--text-4); transition: transform .14s; }
+.gitc-tree-dir.open .gitc-tree-chev { transform: rotate(90deg); }
+.gitc-tree-fico { display: inline-flex; color: var(--accent-2); }
+.gitc-tree-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-tree-dir .gitc-tree-name { font-weight: 600; }
+.gitc-tree .aqx-check { width: 14px; height: 14px; flex-shrink: 0; margin: 0; }
+.gitc-staged-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green, #5fbf7a); flex-shrink: 0; }
+.gitc-tree-dir .gitc-file-acts, .gitc-tree-file .gitc-file-acts { opacity: 0; }
+.gitc-tree-dir:hover .gitc-file-acts, .gitc-tree-file:hover .gitc-file-acts, .gitc-tree-file.active .gitc-file-acts, .gitc-file-acts.always { opacity: 1; }
+.gitc-sel-bar { display: flex; align-items: center; gap: 6px; margin: 0 8px 6px; padding: 6px 10px; border-radius: 8px; background: rgba(232,122,100,0.08); border: 1px solid rgba(232,122,100,0.25); font-size: 12px; color: var(--text-2); }
+.gitc-commit-row .selinfo { font-size: 11.5px; }
+.gitc-chg-left { border-right: none; }
+.gitc-content > .gitc-split { height: 100%; }
+.gitc-detail > .gitc-split, .gitc-brs > .gitc-split { flex: 1; min-height: 0; }
+.gitc-bigdiff-modal { width: min(1500px, 96vw) !important; max-width: none !important; }
+.gitc-bigdiff-modal .modal-body { padding: 0 !important; height: min(84vh, 1000px); display: flex; flex-direction: column; }
+.gitc-diff.big { flex: 1; min-height: 0; }
+.gitc-diff-body.big { flex: 1; overflow: auto; }
+/* Changes tab: sections scroll, commit box pinned; contextual selection bars */
+.gitc-chg-left { overflow: hidden; }
+.gitc-chg-scroll { flex: 1; min-height: 0; overflow: auto; }
+.gitc-commitbox { flex-shrink: 0; border-top: 1px solid var(--line-soft); }
+.gitc-sec-head { min-height: 34px; }
+.gitc-sec-bar { display: flex; align-items: center; gap: 6px; margin: 2px 8px 6px; padding: 6px 8px 6px 10px; border-radius: 8px; background: var(--accent-softer); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); font-size: 12px; color: var(--text-2); flex-wrap: wrap; }
+.gitc-sec-bar.hidden { display: none; }
+.gitc-sec-bar-n { font-weight: 600; white-space: nowrap; }
+.gitc-sec.conflict .gitc-sec-bar { background: rgba(232,122,100,0.08); border-color: rgba(232,122,100,0.25); }
+/* counts inside bar buttons (Push 2 / Pull 1) and arrow badges in the repo dropdown */
+.gitc-act .gitc-cnt { font-size: 10.5px; padding: 0 6px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); font-variant-numeric: tabular-nums; }
+.gitc-repodd .gitc-ab { display: inline-flex; align-items: center; gap: 1px; }
+.gitc-repodd .gitc-ab .icon { width: 10px; height: 10px; }
+.gitc-repodd .gitc-ab .icon.flip { transform: rotate(180deg); }
+.gitc-commit-row { display: flex; align-items: center; gap: 8px; padding: 6px 0 2px; }
+.gitc-commit-btns { display: flex; justify-content: flex-end; gap: 6px; padding-top: 4px; }
+/* Git Center v2 — fill the modal: panel takes the full height, every tab's body stretches to the bottom */
+.gitc-panel { width: min(1640px, 100%); height: 100%; }
+.gitc-body > .gitc-main { flex: 1; min-height: 0; }
+.gitc-content > .gitc-split { flex: 1; height: auto; min-height: 0; }
+.gitc-brs, .gitc-tags, .gitc-remotes, .gitc-stash, .gitc-hist, .gitc-chg, .gitc-cmp { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.gitc-brs > .gitc-split, .gitc-detail > .gitc-split { flex: 1; min-height: 0; }
+.gitc-tags .gitc-col-body, .gitc-remotes .gitc-col-body { flex: 1; min-height: 0; overflow: auto; }
+.gitc-commitbox { position: static; margin-top: 0; }
+/* diff pane: file name keeps room; full-size action buttons get their own row under the head */
+.gitc-diff-name { flex: 0 1 auto; min-width: 60px; }
+.gitc-diff-head .gitc-spacer { flex: 1 1 8px; }
+.gitc-diff-tools { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-shrink: 0; flex-wrap: wrap; }
+.gitc-diff-tools .gitc-diff-tools-label { font-size: 11.5px; color: var(--text-3); margin-right: 4px; }
+/* header: repo dropdown sits right after the title, path on the far right */
+.gitc-head .gitc-repodd { margin-left: 2px; }
+.gitc-head .gitc-progress { flex: 0 0 auto; }
+/* tree rows: chips and counts sit flush against the right edge of the row, however wide the
+ * pane is dragged. The hover actions are an OVERLAY on that edge (not a reserved rail): they
+ * appear on hover / keyboard focus and cover the chip while shown. */
+.gitc-tree-dir .gitc-col-count, .gitc-tree-file .gitc-code, .gitc-tree-file .gitc-pm { flex-shrink: 0; }
+.gitc-tree-dir, .gitc-tree-file { position: relative; }
+.gitc-tree-file .gitc-file-acts, .gitc-tree-dir .gitc-file-acts { position: absolute; right: 4px; top: 0; bottom: 0; display: inline-flex; align-items: center; justify-content: flex-end; margin: 0; padding-left: 10px; min-width: 0; pointer-events: none; }
+.gitc-tree-file:hover .gitc-file-acts, .gitc-tree-file:focus-within .gitc-file-acts, .gitc-tree-dir:hover .gitc-file-acts, .gitc-tree-dir:focus-within .gitc-file-acts { opacity: 1; pointer-events: auto; }
+.gitc-tree-file.active:not(:hover):not(:focus-within) .gitc-file-acts { opacity: 0; }
+.gitc-tree-file:hover .gitc-code, .gitc-tree-file:hover .gitc-pm, .gitc-tree-file:hover .gitc-staged-dot, .gitc-tree-dir:hover .gitc-col-count,
+.gitc-tree-file:focus-within .gitc-code, .gitc-tree-file:focus-within .gitc-pm, .gitc-tree-file:focus-within .gitc-staged-dot, .gitc-tree-dir:focus-within .gitc-col-count { visibility: hidden; }
+/* conflict rows keep their always-visible inline actions */
+.gitc-sec.conflict .gitc-tree-file .gitc-file-acts.always { position: static; padding-left: 0; pointer-events: auto; }
+.gitc-sec.conflict .gitc-tree-file:hover .gitc-code { visibility: visible; }
+/* merge view bar: Source · Target · Compare · Create Merge · Rebase */
+.gitc-cmpbar .cmp-run { margin-left: 6px; }
+.gitc-cmpbar .gitc-cmp-summary { flex: 1 1 auto; min-width: 0; }
+
+/* ============================================================
+   GIT CENTER — audit follow-ups (2026-09-09): status states, live operation
+   strip, keyboard focus, reduced motion.
+   ============================================================ */
+/* Status could not be read / is stale: the repo is shown, mutations are off. */
+.gitc-state { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--line-soft); background: var(--bg-2); flex-shrink: 0; flex-wrap: wrap; }
+.gitc-state.error { background: var(--red-soft); border-bottom-color: rgba(232,122,100,.3); }
+.gitc-state.error .gitc-state-ic { color: var(--red); }
+.gitc-state.stale .gitc-state-ic { color: var(--accent); }
+.gitc-state.hidden { display: none; }
+.gitc-state-ic { display: inline-flex; }
+.gitc-state b { color: var(--text); }
+.gitc-state code { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.gitc-overlay.readonly .gitc-act.mut, .gitc-overlay.readonly .gitc-ibtn.mut, .gitc-overlay.readonly .gitc-commitbox { pointer-events: none; opacity: .45; }
+/* Live operation strip: label · last line git printed · Cancel */
+.gitc-oplog { display: flex; align-items: center; gap: 8px; padding: 4px 12px; font-size: 11px; color: var(--text-3); background: var(--bg-1); border-bottom: 1px solid var(--line-soft); font-family: var(--font-mono); flex-shrink: 0; min-height: 24px; }
+.gitc-oplog.hidden { display: none; }
+.gitc-oplog .gitc-oplog-label { color: var(--text-2); font-weight: 600; font-family: inherit; }
+.gitc-oplog .gitc-oplog-line { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-oplog .gitc-oplog-cancel { padding: 1px 8px; border-radius: 6px; border: 1px solid var(--line); color: var(--red); font-size: 10.5px; }
+.gitc-oplog .gitc-oplog-cancel:hover { background: var(--red-soft); }
+/* Complete diagnostics for a failed action (toast → details) */
+.gitc-errdetails { font-family: var(--font-mono); font-size: 11.5px; white-space: pre-wrap; word-break: break-word; max-height: 50vh; overflow: auto; background: var(--bg-inset); border: 1px solid var(--line-soft); border-radius: 8px; padding: 10px 12px; color: var(--text-2); user-select: text; }
+.gitc-errtype { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; padding: 1px 7px; border-radius: 8px; background: var(--red-soft); color: var(--red); margin-bottom: 8px; }
+/* Per-path outcome list (discard / resolve / tag phases) */
+.gitc-outcomes { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+.gitc-outcomes li { display: flex; gap: 8px; align-items: baseline; }
+.gitc-outcomes li.bad { color: var(--red); }
+.gitc-outcomes li code { font-family: var(--font-mono); font-size: 11px; }
+/* Commit preview switch (what will be committed · staged · unstaged) */
+.gitc-code.c-X { background: var(--red-soft); color: var(--red); }
+.gitc-view-note { font-size: 10.5px; color: var(--text-4); padding: 0 2px; }
+/* Keyboard: rows are focusable buttons */
+.gitc-tree-file:focus-visible, .gitc-tree-dir:focus-visible, .gitc-file:focus-visible, .gitc-commit:focus-visible, .gitc-branch:focus-visible, .gitc-stashrow:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.gitc-act:focus-visible, .gitc-ibtn:focus-visible, .gitc-tab:focus-visible, .gitc-hbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Truncated file view */
+.gitc-fileview-more { display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 12px; color: var(--text-3); border-top: 1px solid var(--line-soft); }
+.gitc-fileview-bin { padding: 30px; text-align: center; color: var(--text-3); font-size: 13px; }
+/* Reduced motion: no fades/slides in the Git views and diff overlays */
+@media (prefers-reduced-motion: reduce) {
+  .gitc-overlay, .gitc-panel, .gitc-pick, .gitc-pop, .diff-overlay, .compare-overlay, .merge-overlay, .diff-panel, .compare-panel, .merge-panel, .gitc-progress.on::before { animation: none !important; }
+  .gitc-progress.on::before { left: 0; width: 100%; opacity: .6; }
+  .gitc-act, .gitc-tree-dir .gitc-tree-chev, .gitc-sec-chev { transition: none !important; }
+  .mgh-bar-fill, .mg-bulk, .mgc-act, .mgc-side, .gitc-file-acts { transition: none !important; }
+}
+/* Confirm popover: resolved-target details (repo · remote → refs/heads/… · url) */
+.gitc-pop-details { display: flex; flex-direction: column; gap: 3px; margin-top: 8px; padding: 7px 9px; border-radius: 7px; background: var(--bg-inset); border: 1px solid var(--line-soft); }
+.gitc-pop-detail { display: flex; gap: 8px; align-items: baseline; font-size: 11px; color: var(--text-3); min-width: 0; }
+.gitc-pop-detail .gitc-pop-dk { flex: 0 0 52px; text-transform: uppercase; letter-spacing: .4px; font-size: 9.5px; color: var(--text-4); }
+.gitc-pop-detail code { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Diff baseline switch (Will commit · Staged · Unstaged) */
+.gitc-seg.views .gitc-seg-btn.active { color: var(--accent); }
+/* Windowed lists keep their scroll height while mounting only the visible rows */
+.gitc-vlist { width: 100%; }
+.gitc-vlist > .gitc-tree-file, .gitc-vlist > .gitc-tree-dir, .gitc-vlist > .gitc-file, .gitc-vlist > .gitc-commit, .gitc-vlist > .gitc-branch, .gitc-vlist > .gitc-stashrow { box-sizing: border-box; overflow: hidden; }
+.gitc-hash.copy { background: transparent; border: 0; padding: 0; font: inherit; font-family: var(--font-mono); }
+.gitc-repodd.error .gitc-repodd-ic { color: var(--red); }
+.gitc-cmp-ab.danger b { color: var(--red); }
+.gitc-staged-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+/* Conflict resolver: operation-aware legend, whole-file cards, malformed-marker notice */
+.mg-chip.op { color: var(--text-4); font-family: var(--font-mono); font-size: 10.5px; }
+.mg-card.filelevel, .mg-card.malformed { border-color: rgba(232,122,100,.35); }
+.mg-note { padding: 9px 12px; font-size: 12px; color: var(--text-2); line-height: 1.55; }
+.mgc-actions.filelevel { display: flex; gap: 6px; padding: 0 12px 10px; flex-wrap: wrap; }
+.mgc-side:focus-visible, .mgc-act:focus-visible, .mg-bulk:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* Sidebar Git view: status could not be read */
+.gv-merge-banner.gv-status-error .gmb-title { color: var(--red); }
+

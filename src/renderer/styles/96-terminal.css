@@ -1,0 +1,50 @@
+/* AtomNano styles — Integrated terminal dock.
+ * Part 16 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ============================================================
+   INTEGRATED TERMINAL — bottom dock, app theme rather than an OS console.
+   Sits above the workspace and below modals (z 520 < 600), so a dialog opened
+   from a command still lands on top of it.
+   ============================================================ */
+.term-dock { position: fixed; left: 0; right: 0; bottom: 0; height: 320px; z-index: 520;
+  display: flex; flex-direction: column; background: var(--bg-2); border-top: 1px solid var(--line-2);
+  box-shadow: 0 -12px 32px rgba(0,0,0,.35); }
+.term-dock.hidden { display: none; }
+.term-resizer { position: absolute; top: -3px; left: 0; right: 0; height: 7px; cursor: ns-resize; }
+.term-resizer:hover { background: var(--accent-soft); }
+
+.term-head { display: flex; align-items: center; gap: 8px; padding: 5px 8px 0 8px; border-bottom: 1px solid var(--line-2); }
+.term-tabs { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; }
+.term-tab { display: flex; align-items: center; gap: 6px; padding: 5px 8px 6px; border-radius: 7px 7px 0 0;
+  color: var(--text-3); font-size: 11.5px; cursor: pointer; border: 1px solid transparent; border-bottom: none; white-space: nowrap; }
+.term-tab:hover { color: var(--text-2); background: var(--bg-3); }
+.term-tab.active { color: var(--text); background: var(--bg-1, var(--bg-3)); border-color: var(--line-2); }
+.term-tab.exited .term-tab-name { text-decoration: line-through; opacity: .65; }
+.term-tab-name { max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.term-tab-x { width: 16px; height: 16px; border-radius: 4px; display: grid; place-items: center; color: var(--text-4); }
+.term-tab-x:hover { background: var(--bg-4); color: var(--text); }
+.term-new { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; color: var(--text-3); flex-shrink: 0; }
+.term-new:hover { background: var(--bg-3); color: var(--accent); }
+
+.term-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; padding-bottom: 4px; }
+.term-act { width: 26px; height: 24px; border-radius: 6px; display: grid; place-items: center; color: var(--text-3); }
+.term-act:hover { background: var(--bg-3); color: var(--accent); }
+
+.term-body { flex: 1; min-height: 0; overflow: hidden; display: flex; }
+.term-out { flex: 1; margin: 0; padding: 10px 12px; overflow-y: auto; font-family: var(--font-mono); font-size: 12px;
+  line-height: 1.5; color: var(--text-2); white-space: pre-wrap; word-break: break-word; cursor: text; }
+
+/* xterm.js grid fills the dock body; the FitAddon sizes columns/rows to this box.
+   Background matches the theme passed to the Terminal constructor in app.js. */
+.term-xterm { flex: 1; min-width: 0; min-height: 0; background: #0b0d12; padding: 6px 8px; overflow: hidden; }
+.term-xterm .xterm { height: 100%; }
+.term-xterm .xterm-viewport { overflow-y: auto; }
+
+/* You type INSIDE the transcript, straight after the prompt the shell printed —
+   so the caret has to be invisible as a control and inherit the <pre> exactly.
+   Width is set in `ch` from the value length (see termGrow), which in a
+   monospace pre puts the cursor on the very next column. */
+.term-input { display: inline; background: transparent; border: none; outline: none; padding: 0; margin: 0;
+  font: inherit; line-height: inherit; color: var(--text); caret-color: var(--accent);
+  max-width: 100%; vertical-align: baseline; }
+

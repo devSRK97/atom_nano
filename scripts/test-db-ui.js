@@ -1,7 +1,7 @@
 "use strict";
 /* DB manager UI regression suite — DESIRED behaviour for the renderer findings of
  * ATOMNANO_DB_MANAGEMENT_AUDIT_2026-09-09 (checks DB-U01..U20 + extras), run against the
- * ORIGINAL renderer module (src/renderer/dbm.js), the real styles.css, the real SQL
+ * ORIGINAL renderer modules (src/renderer/db/), the real styles.css, the real SQL
  * splitter (src/main/sqlscript.js) and the real dialog helpers extracted from app.js, in a
  * blank headless Chromium page with fixture IPC.
  *
@@ -13,18 +13,12 @@ const ROOT = path.join(__dirname, "..");
 const ts = require("typescript");
 const { chromium } = require("playwright");
 
-const app = fs.readFileSync(path.join(ROOT, "src/renderer/app.js"), "utf8");
-const ast = ts.createSourceFile("app.js", app, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
-function fn(name) {
-  let n = null;
-  const visit = (x) => { if (n) return; if (ts.isFunctionDeclaration(x) && x.name && x.name.text === name) { n = x; return; } ts.forEachChild(x, visit); };
-  visit(ast);
-  if (!n) throw new Error("function not found: " + name);
-  return n.getText(ast);
-}
-const dbm = fs.readFileSync(path.join(ROOT, "src/renderer/dbm.js"), "utf8").replace(/^export /mg, "");
-const sqlscript = fs.readFileSync(path.join(ROOT, "src/main/sqlscript.js"), "utf8");
-const css = fs.readFileSync(path.join(ROOT, "src/renderer/styles.css"), "utf8");
+const R = require("./lib/renderer-src");   // the ORIGINAL renderer modules (dialog helpers by name)
+const fn = R.fn;
+// src/renderer/db/ as one classic script (index last: its __dbmUtils reads the other modules' bindings)
+const dbm = R.folderSource("db", ["utils", "cells", "state", "grid", "health", "workspace", "connections", "sidebar", "query", "results", "jobs", "browse", "structure", "index"]);
+const sqlscript = fs.readFileSync(path.join(ROOT, "src/main/db/sqlscript.js"), "utf8");
+const css = R.css();
 const dialogs = ["closeModal", "openModal", "modalShell", "confirmDialog", "promptDialog", "chooseDialog"].map(fn).join("\n");
 
 let pass = 0, failN = 0; const results = [];
@@ -42,7 +36,8 @@ async function main() {
     await page.addScriptTag({ content: "(()=>{const module={exports:{}};" + sqlscript + "\nwindow.sqlscript=module.exports;})();" });
     await page.addScriptTag({ content: "window.auditH=(" + fn("h") + ");window.$=(id)=>document.getElementById(id);" });
     await page.addScriptTag({ content: "(()=>{const h=window.auditH,$=window.$,icon=()=>'';" + dialogs + "\nwindow.dialogs={closeModal,openModal,modalShell,confirmDialog,promptDialog,chooseDialog};})();" });
-    await page.addScriptTag({ content: dbm + "\nwindow.dbm={mountDbManager,__dbmUtils};" });
+    // module scope, like the real ES modules: the folder's top-level bindings (conns, tabs, …) must not become globals that shadow the fixtures
+    await page.addScriptTag({ content: "(() => {" + dbm + "\nwindow.dbm={mountDbManager,__dbmUtils};})();" });
     await page.evaluate(async () => {
       window.calls = []; window.notices = []; window.menus = [];
       const rec = (op, ...a) => { calls.push({ op, a }); };

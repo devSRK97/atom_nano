@@ -97,15 +97,21 @@ const P = (n) => path.join(DIR, n).replace(/\\/g, "/");
   });
   ok(row && row.add === "+7" && row.del === "−3", `changes panel shows per-file +/− counts (${row && row.add}/${row && row.del})`);
 
-  /* ---------- 6) sub-agents control before the 1M toggle ---------- */
+  /* ---------- 6) the Agents button before the 1M indicator; the compact popover's switch persists ---------- */
   const sub = await win.evaluate(() => {
-    const wrap = document.getElementById("subAgentsWrap"), onem = document.getElementById("oneMWrap");
-    if (!wrap || !onem) return null;
-    const order = wrap.compareDocumentPosition(onem) & Node.DOCUMENT_POSITION_FOLLOWING;   // wrap before onem
-    return { order: !!order, hasMax: !!document.getElementById("subAgentsMax") };
+    const btn = document.getElementById("agentsBtn"), onem = document.getElementById("oneMWrap");
+    if (!btn || !onem) return null;
+    return { order: !!(btn.compareDocumentPosition(onem) & Node.DOCUMENT_POSITION_FOLLOWING), label: btn.textContent.trim(), noReviewers: !document.getElementById("reviewersBtn"), noCheckbox: !onem.querySelector("input") };
   });
-  ok(sub && sub.order && sub.hasMax, "Sub agents control (checkbox + max input) sits before the 1M toggle");
-  await win.evaluate(() => { const t = document.getElementById("subAgentsToggle"); t.checked = true; t.dispatchEvent(new Event("change")); });
+  ok(sub && sub.order && /^Agents/.test(sub.label) && sub.noReviewers && sub.noCheckbox, `Agents button sits before the 1M indicator; no Reviewers button, no 1M checkbox (${sub && sub.label})`);
+  await win.evaluate(() => document.getElementById("agentsBtn").click());
+  await win.waitForTimeout(150);
+  const popInfo = await win.evaluate(() => {
+    const p = document.querySelector(".ag-pop"); if (!p) return null;
+    const sw = p.querySelector(".ag-switch-input"); if (sw && !sw.checked) { sw.checked = true; sw.dispatchEvent(new Event("change")); }
+    return { hasList: !!p.querySelector(".ag-list-host"), hasStatus: !!p.querySelector(".ag-statusline"), noCores: !/Cores per agent/.test(p.textContent), stepper: !!p.querySelector(".ag-stepper") };
+  });
+  ok(popInfo && popInfo.hasList && popInfo.hasStatus && popInfo.noCores && popInfo.stepper, "the compact Agents popover: switch + cap on one row, status line, running list, no cores section");
   await win.waitForTimeout(300);
   const persisted = await win.evaluate(() => window.atomnano.settings.get().then((s) => ({ on: s.subAgents, max: s.subAgentsMax })));
   ok(persisted.on === true && persisted.max >= 1, `sub-agents setting persists (on=${persisted.on}, max=${persisted.max})`);

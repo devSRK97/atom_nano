@@ -1,0 +1,131 @@
+/* AtomNano styles — Design tokens, themes (html[data-theme]), resets and scrollbars.
+ * Part 01 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ============================================================
+   AtomNano — warm dark theme
+   ============================================================ */
+:root {
+  --bg:        #222020;
+  --bg-1:      #2a2726;
+  --bg-2:      #312d2c;
+  --bg-3:      #3b3735;
+  --bg-4:      #474240;
+  --bg-inset:  #1c1a19;
+
+  --line:      #423d3b;
+  --line-2:    #59514c;
+  --line-soft: #322e2c;
+
+  --text:      #f8f3ee;
+  --text-2:    #d6ccc2;
+  --text-3:    #ab9f93;
+  --text-4:    #857769;
+
+  --accent:        #f0a94e;
+  --accent-2:      #e08a3c;
+  --accent-deep:   #b86a26;
+  --accent-soft:   rgba(240, 169, 78, 0.13);
+  --accent-softer: rgba(240, 169, 78, 0.07);
+  --accent-glow:   rgba(240, 169, 78, 0.18);
+
+  --green:      #93cf6c;
+  --green-soft: rgba(147, 207, 108, 0.15);
+  --red:        #e87a64;
+  --red-soft:   rgba(232, 122, 100, 0.14);
+  --blue:       #e0b07a;
+  --code-text:  #e9e0d6;
+
+  /* syntax tokens — shared by CodeMirror (var-driven, so they follow the theme) */
+  --tok-comment: #7e8b6d;
+  --tok-string:  #d8a657;
+  --tok-keyword: #e89a5c;
+  --tok-number:  #c08adf;
+  --tok-fn:      #9ec07c;
+  --tok-type:    #79c0b3;
+  --tok-prop:    #b8c2dd;
+  --tok-punct:   #b0a89e;
+
+  --radius:    10px;
+  --radius-sm: 7px;
+  --radius-lg: 15px;
+
+  --sh-1: 0 1px 4px rgba(0,0,0,0.20);
+  --sh-2: 0 4px 14px rgba(0,0,0,0.26);
+  --sh-pop: 0 10px 28px rgba(0,0,0,0.38);
+
+  --font-ui: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", "Fira Code", Consolas, ui-monospace, monospace;
+
+  --tb-h: 38px;
+  --tabs-h: 42px;
+  --sidebar-w: 280px;
+  --changes-w: 320px;
+}
+/* ---- warm accent variants (warm-dark base) ---- */
+html[data-theme="ember"] { --accent:#ef7d4c; --accent-2:#e0633a; --accent-deep:#b8451f; --accent-soft:rgba(239,125,76,0.14); --accent-softer:rgba(239,125,76,0.07); --accent-glow:rgba(239,125,76,0.34); }
+html[data-theme="gold"]  { --accent:#e8c25a; --accent-2:#d6a838; --accent-deep:#a87f20; --accent-soft:rgba(232,194,90,0.14); --accent-softer:rgba(232,194,90,0.07); --accent-glow:rgba(232,194,90,0.30); }
+html[data-theme="rose"]  { --accent:#e88a72; --accent-2:#d96f56; --accent-deep:#b04e36; --accent-soft:rgba(232,138,114,0.14); --accent-softer:rgba(232,138,114,0.07); --accent-glow:rgba(232,138,114,0.32); }
+
+/* ---- full themes (cool / neutral / light) ---- */
+html[data-theme="gunmetal"] {
+  --bg:#1b1f24; --bg-1:#21262d; --bg-2:#272d36; --bg-3:#30373f; --bg-4:#3b434d; --bg-inset:#161a1e;
+  --line:#333b44; --line-2:#46505b; --line-soft:#262c33;
+  --text:#eef2f6; --text-2:#bcc6d1; --text-3:#8b97a3; --text-4:#69737d; --code-text:#dbe4ec;
+  --accent:#6fb3d6; --accent-2:#519bc4; --accent-deep:#3a7ba0; --accent-soft:rgba(111,179,214,0.14); --accent-softer:rgba(111,179,214,0.07); --accent-glow:rgba(111,179,214,0.30);
+}
+html[data-theme="gray"] {
+  --bg:#1f1f1f; --bg-1:#262626; --bg-2:#2d2d2d; --bg-3:#363636; --bg-4:#454545; --bg-inset:#181818;
+  --line:#3a3a3a; --line-2:#4e4e4e; --line-soft:#2c2c2c;
+  --text:#f1f1f1; --text-2:#c6c6c6; --text-3:#979797; --text-4:#6e6e6e; --code-text:#e2e2e2;
+  --accent:#9fb4c4; --accent-2:#849aab; --accent-deep:#647a8b; --accent-soft:rgba(159,180,196,0.13); --accent-softer:rgba(159,180,196,0.06); --accent-glow:rgba(159,180,196,0.26);
+}
+html[data-theme="blue"] {
+  --bg:#0f1623; --bg-1:#141d2e; --bg-2:#1a2436; --bg-3:#222e44; --bg-4:#2c3a54; --bg-inset:#0b1019;
+  --line:#243149; --line-2:#374863; --line-soft:#1b2435;
+  --text:#eaf0f9; --text-2:#b3c2d8; --text-3:#7f90a8; --text-4:#5c6b81; --code-text:#d6e1f0;
+  --accent:#5b9bf0; --accent-2:#3f80db; --accent-deep:#2c63b0; --accent-soft:rgba(91,155,240,0.15); --accent-softer:rgba(91,155,240,0.07); --accent-glow:rgba(91,155,240,0.32);
+}
+html[data-theme="light"] {
+  --bg:#faf8f5; --bg-1:#f2efea; --bg-2:#eae6df; --bg-3:#e1dcd3; --bg-4:#d6cfc3; --bg-inset:#ffffff;
+  --line:#ddd6cb; --line-2:#c6bdae; --line-soft:#e7e2d9;
+  --text:#2a2521; --text-2:#5c544a; --text-3:#867c6f; --text-4:#a89e90; --code-text:#2f2a24;
+  --accent:#cf8a2e; --accent-2:#b8761f; --accent-deep:#9a6212; --accent-soft:rgba(207,138,46,0.15); --accent-softer:rgba(207,138,46,0.07); --accent-glow:rgba(207,138,46,0.26);
+  --sh-1:0 1px 4px rgba(120,100,70,0.10); --sh-2:0 4px 14px rgba(120,100,70,0.13); --sh-pop:0 10px 28px rgba(120,100,70,0.18);
+  --tok-comment:#8a8f78; --tok-string:#9a6b16; --tok-keyword:#b0561c; --tok-number:#7d4fb0; --tok-fn:#2f7d4f; --tok-type:#1d7a73; --tok-prop:#2a4d8f; --tok-punct:#6b6258;
+}
+html[data-theme="light"] .codeblock code, html[data-theme="light"] .fv-pre { color: var(--code-text); }
+html[data-theme="light"] .win-btn:hover { background: var(--bg-3); }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+*::-webkit-scrollbar { width: 11px; height: 11px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-corner { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 8px; border: 3px solid transparent; background-clip: padding-box; cursor: grab; }
+*::-webkit-scrollbar-thumb:hover { background: var(--line-2); background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:active { background: var(--line-2); background-clip: padding-box; cursor: grabbing; }
+
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea { font-family: inherit; color: inherit; }
+.icon { display: block; flex-shrink: 0; }
+.hidden { display: none !important; }
+
+#app {
+  display: grid;
+  grid-template-rows: var(--tb-h) 1fr;
+  height: 100vh;
+  background:
+    radial-gradient(1100px 460px at 18% -10%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, color-mix(in srgb, var(--accent-deep) 4%, transparent), transparent 55%),
+    var(--bg);
+}
+

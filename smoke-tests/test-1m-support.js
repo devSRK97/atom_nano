@@ -13,7 +13,8 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   await win.waitForLoadState("domcontentloaded");
   await win.waitForFunction(() => !!window.atomnano && !!window.atomnano.sessions, null, { timeout: 15000 });
 
-  const oneMHidden = () => win.evaluate(() => { const w = document.getElementById("oneMWrap"); return !w || w.classList.contains("hidden"); });
+  // The indicator element is always hidden (2026-09-17, user request) — its "on" class is the state that follows the model.
+  const oneMOn = () => win.evaluate(() => { const w = document.getElementById("oneMWrap"); return !!w && w.classList.contains("on") && w.classList.contains("hidden"); });
   const pickModel = async (name) => {
     await win.evaluate(() => document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true })));
     await win.evaluate(() => { const t = document.querySelector(".composer-toolbar .dd .dd-trigger"); if (t) t.click(); });
@@ -21,8 +22,8 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
     await win.evaluate((n) => { const it = [...document.querySelectorAll(".dd-menu .dd-item")].find((e) => (e.querySelector(".di-title") || {}).textContent === n); if (it) it.click(); }, name);
     await win.waitForTimeout(180);
   };
-  for (const name of ["Fable 5", "Opus 4.8", "Opus 4.7", "Opus 4.6", "Sonnet 4.6"]) { await pickModel(name); ok(!(await oneMHidden()), `1M shown for ${name}`); }
-  await pickModel("Haiku 4.5"); ok(await oneMHidden(), "1M hidden for Haiku 4.5");
+  for (const name of ["Fable 5", "Opus 4.8", "Opus 4.7", "Opus 4.6", "Sonnet 4.6"]) { await pickModel(name); ok(await oneMOn(), `1M on in the background for ${name} (indicator hidden)`); }
+  await pickModel("Haiku 4.5"); ok(!(await oneMOn()), "1M off for Haiku 4.5");
 
   // live: Opus 4.8 + 1M beta must be accepted (no error), init.model = opus
   const cwd = path.join(os.tmpdir(), "atomnano-1m"); fs.mkdirSync(cwd, { recursive: true });

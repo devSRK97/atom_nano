@@ -12,7 +12,7 @@
  */
 "use strict";
 const path = require("path");
-const council = require("../src/main/council.js");
+const council = require("../src/main/providers/council.js");
 const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("PASS:", m); };
 
 const ECHO_STDIN = path.join(__dirname, "fixtures", "echo-stdin.js");

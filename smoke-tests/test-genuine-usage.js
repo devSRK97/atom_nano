@@ -15,7 +15,8 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   await win.waitForFunction(() => !!window.atomnano && !!window.atomnano.sessions, null, { timeout: 15000 });
 
   // ---- 1M visibility ----
-  const oneMHidden = () => win.evaluate(() => { const w = document.getElementById("oneMWrap"); return !w || w.classList.contains("hidden"); });
+  // The indicator element is always hidden (2026-09-17, user request) — its "on" class is the state that follows the model.
+  const oneMOn = () => win.evaluate(() => { const w = document.getElementById("oneMWrap"); return !!w && w.classList.contains("on") && w.classList.contains("hidden"); });
   // default model is Opus → 1M hidden
   await win.evaluate(() => window.atomnano.settings.set({ defaultModel: "claude-opus-4-8" }));
   // drive via the model dropdown so the UI handler runs
@@ -27,9 +28,9 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
     await win.waitForTimeout(200);
   };
   await pickModel("Opus 4.8");
-  ok(await oneMHidden(), "1M checkbox hidden for Opus (unsupported)");
+  ok(!(await oneMOn()), "1M off for Opus (unsupported) — the indicator itself is never shown");
   await pickModel("Sonnet 4.6");
-  ok(!(await oneMHidden()), "1M checkbox shown for Sonnet (supported)");
+  ok(await oneMOn(), "1M on in the background for Sonnet (supported), indicator hidden");
 
   // ---- genuine usage on a real run ----
   const cwd = path.join(os.tmpdir(), "atomnano-genuine"); fs.mkdirSync(cwd, { recursive: true });

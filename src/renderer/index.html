@@ -5,7 +5,29 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AtomNano</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <!-- Stylesheet partials — load order is cascade order (see src/renderer/styles/). -->
+  <link rel="stylesheet" href="./styles/00-base.css" />
+  <link rel="stylesheet" href="./styles/10-titlebar-tabs.css" />
+  <link rel="stylesheet" href="./styles/20-sidebar.css" />
+  <link rel="stylesheet" href="./styles/30-git-overlays.css" />
+  <link rel="stylesheet" href="./styles/40-chat.css" />
+  <link rel="stylesheet" href="./styles/50-composer.css" />
+  <link rel="stylesheet" href="./styles/60-docks.css" />
+  <link rel="stylesheet" href="./styles/65-agents.css" />
+  <link rel="stylesheet" href="./styles/67-workflow.css" />
+  <link rel="stylesheet" href="./styles/68-board.css" />
+  <link rel="stylesheet" href="./styles/70-overlays.css" />
+  <link rel="stylesheet" href="./styles/72-settings.css" />
+  <link rel="stylesheet" href="./styles/75-chat-layout.css" />
+  <link rel="stylesheet" href="./styles/80-editor.css" />
+  <link rel="stylesheet" href="./styles/85-git-center.css" />
+  <link rel="stylesheet" href="./styles/90-chat-search-queue.css" />
+  <link rel="stylesheet" href="./styles/92-dbm.css" />
+  <link rel="stylesheet" href="./styles/94-chat-navigation.css" />
+  <link rel="stylesheet" href="./styles/95-commit-modal.css" />
+  <link rel="stylesheet" href="./styles/96-terminal.css" />
+  <link rel="stylesheet" href="./styles/97-git-center-updates.css" />
+  <link rel="stylesheet" href="./styles/98-dbm-updates.css" />
   <!-- Terminal emulator (built by `npm run build:term`). Both files are optional:
        if absent, the integrated terminal falls back to its legacy line pane. -->
   <link rel="stylesheet" href="./vendor/xterm.bundle.css" />
@@ -67,8 +89,9 @@
 
       <aside id="changesPanel" class="changes-panel hidden"></aside>
       <aside id="fleetPanel" class="side-dock hidden"></aside>
-      <aside id="skillsPanel" class="side-dock hidden"></aside>
       <aside id="testsPanel" class="side-dock hidden"></aside>
+      <aside id="agentsPanel" class="side-dock hidden"></aside>
+      <aside id="boardPanel" class="side-dock hidden"></aside>
     </div>
   </div>
 

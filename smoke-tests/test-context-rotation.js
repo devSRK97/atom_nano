@@ -12,7 +12,7 @@ const os = require("os");
 const fs = require("fs");
 const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("PASS:", m); };
 
-const convo = require("../src/main/convo.js");
+const convo = require("../src/main/storage/convo.js");
 const HIST = path.join(os.tmpdir(), "atomnano-ctx-rotation-hist");
 fs.rmSync(HIST, { recursive: true, force: true });
 fs.mkdirSync(HIST, { recursive: true });

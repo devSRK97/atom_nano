@@ -51,36 +51,107 @@ run, and **project search runs in a worker thread** — so heavy work stays off 
 UI thread and uses multiple cores.
 
 ```
-src/main/   (Node, CommonJS — the "backend")
-  main.js          App lifecycle, BrowserWindow, portable-mode detection,
-                   ALL ipcMain handlers, close-confirm dialog, renderer
-                   console/crash forwarding. Sets claude.setEmitter(...).
-  preload.js       contextBridge → exposes window.atomnano.* to the renderer.
-  store.js         settings.json (userData) + one JSON file per session in the
-                   history folder. In-memory cache + debounced writes.
-  claude.js        SessionManager — wraps the Agent SDK query(). Streaming,
-                   permissions, message normalization, edited-file + line-diff
-                   tracking, env building, prompt building, CLI resolution.
-  files.js         File tree (listDir), read/write, reveal, openPath, trash
-                   (Recycle Bin). Delegates search to the worker.
-  search-core.js   PURE search logic (walk, matchers, binary detect, content +
-                   name search). No Electron deps → safe in a worker.
-  search-worker.js worker_threads entry: runs search-core, posts result.
-  auth.js          CLI detection (`where claude`), login status, login terminal,
-                   update check/run. Honors CLAUDE_CONFIG_DIR (portable).
+src/main/   (Node, CommonJS — the "backend"; one folder per domain, kebab-case files)
+  main.js              App bootstrap: BrowserWindow + window registry, portable-mode
+                       detection, TS utility process, watchers, close-confirm dialog,
+                       renderer console/crash forwarding. Sets session.setEmitter(...)
+                       and calls ipc.registerAll(ctx).
+  ipc/                 The ipcMain handlers, one module per domain: index.js (handle()
+                       envelope + registerAll), window, settings (+ project, userdata, cli),
+                       auth (+ updates, tools, provider, profiles), providers (models,
+                       catalog, image), sessions, agents (+ context), db, files, terminal,
+                       git, lang (ts, lsp, prettier, editorconfig), skills, fleet, mcp,
+                       testing (testdir, testhost, director), test-hooks (ATOMNANO_TEST).
+  preload.js           contextBridge → exposes window.atomnano.* to the renderer.
+  platform.js          The one place that knows Windows / macOS / Linux apart.
+  session/             The conversation engine (formerly claude.js):
+    index.js           SessionManager core — run() dispatch, record writers, finalizeRun;
+                       assembles the method modules below onto the prototype.
+    anthropic.js       Claude Agent SDK runner (query per turn, resume, input feed,
+                       app-owned CLI spawn, permission gate, headless runs, discovery).
+    anthropic-events.js SDK message stream → record + renderer events, task lifecycle.
+    openai.js          Codex app-server / exec runner.   custom-http.js  raw endpoint.
+    transfer.js        Record transfer sized to the model; adaptive cached handoff when too large.
+    context-packet.js   Bounded UTF-8 working memory, evidence selection and source retrieval refs.
+    roles.js           Reviewers (council) + legacy Plan→Code.  permissions.js  permission bridge.
+    control.js         Stop / steer / live controls.    recovery.js     preserved turns.
+    subagents.js       sub-agent registry + CPU-slot gate for Task calls.
+    workflow.js        orchestrator-as-primary: the active workflow, the compact orchestrator brief
+                       (≈3,150 chars) and the role briefs, JOBS (child sessions per role / shell
+                       commands; --from hands a finished job's saved result to the next role),
+                       workflow:job + workflow:stage events.
+    tasks.js           the session-level TASK BOARD: numbered tasks grouped into titled sets,
+                       job ↔ task links, the per-set checklist card, tasks:update events.
+    sdk.js errors.js tools.js tool-args.js   pure helpers.
+  control/             server.js — local HTTP control server (127.0.0.1, bearer token) the
+                       `atomnano` CLI talks to; exports ATOMNANO_CONTROL/TOKEN/NODE + bin/ on PATH
+                       to every child process; writes <userData>/control.json.
+  providers/           catalog.js (models + discovery), codex-appserver.js, codex-exec.js,
+                       codex-cards.js, codex-models.js, custom-api.js, council.js,
+                       image-gen.js, mcp-config.js, default-mcp.js
+  storage/             store.js (settings.json + one JSON per session, debounced writes),
+                       history.js (canonical record + bindings), convo.js, attachments.js
+  auth/                cli-auth.js (`where claude`, login status, login terminal, updates —
+                       honors CLAUDE_CONFIG_DIR), credstore.js, profiles.js
+  agents/              fleet.js, skills.js (the project skill store — list / get / create / update /
+                       remove / invoke / importFromUrl; skills reach Planner / Coder / Reviewer role
+                       sessions only), subagents.js (sub-agent registry + CPU governor; wired into
+                       Claude runs by session/subagents.js)
+  db/                  db.js (facade) over db-common, db-drivers, db-connections, db-store,
+                       db-values, db-policy, db-exec, db-query, db-schema, db-rows, db-ddl;
+                       db-io.js (+ db-io-worker.js), db-formats.js, sqlscript.js
+  git/                 git.js (facade) over git-runner, git-status, git-commit, git-remotes,
+                       git-branches, git-merge, git-history, git-stash
+  lang/                lsp.js, tsserver.js (+ ts-host.js utility process), ast.js
+  testing/             director.js, testdir.js, testhost.js (+ testhost-preload.js)
+  workspace/           files.js (tree, read/write, reveal, trash), search-core.js (PURE
+                       search logic) + search-worker.js (worker_threads entry),
+                       terminal.js, zipper.js
 
 src/renderer/   (Chromium, ES modules — the "frontend")
-  index.html       Static shell: #titlebar (brand + #tbActions File/Git toolbar),
-                   #sidebar (file tree / git commit view), #editorPane,
-                   #main (#chatHeader session-tabs + chat + composer),
-                   #changesPanel, #ctxMenu, #modalRoot, #toast.
-  app.js           The controller. State, tabs, file tree, editor, find/search,
-                   composer, prompt queue, settings, history, events. (~big)
-  styles.css       Warm-dark theme + alternate themes (html[data-theme]) +
-                   every component style. Accent-derived colors use color-mix.
-  markdown.js      Dependency-free Markdown → HTML (escapes first; code fences,
-                   inline, lists, headings, links, blockquote).
-  icons.js         Inline SVG icon set: icon(name, size, extraClass).
+  index.html           Static shell: #titlebar (brand + #tbActions File/Git toolbar),
+                       #sidebar (file tree / git commit view), #editorPane,
+                       #main (#chatHeader session-tabs + chat + composer),
+                       #changesPanel + docks, #ctxMenu, #modalRoot, #toast.
+                       Links styles/*.css in cascade order, loads app.js.
+  app.js               Entry: init() boots the window and wires the modules.
+  core/                state.js (state + atom), dom.js (h, toast, menus, modals, dialogs),
+                       catalog.js (model catalogs), theme.js, keys.js
+  chat/                tabs.js, composer.js, navigation.js, messages.js, events.js, history.js
+  git/                 titlebar.js, sidebar.js, branches.js, diff-viewer.js, conflicts-ui.js
+    center/            the Git Center (was gitcenter.js): index, state, widgets, shell, repos,
+                       actions, ops, render, compare, changes, history, branches
+  db/                  the Database Manager (was dbm.js): index, state, utils, cells, grid,
+                       health, workspace, connections, sidebar, query, results, jobs, browse,
+                       structure
+  workspace/           sidebar.js (file tree), projects.js, terminal.js
+  panels/              changes.js, fleet.js, tests.js, agents.js (Agents panel:
+                       live / history / timeline + CPU meter), board.js (the task board dock:
+                       sets, tasks, statuses, user actions). The Skills library dock is gone
+                       (2026-09-18): skills are attached to roles in the Workflow studio's Skills modal.
+  workflow/            the Workflow studio: index (contract), studio (overlay, library, presets,
+                       brief drawer, CLI popover), canvas (SVG roles / edges / sub-agent lane / live
+                       animation), inspector (role editor + jobs), live (events → state, chip), model,
+                       presets. Job cards: chat/messages.js; child tabs: chat/tabs.js.
+  settings/            settings.js (shell: grouped categories + search), controls.js, and one
+                       module per page: providers.js, provider-modal.js, updates.js, agent.js,
+                       appearance.js, editor.js, integrations.js, mcp.js, storage.js
+  editor/              editor-pane.js, symbols.js, checkpoints.js, search-palette.js,
+                       cm-src.js → cm.bundle.js + cmchunk/ (generated by esbuild)
+  styles/              00-base.css … 98-dbm-updates.css — the former styles.css split at
+                       its section banners; the numeric prefix is the cascade order.
+  markdown.js          Dependency-free Markdown → HTML (escapes first; code fences,
+                       inline, lists, headings, links, blockquote).
+  icons.js             Inline SVG icon set: icon(name, size, extraClass).
+  diff.js conflicts.js   unified-diff parsing, conflict-marker parsing.
+
+src/cli/        (plain Node — the `atomnano` command; bin/atomnano.js + .cmd / sh shims)
+  index.js             main(argv): status · roles · run <role> "<task>" [--from JOB] [--wait --timeout 540]
+                       · plan/coder/review/test shortcuts · jobs · job/wait/result/log/stop <id> · tasks …
+                       · context search/read · sessions · providers · models. Waits are sliced into 240 s
+                       long-polls; a waited job still running prints one line (exit 0).
+  client.js            finds the running app (ATOMNANO_CONTROL env, else control.json), bearer auth,
+                       exit codes 0/1/2/3.       format.js   tables + --json.
 
 scripts/
   generate-icon.js Pure-Node PNG+ICO generator (the amber "atom" mark).
@@ -126,7 +197,7 @@ Main→renderer event channels: `session:status`, `session:message`,
 
 ---
 
-## 5. Claude Agent SDK integration (`claude.js`) — the core
+## 5. Claude Agent SDK integration (`src/main/session/`, formerly `claude.js`) — the core
 
 ### Run model
 **One `query()` call per turn**, with `resume: <claudeSessionId>` to continue
@@ -145,7 +216,7 @@ long-lived streaming generator and survives app restarts.
   canUseTool,                                          // permission bridge → UI
   env: buildEnv(settings),
   maxThinkingTokens,        // only when thinking level > off
-  betas: ["context-1m-2025-08-07"],   // only when 1M toggle on
+  betas: ["context-1m-2025-08-07"],   // automatically for a compatible 1M model
   pathToClaudeCodeExecutable: <resolved installed claude.exe>,  // see gotchas
   resume: <claudeSessionId>,          // when continuing
 }
@@ -252,7 +323,7 @@ render **fixed on document.body** so they're never clipped); `showContextMenu()`
   Bin**). Swaps to a **WebStorm-style git commit view** (`renderGitView`) when you
   click Commit — staged/unstaged sections with stage checkboxes, a message box and
   Commit / Commit & Push, with a "Back to files" toggle. Git itself is
-  `src/main/git.js` (system `git` via execFile; pull/push use your credential
+  `src/main/git/git.js` (system `git` via execFile; pull/push use your credential
   helper).
 - **Editor pane** (middle) — **CodeMirror 6** editor:
   - Wrapper `src/renderer/editor/cm-src.js` → bundled by esbuild to
@@ -263,8 +334,8 @@ render **fixed on document.body** so they're never clipped); `showContextMenu()`
   - **Themed via CSS variables** (`--tok-comment/string/keyword/number/fn/type/
     prop/punct`, `--code-text`, `--accent`, …), so syntax colours follow the app
     theme live — no editor reconfigure on theme switch. Token vars live in
-    `styles.css` (`:root` dark + `html[data-theme="light"]`).
-  - One reused CM6 instance (`let cm` in `app.js`); switching tabs swaps the
+    `styles/00-base.css` (`:root` dark + `html[data-theme="light"]`).
+  - One reused CM6 instance (`let cm` in `editor/editor-pane.js`); switching tabs swaps the
     document (`cm.setDoc`) rather than rebuilding the editor — fast even at 1M
     lines (CM6 virtualizes natively). File content normalised to **LF** on open.
   - File tabs, overflow dropdown, **Ctrl+S save**, **zoom** (status-bar ±,
@@ -288,7 +359,14 @@ render **fixed on document.body** so they're never clipped); `showContextMenu()`
 - **Composer**
   - Auto-growing prompt textarea; paste/drop **images** (→ vision) & **files**
     (→ path refs) with chips.
-  - Shared dropdowns: **model / thinking / permission** + **1M context** toggle.
+  - Shared dropdowns: **model / thinking / permission** + an automatic **1M context** indicator when supported.
+  - **Agents** (before Reviewers): sub-agents on/off, how many at once (1–20), cores per
+    agent, the CPU governor and a live CPU meter; while agents run, a strip above the
+    composer shows one chip per agent and the Agents panel keeps the history. The
+    **context chip** shows how full the native thread is and where it rolls over.
+    Roles live in the chat header's ⋮ menu; skills have no chat-level UI — they are
+    attached to the Planner / Coder / Reviewer roles in the Workflow studio's Skills modal,
+    and native Claude skills follow the Claude CLI's own defaults.
   - **Stats strip** (files changed, +/− lines) above the box.
   - **Prompt queue**: sending while a run is active enqueues (numbered 1,2,…);
     queued items auto-run when the current reply finishes. Send button = Stop
@@ -390,7 +468,7 @@ they're excluded from the packaged build. See `smoke-tests/README.md` for the ma
 ## 13. Non-obvious decisions & gotchas (READ THIS)
 
 1. **Stale `ANTHROPIC_API_KEY` in the environment breaks runs.** This machine
-   has an invalid one. `claude.js buildEnv()` **deletes** `ANTHROPIC_API_KEY` /
+   has an invalid one. `session/anthropic.js buildEnv()` **deletes** `ANTHROPIC_API_KEY` /
    `ANTHROPIC_AUTH_TOKEN` from the spawned env unless the user set an API key in
    settings or enabled `useEnvApiKey` — otherwise the CLI prefers the bad key over
    the working OAuth login and every run fails with "Invalid API key".
@@ -423,20 +501,20 @@ they're excluded from the packaged build. See `smoke-tests/README.md` for the ma
 
 ## 14. How to extend (quick pointers)
 
-- **New IPC call:** add `handle("ns:thing", …)` in `main.js`, expose in
-  `preload.js` under `atom.ns.thing`, call from `app.js`.
+- **New IPC call:** add `handle("ns:thing", …)` in `src/main/ipc/<domain>.js`, expose in
+  `preload.js` under `atom.ns.thing`, call from the renderer module that needs it.
 - **New tool card rendering:** `toolIcon()` / `toolSummary()` / `toolSummaryEl()`
-  in `app.js`.
-- **New theme:** add an `html[data-theme="x"]{…}` block in `styles.css` (include
+  in `src/renderer/chat/messages.js`.
+- **New theme:** add an `html[data-theme="x"]{…}` block in `styles/00-base.css` (include
   the `--tok-*` syntax-token vars if you want custom code colours — else it
   inherits the `:root` palette) and an entry in the `THEMES` array in
-  `openSettings()`.
-- **New setting:** add to `DEFAULT_SETTINGS` in `store.js`; read/write via
+  `openSettings()` (`settings/settings.js`).
+- **New setting:** add to `DEFAULT_SETTINGS` in `storage/store.js`; read/write via
   `atom.settings`.
 - **Editor language / token colours:** add a language to `langFor()` in
   `cm-src.js` (then `npm run build:cm`); tune syntax colours via the `--tok-*`
-  CSS vars in `styles.css`. The `aqxHighlight` map ties Lezer tags → those vars.
-- **Persisted session shape:** `normalizeSession()` in `store.js`.
+  CSS vars in `styles/00-base.css`. The `aqxHighlight` map ties Lezer tags → those vars.
+- **Persisted session shape:** `normalizeSession()` in `storage/store.js`.
 
 ---
 

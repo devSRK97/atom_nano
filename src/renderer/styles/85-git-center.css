@@ -1,0 +1,264 @@
+/* AtomNano styles — Git Center (gitcenter.js) — repo dropdown, pickers, confirm popovers, splits.
+ * Part 11 of 18: the former single styles.css split at its section banners.
+ * Load order (index.html) = cascade order — keep the numeric prefixes in sequence. */
+/* ============================================================
+   GIT CENTER (gitcenter.js) — sits UNDER diff / conflict overlays
+   (z 500/520) and the prompt dialogs (z 560) so they stack on top.
+   ============================================================ */
+.gitc-overlay { position: fixed; inset: 0; z-index: 490; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 22px; animation: diff-fade .14s ease; }
+.gitc-panel { width: min(1480px, 100%); height: min(940px, 100%); display: flex; flex-direction: column; background: var(--bg); border: 1px solid var(--line-2); border-radius: 14px; box-shadow: var(--sh-pop); overflow: hidden; animation: diff-rise .17s cubic-bezier(.2,.8,.2,1); outline: none; }
+.gitc-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); background: var(--bg-2); position: relative; flex-shrink: 0; }
+.gitc-ic { color: var(--accent); display: inline-flex; }
+.gitc-title { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.gitc-title h3 { font-size: 14px; font-weight: 600; }
+.gitc-sub { font-size: 11px; color: var(--text-4); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 520px; }
+.gitc-spacer { flex: 1; }
+.gitc-hbtn { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: var(--text-3); }
+.gitc-hbtn:hover { background: var(--bg-3); color: var(--text); }
+.gitc-hbtn.close:hover { color: var(--red); }
+.gitc-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; overflow: hidden; opacity: 0; transition: opacity .15s; pointer-events: none; }
+.gitc-progress.on { opacity: 1; }
+.gitc-progress.on::before { content: ""; position: absolute; top: 0; bottom: 0; width: 30%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: gitc-slide 1.1s linear infinite; }
+@keyframes gitc-slide { from { left: -30%; } to { left: 100%; } }
+.gitc-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }   /* v2: no repo rail — the repo is a dropdown in the header */
+.gitc-rail { border-right: 1px solid var(--line-soft); background: var(--bg-1); display: flex; flex-direction: column; min-height: 0; }
+.gitc-rail-title { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-4); }
+.gitc-rail-count { background: var(--bg-3); padding: 0 7px; border-radius: 9px; font-size: 10px; }
+.gitc-repos { flex: 1; overflow: auto; padding: 4px 8px; }
+.gitc-repo { padding: 8px 10px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; margin-bottom: 3px; }
+.gitc-repo:hover { background: var(--bg-2); }
+.gitc-repo.active { background: var(--accent-soft); border-color: var(--accent-2); }
+.gitc-repo-top { display: flex; align-items: center; gap: 7px; }
+.gitc-repo-ic { color: var(--accent-2); display: inline-flex; }
+.gitc-repo-name { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-badge { font-size: 10px; padding: 1px 7px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); font-variant-numeric: tabular-nums; }
+.gitc-badge.danger, .gitc-tab-badge.danger, .gitc-col-count.danger { background: var(--red-soft); color: var(--red); }
+.gitc-repo-sub { display: flex; align-items: center; gap: 6px; margin-top: 3px; padding-left: 21px; font-size: 11px; color: var(--text-3); min-width: 0; flex-wrap: wrap; }
+.gitc-repo-branch { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); max-width: 100%; }
+.gitc-ab { font-size: 10.5px; font-variant-numeric: tabular-nums; padding: 0 5px; border-radius: 6px; background: var(--bg-3); white-space: nowrap; }
+.gitc-ab.up { color: var(--green); } .gitc-ab.down { color: var(--accent); } .gitc-ab.none { color: var(--text-4); }
+.gitc-rail-empty { padding: 20px; color: var(--text-4); text-align: center; font-size: 12px; }
+.gitc-rail-foot { display: flex; gap: 4px; padding: 8px; border-top: 1px solid var(--line-soft); }
+.gitc-mini { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 4px; border-radius: 7px; font-size: 10.5px; color: var(--text-3); white-space: nowrap; }
+.gitc-mini:hover { background: var(--bg-3); color: var(--text); }
+.gitc-main { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.gitc-bar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-2); flex-wrap: wrap; flex-shrink: 0; }
+.gitc-refs { display: flex; align-items: center; gap: 6px; margin-right: 6px; }
+.gitc-reflabel { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-4); }
+.gitc-ref { display: inline-flex; align-items: center; gap: 6px; max-width: 230px; padding: 5px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-inset); color: var(--text); font-size: 12.5px; }
+.gitc-ref:hover { border-color: var(--line-2); background: var(--bg-3); }
+.gitc-ref-ic { display: inline-flex; color: var(--accent-2); }
+.gitc-ref.target .gitc-ref-ic { color: var(--text-4); }
+.gitc-ref-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); }
+.gitc-ref-caret { display: inline-flex; color: var(--text-4); }
+.gitc-swap { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; color: var(--text-3); }
+.gitc-swap:hover { background: var(--bg-3); color: var(--accent); }
+.gitc-cur { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-3); font-family: var(--font-mono); padding: 0 6px; }
+.gitc-cur .icon { color: var(--green); }
+.gitc-act { display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 8px; font-size: 12px; color: var(--text-2); border: 1px solid var(--line); background: var(--bg-1); transition: background .12s, color .12s, border-color .12s; white-space: nowrap; }
+.gitc-act:hover { background: var(--bg-3); color: var(--text); border-color: var(--line-2); }
+.gitc-act.primary { background: var(--accent); color: #1c1410; border-color: var(--accent); font-weight: 600; }
+.gitc-act.primary:hover { background: var(--accent-2); border-color: var(--accent-2); color: #1c1410; }
+.gitc-act.danger { color: var(--red); border-color: rgba(232,122,100,.35); }
+.gitc-act.danger:hover { background: var(--red-soft); color: var(--red); }
+.gitc-act.hot { color: var(--accent); border-color: var(--accent-2); }
+.gitc-act.icon { padding: 6px 7px; }
+.gitc-act.sm { padding: 4px 9px; font-size: 11.5px; }
+.gitc-act:disabled, .gitc-act[disabled] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+.gitc-overlay.busy .gitc-act, .gitc-overlay.busy .gitc-ibtn, .gitc-overlay.busy .gitc-mini { pointer-events: none; opacity: .7; }
+.gitc-banner { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--red-soft); border-bottom: 1px solid rgba(232,122,100,.3); flex-shrink: 0; flex-wrap: wrap; }
+.gitc-banner.hidden { display: none; }
+.gitc-banner-ic { color: var(--red); display: inline-flex; }
+.gitc-banner-text { display: flex; flex-direction: column; gap: 1px; font-size: 12px; color: var(--text-2); }
+.gitc-banner-text b { color: var(--text); }
+.gitc-tabs { display: flex; gap: 2px; padding: 6px 10px 0; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-shrink: 0; overflow-x: auto; }
+.gitc-tab { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 12.5px; color: var(--text-3); border-bottom: 2px solid transparent; border-radius: 7px 7px 0 0; white-space: nowrap; }
+.gitc-tab:hover { color: var(--text); background: var(--bg-2); }
+.gitc-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.gitc-tab-badge { font-size: 10px; padding: 0 6px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); }
+.gitc-content { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.gitc-content > * { flex: 1; min-height: 0; }
+.gitc-col { display: flex; flex-direction: column; min-height: 0; min-width: 0; border-right: 1px solid var(--line-soft); background: var(--bg-1); }
+.gitc-col:last-child { border-right: none; }
+.gitc-col-head { display: flex; align-items: center; gap: 7px; padding: 8px 10px; border-bottom: 1px solid var(--line-soft); font-size: 11.5px; color: var(--text-3); flex-shrink: 0; min-height: 36px; }
+.gitc-col-head .icon { color: var(--accent-2); }
+.gitc-col-title { font-weight: 600; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-col-count { font-size: 10px; padding: 0 6px; border-radius: 8px; background: var(--bg-3); color: var(--text-3); font-variant-numeric: tabular-nums; }
+.gitc-col-body { flex: 1; overflow: auto; padding: 4px; min-height: 0; }
+.gitc-col-body.list { padding: 6px 10px; }
+.gitc-link { font-size: 11px; color: var(--accent); padding: 3px 7px; border-radius: 6px; white-space: nowrap; }
+.gitc-link:hover { background: var(--accent-soft); }
+.gitc-loading { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 26px; color: var(--text-4); font-size: 12px; }
+.gitc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 40px 18px; text-align: center; color: var(--text-4); font-size: 12px; }
+.gitc-empty .ge-ic { color: var(--line-2); }
+.gitc-empty .ge-title { color: var(--text-3); font-size: 13px; font-weight: 600; }
+.gitc-muted { color: var(--text-4); } .gitc-muted.good { color: var(--green); }
+.gitc-file { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: 7px; cursor: pointer; font-size: 12px; color: var(--text-2); }
+.gitc-file:hover { background: var(--bg-3); }
+.gitc-file.active { background: var(--accent-soft); color: var(--text); }
+.gitc-file.conflict .gitc-file-name { color: var(--red); }
+.gitc-fico { display: inline-flex; color: var(--text-3); flex-shrink: 0; }
+.gitc-file-name { flex-shrink: 0; max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-file-path { color: var(--text-4); font-size: 10.5px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-pm { display: inline-flex; gap: 6px; font-size: 10.5px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.gitc-pm .ds-add, .gitc-diff-stat .ds-add { color: var(--green); } .gitc-pm .ds-del, .gitc-diff-stat .ds-del { color: var(--red); } .gitc-pm .ds-bin, .gitc-diff-stat .ds-bin { color: var(--text-4); }
+.gitc-code { font-size: 9.5px; padding: 1px 6px; border-radius: 5px; background: var(--bg-inset); flex-shrink: 0; color: var(--text-3); }
+.gitc-code.c-A { color: var(--green); } .gitc-code.c-D { color: var(--red); } .gitc-code.c-M { color: var(--accent-2); } .gitc-code.c-U { color: var(--red); }
+.gitc-file-acts { display: inline-flex; gap: 2px; opacity: 0; transition: opacity .12s; }
+.gitc-file:hover .gitc-file-acts, .gitc-file.active .gitc-file-acts { opacity: 1; }
+.gitc-ibtn { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; color: var(--text-4); flex-shrink: 0; }
+.gitc-ibtn:hover { background: var(--bg-4); color: var(--text); }
+.gitc-ibtn.danger:hover { color: var(--red); background: var(--red-soft); }
+.gitc-ibtn.on { color: var(--accent); }
+.gitc-diff { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--bg); }
+.gitc-diff-head { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-2); flex-shrink: 0; min-height: 36px; }
+.gitc-diff-name { font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); }
+.gitc-diff-sub { font-size: 10.5px; color: var(--text-4); font-family: var(--font-mono); flex-shrink: 0; }
+.gitc-diff-stat { display: inline-flex; gap: 8px; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.gitc-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.gitc-seg-btn { padding: 3px 9px; font-size: 11px; color: var(--text-3); }
+.gitc-seg-btn.active { background: var(--accent-soft); color: var(--accent); }
+.gitc-diff-body { flex: 1; overflow: auto; min-height: 0; }
+.gitc-diff-ph { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text-4); font-size: 12.5px; padding: 40px; text-align: center; }
+.gitc-diff-ph .icon { color: var(--line-2); }
+.gitc-cmp { display: flex; flex-direction: column; min-height: 0; }
+.gitc-cmp-summary { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-shrink: 0; flex-wrap: wrap; }
+.gitc-cmp-line { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); flex-wrap: wrap; }
+.gitc-ref-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 7px; background: var(--bg-inset); border: 1px solid var(--line); font-family: var(--font-mono); font-size: 12px; }
+.gitc-ref-chip.source .icon { color: var(--accent-2); } .gitc-ref-chip.target .icon { color: var(--text-4); }
+.gitc-cmp-arrow { display: inline-flex; color: var(--text-4); }
+.gitc-cmp-ab b { color: var(--text); }
+.gitc-cmp-grid { flex: 1; display: flex; min-height: 0; }   /* columns sized by the draggable dividers (splitPane) */
+.gitc-commit { display: flex; align-items: flex-start; gap: 9px; padding: 7px 9px; border-radius: 8px; cursor: pointer; position: relative; }
+.gitc-commit:hover { background: var(--bg-3); }
+.gitc-commit.active { background: var(--accent-soft); }
+.gitc-commit-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); margin-top: 6px; flex-shrink: 0; box-shadow: 0 0 0 2px var(--bg-1); }
+.gitc-commit.active .gitc-commit-dot { background: var(--accent); }
+.gitc-commit-main { flex: 1; min-width: 0; }
+.gitc-commit-subject { font-size: 12.5px; color: var(--text); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; line-height: 1.35; }
+.gitc-commit.compact .gitc-commit-subject { font-size: 12px; }
+.gitc-commit-subject > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.gitc-commit-meta { display: flex; gap: 8px; font-size: 10.5px; color: var(--text-3); margin-top: 2px; overflow: hidden; white-space: nowrap; }
+.gitc-hash { font-family: var(--font-mono); color: var(--accent-2); }
+.gitc-hash.copy { cursor: pointer; display: inline-flex; align-items: center; gap: 4px; } .gitc-hash.copy:hover { text-decoration: underline; }
+.gitc-refchip { font-size: 9.5px; padding: 1px 6px; border-radius: 6px; background: var(--bg-3); color: var(--text-3); border: 1px solid var(--line); white-space: nowrap; font-family: var(--font-mono); }
+.gitc-refchip.head { color: var(--green); border-color: rgba(147,207,108,.4); }
+.gitc-refchip.tag { color: var(--accent); border-color: var(--accent-2); }
+.gitc-refchip.remote { color: var(--blue); }
+.gitc-refchip.source { color: var(--accent-2); } .gitc-refchip.target { color: var(--text-2); }
+.gitc-more { display: block; width: calc(100% - 8px); margin: 6px 4px; padding: 7px; border-radius: 7px; font-size: 11.5px; color: var(--accent); background: var(--bg-2); }
+.gitc-more:hover { background: var(--bg-3); }
+.gitc-chg { display: flex; flex: 1; min-height: 0; }
+.gitc-chg-left { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line-soft); background: var(--bg-1); overflow: auto; }
+.gitc-sec { padding: 4px; }
+.gitc-sec.conflict .gitc-sec-title { color: var(--red); }
+.gitc-sec-head { display: flex; align-items: center; gap: 7px; padding: 8px 8px 4px; font-size: 11px; color: var(--text-3); }
+.gitc-sec-title { font-weight: 700; letter-spacing: .4px; text-transform: uppercase; font-size: 10.5px; color: var(--text-3); }
+.gitc-commitbox { margin-top: auto; padding: 10px; border-top: 1px solid var(--line-soft); background: var(--bg-2); display: flex; flex-direction: column; gap: 8px; position: sticky; bottom: 0; }
+.gitc-msg { width: 100%; resize: vertical; min-height: 64px; background: var(--bg-inset); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; color: var(--text); font-family: var(--font-ui); outline: none; }
+.gitc-msg:focus { border-color: var(--accent-2); }
+.gitc-commit-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gitc-check { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); cursor: pointer; white-space: nowrap; }
+.gitc-hist { display: flex; flex: 1; min-height: 0; }
+.gitc-col.wide .gitc-col-head { flex-wrap: wrap; }
+.gitc-filechip { cursor: pointer; } .gitc-filechip:hover { color: var(--red); } .gitc-filechip.hidden { display: none; }
+.gitc-input { background: var(--bg-inset); border: 1px solid var(--line); border-radius: 7px; padding: 5px 9px; font-size: 12px; color: var(--text); outline: none; min-width: 120px; }
+.gitc-input.grow { flex: 1; min-width: 160px; }
+.gitc-input:focus { border-color: var(--accent-2); }
+.gitc-col-head .gitc-input { width: 190px; }
+.gitc-select { background: var(--bg-inset); border: 1px solid var(--line); border-radius: 7px; padding: 5px 8px; font-size: 12px; color: var(--text); outline: none; max-width: 240px; }
+.gitc-select option { background: var(--bg-2); color: var(--text); }
+.gitc-detail { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--bg); }
+.gitc-detail-head { padding: 12px 14px; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-shrink: 0; }
+.gitc-detail-subject { font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gitc-detail-meta { display: flex; align-items: center; gap: 12px; margin-top: 5px; font-size: 11.5px; color: var(--text-3); flex-wrap: wrap; }
+.gitc-detail-body { margin: 8px 0 0; padding: 8px 10px; background: var(--bg-inset); border-radius: 7px; font-size: 12px; color: var(--text-2); white-space: pre-wrap; max-height: 140px; overflow: auto; font-family: var(--font-ui); }
+.gitc-detail-acts { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.gitc-detail-split { flex: 1; display: flex; min-height: 0; }
+.gitc-detail-files { flex: 1; overflow: auto; padding: 4px; }
+.gitc-fileview { margin: 0; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; color: var(--code-text); white-space: pre; overflow: auto; max-height: 70vh; }
+.gitc-fileview-modal { width: min(1100px, 94vw); }
+.gitc-brs, .gitc-stash, .gitc-tags, .gitc-remotes { display: flex; flex-direction: column; min-height: 0; }
+.gitc-form { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-shrink: 0; flex-wrap: wrap; }
+.gitc-form-ic { color: var(--accent-2); display: inline-flex; }
+.gitc-brs-grid { flex: 1; display: flex; min-height: 0; }
+
+/* ---- Git Center v2: repo dropdown · searchable pickers · confirm popovers · resizable splits · changes tree ---- */
+.gitc-repo-dd { display: inline-flex; align-items: center; gap: 7px; max-width: 340px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-inset); color: var(--text); font-size: 12.5px; cursor: pointer; }
+.gitc-repo-dd:hover { border-color: var(--line-2); background: var(--bg-3); }
+.gitc-repo-dd .icon { color: var(--accent-2); }
+.gitc-repo-dd .name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-repo-dd .br { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+.gitc-repo-dd .gitc-badge { margin-left: 2px; }
+.gitc-pick { position: fixed; z-index: 720; display: flex; flex-direction: column; background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 10px; box-shadow: var(--sh-pop); overflow: hidden; animation: diff-fade .12s ease; }
+.gitc-pick-in { margin: 8px 8px 4px; padding: 6px 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg-inset); color: var(--text); font-size: 12.5px; outline: none; }
+.gitc-pick-in:focus { border-color: var(--accent-2); }
+.gitc-pick-list { overflow: auto; min-height: 0; padding: 0 6px 6px; }
+.gitc-pick-group { padding: 8px 8px 3px; font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-4); }
+.gitc-pick-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--text-2); }
+.gitc-pick-item .icon { color: var(--accent-2); flex-shrink: 0; }
+.gitc-pick-item.cursor, .gitc-pick-item:hover { background: var(--bg-3); color: var(--text); }
+.gitc-pick-item.sel .lbl { color: var(--accent); }
+.gitc-pick-item.danger { color: var(--red); }
+.gitc-pick-item .lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); }
+.gitc-pick-item .lbl.plain { font-family: inherit; }
+.gitc-pick-item .hint { font-size: 10.5px; color: var(--text-4); flex-shrink: 0; white-space: nowrap; }
+.gitc-pick-empty { padding: 14px; text-align: center; color: var(--text-4); font-size: 12px; }
+.gitc-pick-foot { border-top: 1px solid var(--line-soft); padding: 7px 10px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-3); }
+.gitc-pop { position: fixed; z-index: 720; width: 330px; background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 10px; box-shadow: var(--sh-pop); padding: 12px; animation: diff-fade .12s ease; }
+.gitc-pop.danger { border-color: rgba(232,122,100,.45); }
+.gitc-pop-title { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+.gitc-pop-title .icon { color: var(--accent-2); }
+.gitc-pop.danger .gitc-pop-title .icon { color: var(--red); }
+.gitc-pop-msg { font-size: 12px; color: var(--text-3); line-height: 1.5; margin-bottom: 10px; word-break: break-word; }
+.gitc-pop .gitc-input { width: 100%; margin-bottom: 8px; box-sizing: border-box; }
+.gitc-pop .gitc-check { margin-bottom: 8px; }
+.gitc-pop-acts { display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px; }
+.gitc-split { display: flex; flex: 1; min-height: 0; min-width: 0; }
+.gitc-split > * { min-width: 0; }
+.gitc-divider { flex: 0 0 5px; cursor: col-resize; background: transparent; border-left: 1px solid var(--line-soft); transition: background .12s; }
+.gitc-divider:hover, .gitc-divider.dragging { background: var(--accent-soft); }
+.gitc-overlay.resizing, .gitc-overlay.resizing * { user-select: none !important; cursor: col-resize !important; }
+.gitc-modebar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line-soft); background: var(--bg-1); flex-wrap: wrap; flex-shrink: 0; }
+.gitc-act.on { border-color: var(--accent); color: var(--accent); }
+.gitc-tree { padding: 4px; }
+.gitc-tree-row { display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 7px; font-size: 12px; color: var(--text-2); cursor: pointer; }
+.gitc-tree-row:hover { background: var(--bg-3); }
+.gitc-tree-row.active { background: var(--accent-soft); color: var(--text); }
+.gitc-tree-row.conflict .nm { color: var(--red); }
+.gitc-tree-row .chev { display: inline-flex; width: 14px; justify-content: center; color: var(--text-4); transition: transform .12s; flex-shrink: 0; }
+.gitc-tree-row.open .chev { transform: rotate(90deg); }
+.gitc-tree-row .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-tree-row.dir .nm { font-weight: 600; }
+.gitc-tree-row.dir .icon { color: var(--accent-2); }
+.gitc-tree-row .cnt { font-size: 10px; padding: 0 6px; border-radius: 8px; background: var(--bg-3); color: var(--text-3); flex-shrink: 0; }
+.gitc-tree-row .st { font-size: 9.5px; padding: 0 5px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 700; letter-spacing: .3px; flex-shrink: 0; }
+.gitc-tree-row .gitc-file-acts { opacity: 0; }
+.gitc-tree-row:hover .gitc-file-acts, .gitc-tree-row.active .gitc-file-acts { opacity: 1; }
+.gitc-tree-row .aqx-check { flex-shrink: 0; }
+.gitc-chg-tools { display: flex; align-items: center; gap: 4px; padding: 8px 8px 4px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-3); }
+.gitc-chg-tools .gitc-sel-count { font-weight: 600; color: var(--text-2); margin-right: 4px; }
+.gitc-hint { font-size: 11px; color: var(--text-4); padding: 4px 8px; }
+.gitc-branch { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; }
+.gitc-branch:hover { background: var(--bg-3); }
+.gitc-branch.current { background: var(--accent-softer); }
+.gitc-branch-ic { display: inline-flex; color: var(--text-3); flex-shrink: 0; }
+.gitc-branch.current .gitc-branch-ic { color: var(--green); }
+.gitc-branch-main { flex: 1; min-width: 0; }
+.gitc-branch-name { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text); flex-wrap: wrap; font-family: var(--font-mono); }
+.gitc-branch-meta { display: flex; gap: 8px; align-items: center; margin-top: 2px; font-size: 10.5px; color: var(--text-3); min-width: 0; }
+.gitc-branch-subject { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.gitc-upstream { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; color: var(--text-4); font-family: var(--font-ui); }
+.gitc-upstream.none { font-style: italic; }
+.gitc-branch-acts { display: inline-flex; gap: 2px; align-items: center; opacity: 0; transition: opacity .12s; flex-shrink: 0; }
+.gitc-branch:hover .gitc-branch-acts, .gitc-branch-acts.always, .gitc-stashrow:hover .gitc-branch-acts { opacity: 1; }
+.gitc-url { font-family: var(--font-mono); color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gitc-stashrow { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.gitc-stashrow:hover { background: var(--bg-3); }
+.gitc-stashrow.active { background: var(--accent-soft); }
+.gitc-stash-idx { width: 22px; height: 22px; border-radius: 6px; background: var(--bg-inset); color: var(--accent-2); display: grid; place-items: center; font-size: 11px; font-family: var(--font-mono); flex-shrink: 0; }
+@media (max-width: 1100px) {
+  .gitc-body { grid-template-columns: 210px 1fr; }
+  .gitc-cmp-grid { grid-template-columns: minmax(200px, 240px) minmax(200px, 240px) 1fr; }
+}
+

@@ -26,9 +26,9 @@ let pass = 0, failN = 0; const failures = [];
 function check(id, name, ok, evidence) { if (ok) pass++; else { failN++; failures.push(`${id} ${name}`); console.log(`  FAIL ${id} ${name}  ${evidence ? JSON.stringify(evidence).slice(0, 500) : ""}`); } }
 
 async function main() {
-  const store = require(path.join(ROOT, "src/main/store.js"));
-  const history = require(path.join(ROOT, "src/main/history.js"));
-  const claude = require(path.join(ROOT, "src/main/claude.js"));
+  const store = require(path.join(ROOT, "src/main/storage/store.js"));
+  const history = require(path.join(ROOT, "src/main/storage/history.js"));
+  const claude = require(path.join(ROOT, "src/main/session/index.js"));
   const CI = claude.__internals;
   store.loadSettings();
   claude.send = () => {};   // no renderer
@@ -72,11 +72,13 @@ async function main() {
   const calls = [];
   claude.setSummarizer(async (provider, model, prompt) => { calls.push({ provider, model, prompt }); const prev = /Summary so far[^\n]*\n([\s\S]*?)\n\n---/.exec(prompt); const seen = (prompt.match(/USER-(\d+):/g) || []).map((x) => x.replace(/\D/g, "")); return `SUM[${prev ? prev[1].replace(/^SUM\[|\]$/g, "") + "," : ""}${seen[0]}-${seen.at(-1)}]`; });
   s.summaries = [];
-  const tb1 = await claude.transferBlock(s, "anthropic", { model: "claude-opus-4-8", from: -1, to: last - 1, budgetScale: 1, promptChars: 0 });
-  check("T10", "transferBlock with the real Claude budget (200k ctx → 400k chars) keeps this 1.1 MB record as a SUMMARY transfer", tb1.mode === "summary" && tb1.count === 180 && tb1.budget === 400000 && calls.length >= 1, { mode: tb1.mode, budget: tb1.budget, calls: calls.length });
+  const largeWindow = await claude.transferBlock(s, "anthropic", { model: "claude-opus-4-8", from: -1, to: last - 1, promptChars: 0 });
+  check("T10a", "a 1M model receives this record exactly without needless summary calls, even with the legacy flag off", largeWindow.mode === "exact" && largeWindow.budget === 2000000 && calls.length === 0, { mode: largeWindow.mode, budget: largeWindow.budget, calls: calls.length });
+  const tb1 = await claude.transferBlock(s, "anthropic", { model: "claude-haiku-4-5-20251001", from: -1, to: last - 1, budgetScale: 1, promptChars: 0 });
+  check("T10", "transferBlock with Haiku's 200k window (400k chars) keeps this 1.1 MB record as a SUMMARY transfer", tb1.mode === "summary" && tb1.count === 180 && tb1.budget === 400000 && calls.length >= 1, { mode: tb1.mode, budget: tb1.budget, calls: calls.length });
   const chunks1 = calls.length;
-  check("T11", "the summariser saw every head entry exactly once, in chunks that fit half the budget, rolling the previous summary forward", calls.every((c) => c.prompt.length <= 200000) && (chunks1 === 1 || calls.slice(1).every((c) => /Summary so far/.test(c.prompt))) && /^SUM\[0-/.test(tb1.summary), { chunks: chunks1, summary: tb1.summary.slice(0, 60) });
-  check("T12", "the summary card was added to the chat with its span", s.messages.some((m) => m.role === "summary" && m.text === tb1.summary && m.meta.entries === tb1.plan.headCount && m.meta.provider === "anthropic"));
+  check("T11", "one bounded summary call sees labelled selected evidence and the opening goal", calls.every((c) => Buffer.byteLength(c.prompt) <= 32768) && chunks1 === 1 && /^SUM\[0-/.test(tb1.summary), { chunks: chunks1, summary: tb1.summary.slice(0, 60) });
+  check("T12", "the summary card was added to the chat with its span", s.messages.some((m) => m.role === "summary" && m.text === tb1.text && m.meta.entries === tb1.plan.headCount && m.meta.provider === "anthropic"));
   check("T13", "the summary is cached on the session", Array.isArray(s.summaries) && s.summaries.some((x) => x.from === -1 && x.upTo === tb1.plan.head.to && x.text === tb1.summary));
   const before = calls.length;
   const tb2 = await claude.transferBlock(s, "openai", { model: "gpt-5.5", from: -1, to: last - 1, promptChars: 0 });
@@ -85,10 +87,10 @@ async function main() {
   // the conversation grows → only the NEW part is summarised on top of the cached summary
   for (let i = 60; i < 80; i++) { s.messages.push({ id: "u" + i, role: "user", text: `USER-${i}: more`, ts: store.nowISO() }, { id: "t" + i, role: "tool", toolName: "Read", toolInput: { file_path: "x" }, status: "done", result: big(6000, `FILE${i}`), ts: store.nowISO() }, { id: "a" + i, role: "assistant", text: `ASSIST-${i}`, ts: store.nowISO() }); store.enforceCap(s); }
   const last2 = history.lastGlobalIndex(s);
-  const tb3 = await claude.transferBlock(s, "anthropic", { model: "claude-opus-4-8", from: -1, to: last2, promptChars: 0, budgetScale: 0.5 });
+  const tb3 = await claude.transferBlock(s, "anthropic", { model: "claude-haiku-4-5-20251001", from: -1, to: last2, promptChars: 0, budgetScale: 0.5 });
   const rolled = calls.slice(before);
-  check("T16", "a longer record rolls the cached summary forward: the new calls carry the previous summary and only newer entries", tb3.mode === "summary" && rolled.length >= 1 && rolled.every((c) => /Summary so far/.test(c.prompt)) && !rolled.some((c) => /USER-1:/.test(c.prompt)), { rolled: rolled.length });
-  check("T17", "the rolled summary is cached with the later upTo", s.summaries.some((x) => x.from === -1 && x.upTo === tb3.plan.head.to && x.text === tb3.summary) && s.summaries.length >= 2);
+  check("T16", "a longer record reuses memory immediately and selects newer evidence without model calls", tb3.mode === "summary" && rolled.length === 0 && tb3.text.includes("USER-79:") && tb3.summary === tb1.summary, { rolled: rolled.length });
+  check("T17", "reusing memory does not falsely mark the cached summary as covering newer history", s.summaries.some((x) => x.from === -1 && x.upTo === tb1.plan.head.to && x.text === tb3.summary) && s.summaries.length === 1);
   const persisted = JSON.parse(fs.readFileSync(path.join(store.getSettings().historyDir, `${v.id}.json`), "utf8"));
   store.flush(v.id); store.loadAllSessions();
   const reloaded = store.getSession(v.id);
@@ -114,14 +116,34 @@ async function main() {
   check("T23", "switching provider transfers exactly what that provider's thread missed", sw.needed === true && sw.from === -1 && sw.to === history.lastGlobalIndex(s2) - 1);
 
   // ---- budgets and error classification ----
-  check("T24", "context budget: Claude 200k (1M when enabled), Codex from its catalog, custom 128k", claude.contextTokensFor("anthropic", "claude-opus-4-8", { oneM: false }) === 200000 && claude.contextTokensFor("anthropic", "claude-opus-4-8", { oneM: true }) === 1000000 && claude.contextTokensFor("openai", "gpt-5.5", {}) === 272000 && claude.contextTokensFor("custom", "x", {}) === 128000);
-  check("T25", "transfer budget = half the window in chars minus the prompt", claude.transferBudgetChars("anthropic", "claude-opus-4-8", { oneM: false }, 10000) === 390000);
+  check("T24", "context budget: 1M models use 1M automatically, Haiku uses 200k, Codex follows its catalog", claude.contextTokensFor("anthropic", "claude-opus-4-8", { oneM: false }) === 1000000 && claude.contextTokensFor("anthropic", "claude-haiku-4-5-20251001", {}) === 200000 && claude.contextTokensFor("openai", "gpt-5.5", {}) === 272000 && claude.contextTokensFor("custom", "x", {}) === 128000);
+  check("T25", "transfer budget = half the selected model's full window in chars minus the prompt", claude.transferBudgetChars("anthropic", "claude-opus-4-8", { oneM: false }, 10000) === 1990000);
   const P = CI.isPromptTooLong;
   check("T26", "prompt-too-long recognised for both harnesses", P(new Error("Prompt is too long")) && P("prompt is too long: 214000 tokens > 200000 maximum") && P({ message: "Your input exceeds the context window of this model." }) && P("context_length_exceeded") && P("The request exceeds the model's context window") && P("413 Request Entity Too Large") && P({ promptTooLong: true }));
   check("T27", "…but not for rate limits, network or ordinary errors", !P("429 rate limit exceeded") && !P("ECONNRESET") && !P("no such table: users") && !CI.isRateLimitError("prompt is too long"));
   check("T28", "the summarisation instruction is a separate request's instruction (not part of the user's turn)", typeof CI.SUMMARY_INSTRUCTIONS === "string" && /faithful working summary/.test(CI.SUMMARY_INSTRUCTIONS) && !tb1.text.includes(CI.SUMMARY_INSTRUCTIONS));
-  // audit-harness compatibility: no forbidden identifiers reappeared in claude.js
-  const src = fs.readFileSync(path.join(ROOT, "src/main/claude.js"), "utf8");
+  // audit-harness compatibility: no forbidden identifiers reappeared in the session manager
+  const src = require("./lib/session-vm").sessionSource();
+  // ---- primary conversation only (user decision 2026-09-17): a sub-agent's internal entries never travel ----
+  { const v3 = store.createSession({ cwd: HOME, name: "agents" }); const s3 = store.getSession(v3.id);
+    s3.messages.push({ id: "q1", role: "user", text: "Delegate the review", ts: store.nowISO() });
+    s3.messages.push({ id: "task1", role: "tool", toolName: "Task", toolUseId: "tu-1", toolInput: { description: "Review auth", prompt: "Review src/auth" }, status: "done", result: "Two issues found: AUTH-ISSUE-A, AUTH-ISSUE-B", agentN: 1, ts: store.nowISO() });
+    s3.messages.push({ id: "sub-t1", role: "tool", toolName: "Read", toolUseId: "tu-sub-1", toolInput: { file_path: "C:\\p\\auth.js" }, status: "done", result: "SUB-AGENT-FILE-CONTENT " + big(5000, "internal"), parentToolUseId: "tu-1", ts: store.nowISO() });
+    s3.messages.push({ id: "sub-a1", role: "assistant", text: "SUB-AGENT-REASONING about auth", parentToolUseId: "tu-1", ts: store.nowISO() });
+    s3.messages.push({ id: "sub-th1", role: "thinking", text: "SUB-AGENT-THINKING", parentToolUseId: "tu-1", ts: store.nowISO() });
+    s3.messages.push({ id: "a-main", role: "assistant", text: "PRIMARY-REPLY: fixed both issues", ts: store.nowISO() });
+    s3.messages.push({ id: "q2", role: "user", text: "NEXT", ts: store.nowISO() });
+    store.enforceCap(s3); store.flush(v3.id);
+    const last3 = history.lastGlobalIndex(s3);
+    const p3 = history.planTransfer(s3, -1, last3 - 1, { budgetChars: Infinity });
+    const tb3 = history.transcriptBlock(s3, -1, last3 - 1), ci3 = history.codexItems(s3, -1, last3 - 1);
+    check("T30", "only the primary conversation travels: the Agent call and its result yes, the agent's own tool calls / text / thinking no — in the plan, the Claude block and the Codex items alike", p3.count === 3 && p3.agentEntries === 2 && p3.text.includes("AUTH-ISSUE-A") && p3.text.includes("PRIMARY-REPLY") && !p3.text.includes("SUB-AGENT") && tb3.count === 3 && !tb3.text.includes("SUB-AGENT") && ci3.count === 3 && !JSON.stringify(ci3.items).includes("SUB-AGENT") && !history.isHistoryMessage(s3.messages.find((m) => m.id === "sub-t1")) && history.isHistoryMessage(s3.messages.find((m) => m.id === "task1")), { count: p3.count, agentEntries: p3.agentEntries, sub: p3.text.includes("SUB-AGENT") });
+    const tb3b = await claude.transferBlock(s3, "anthropic", { model: "claude-opus-4-8", from: -1, to: last3 - 1 });
+    check("T30b", "the transfer note says how many sub-agent entries were left out and where their outcomes are", tb3b.count === 3 && /2 entries produced inside sub-agents are not carried/.test(tb3b.note) && /Agent tool results/.test(tb3b.note) && !tb3b.text.includes("SUB-AGENT"), tb3b.note);
+    const convo = require(path.join(ROOT, "src/main/storage/convo.js"));
+    const map3 = convo.sessionMap(s3);
+    check("T30c", "the session map counts the primary conversation only (1 tool call, 1 reply; no sub-agent outcome)", map3.toolCalls === 1 && map3.assistantTurns === 1 && map3.userTurns === 2 && !map3.outcomes.some((o) => /SUB-AGENT/.test(o.t)) && map3.tools.length === 1 && map3.tools[0].name === "Task", { toolCalls: map3.toolCalls, assistantTurns: map3.assistantTurns, outcomes: map3.outcomes.map((o) => o.t), tools: map3.tools }); }
+
   check("T29", "no rotation/handoff/digest/cap identifiers from the removed layers", !/ROTATE_TURNS|contextHandoff|rotateSession|convoDigest|HANDOFF_|BATCH_PROMPT_CAP|slice\(0, 8\)|slice\(0, 12000\)|truncateDeep|truncate\(/.test(src));
 
   console.log(`\nTransfer: ${pass} passed, ${failN} failed`);

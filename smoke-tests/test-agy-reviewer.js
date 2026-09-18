@@ -7,7 +7,7 @@
  *
  * Requires: agy installed and authenticated. Times out at 90s.
  */
-const council = require("../src/main/council");
+const council = require("../src/main/providers/council");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");

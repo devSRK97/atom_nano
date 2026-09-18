@@ -40,9 +40,10 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   const review = await win.evaluate((cwd) => window.atomnano.test.councilReview(cwd, [{ provider: "google", model: "g3" }], "draft an email", "Dear team, here is the update."), CWD);
   ok(review.messages.length === 1 && review.messages[0].kind === "review" && /REVIEW/.test(review.messages[0].text), "review-after hands the answer to reviewers for critique");
 
-  /* ---------- composer Reviewers control ---------- */
-  ok(await win.evaluate(() => !!document.getElementById("reviewersBtn")), "Reviewers control in the composer toolbar");
-  await win.evaluate(() => document.getElementById("reviewersBtn").click());
+  /* ---------- Reviewers control (header ⋮ menu → popover; it left the composer row on 2026-09-17) ---------- */
+  ok(await win.evaluate(() => !document.getElementById("reviewersBtn")), "no Reviewers button in the composer row");
+  ok(await win.evaluate(() => typeof window.__toggleReviewers === "function"), "the Reviewers popover opens from the header menu");
+  await win.evaluate(() => window.__toggleReviewers());
   await win.waitForTimeout(150);
   const pop = await win.evaluate(() => { const p = document.querySelector(".rv-pop"); return p ? { modes: p.querySelectorAll(".rv-mode-b").length, rows: p.querySelectorAll(".rv-row").length } : null; });
   ok(pop && pop.modes === 2 && pop.rows === 3, `popover has before/after modes + a row per provider incl. Claude (${pop && pop.rows})`);
@@ -57,7 +58,14 @@ const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1
   await win.waitForTimeout(250);
   const setg = await win.evaluate(() => window.atomnano.settings.get());
   ok((setg.reviewers || []).length === 1 && setg.reviewers[0].provider === "google" && setg.reviewers[0].model === "gemini-3.1-pro-preview", `selecting a reviewer + model persists (${JSON.stringify(setg.reviewers)})`);
-  ok(/Reviewers · 1/.test(await win.evaluate(() => document.getElementById("reviewersBtn").textContent)), "button shows the reviewer count");
+  await win.evaluate(() => window.__toggleReviewers());   // close the popover, then read the count off the header menu
+  await win.evaluate(() => document.getElementById("chatMore").click());
+  await win.waitForTimeout(350);
+  ok(/Reviewers · 1/.test(await win.evaluate(() => document.body.innerText)), "the header menu shows the reviewer count");
+  await win.evaluate(() => document.body.click());
+  await win.waitForTimeout(120);
+  await win.evaluate(() => window.__toggleReviewers());
+  await win.waitForTimeout(150);
 
   await win.evaluate(() => { const b = [...document.querySelectorAll(".rv-pop .rv-mode-b")].find((x) => /Review after/.test(x.textContent)); b.click(); });
   await win.waitForTimeout(150);
